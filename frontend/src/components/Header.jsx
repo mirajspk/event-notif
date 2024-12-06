@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Menu } from 'lucide-react'
 
 const navItems = [
   { name: "Home", href: "#" },
@@ -23,7 +22,7 @@ const Header = () => {
             <a
               key={item.name}
               href={item.href}
-              className="text-gray-600 hover:text-gray-900 transition-colors"
+              className="text-gray-600 hover:text-gray-950 transition-colors"
             >
               {item.name}
             </a>
@@ -31,16 +30,17 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center space-x-4">
-          <Button>Sign In</Button>
+          <Button variant='ghost'>LOGIN</Button>
+          <Button>SIGNUP</Button>
 
           <Button
-            variant="ghost"
+            variant="menu"
             size="icon"
             className="md:hidden"
             aria-label="Menu"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            <Menu className="h-6 w-6" />
+          <i className="bx bx-menu text-2xl"></i>
           </Button>
         </div>
       </div>
