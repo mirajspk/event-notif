@@ -1,13 +1,13 @@
 
-import { Header } from "./components/ui/Header"
+import { Header } from "./components/Header"
 
-export default function Home() {
+
+export default function App() {
   return (
-    
     <>
-      <Header>
-        
-      </Header>
+      <Header></Header>
     </>
+    
+    
   )
 }
