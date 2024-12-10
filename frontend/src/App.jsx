@@ -2,15 +2,14 @@
 import EventCard from '@/components/ui/EventCard'
 
 const App = () => {
-  const handleSeeDetails = (eventId) => {
-    console.log(`Viewing details for event ${eventId}`)
-    // Add your logic here, e.g., navigate to event details page
+  const handleOnClick = (eventId) => {
+   alert(`Viewing details for event ${eventId}`)
   }
 
   const events = [
     {
       id: 1,
-      imageUrl: "/placeholder.svg?height=300&width=400",
+      imageUrl: "./src/assets/placeholder.png?height=300&width=400",
       title: "Web Development Workshop",
       location: "Multi Purpose Hall",
       startTime: "10:00 AM",
@@ -19,37 +18,53 @@ const App = () => {
     },
     {
       id: 2,
-      imageUrl: "/placeholder.svg?height=300&width=400",
-      title: "AI and Machine Learning Seminar",
-      location: "Conference Room A",
-      startTime: "9:00 AM",
-      endTime: "3:00 PM",
-      date: "November 29, Sunday",
+      imageUrl: "./src/assets/placeholder.png?height=300&width=400",
+      title: "Web Development Workshop 2",
+      location: "Multi Purpose Hall 2",
+      startTime: "10:00 AM",
+      endTime: "4:00 PM",
+      date: "November 32, Monday",
     },
     {
       id: 3,
-      imageUrl: "/placeholder.svg?height=300&width=400",
-      title: "Data Science Bootcamp",
-      location: "Virtual Meeting Room",
-      startTime: "11:00 AM",
-      endTime: "5:00 PM",
-      date: "December 5, Saturday",
+      imageUrl: "./src/assets/placeholder.png?height=300&width=400",
+      title: "Web Development Workshop 2",
+      location: "Multi Purpose Hall 2",
+      startTime: "10:00 AM",
+      endTime: "4:00 PM",
+      date: "November 32, Monday",
     },
     {
       id: 4,
-      imageUrl: "/placeholder.svg?height=300&width=400",
-      title: "UX/UI Design Workshop",
-      location: "Design Studio",
-      startTime: "2:00 PM",
-      endTime: "6:00 PM",
-      date: "December 12, Saturday",
+      imageUrl: "./src/assets/placeholder.png?height=300&width=400",
+      title: "Web Development Workshop 2",
+      location: "Multi Purpose Hall 2",
+      startTime: "10:00 AM",
+      endTime: "4:00 PM",
+      date: "November 32, Monday",
     },
+    {
+      id: 5,
+      imageUrl: "./src/assets/placeholder.png?height=300&width=400",
+      title: "Web Development Workshop 2",
+      location: "Multi Purpose Hall 2",
+      startTime: "10:00 AM",
+      endTime: "4:00 PM",
+      date: "November 32, Monday",
+    },
+    {
+      id: 6,
+      imageUrl: "./src/assets/placeholder.png?height=300&width=400",
+      title: "Web Development Workshop 2",
+      location: "Multi Purpose Hall 2",
+      startTime: "10:00 AM",
+      endTime: "4:00 PM",
+      date: "November 32, Monday",
+    }
   ]
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Upcoming Events</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="flex flex-wrap justify-center my-9 gap-9">
         {events.map((event) => (
           <EventCard
             key={event.id}
@@ -59,11 +74,10 @@ const App = () => {
             startTime={event.startTime}
             endTime={event.endTime}
             date={event.date}
-            onSeeDetails={() => handleSeeDetails(event.id)}
+            onSeeDetails={() => handleOnClick(event.id)}
           />
         ))}
       </div>
-    </div>
   )
 }
 

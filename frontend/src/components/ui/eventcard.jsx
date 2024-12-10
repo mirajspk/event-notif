@@ -1,6 +1,6 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Calendar, Clock, MapPin } from 'lucide-react'
+import { Button } from "./button"
 
 const EventCard = ({ 
   imageUrl, 
@@ -12,38 +12,39 @@ const EventCard = ({
   onSeeDetails 
 }) => {
   return (
-    <Card className="overflow-hidden h-full flex flex-col">
-      <div className="relative h-48 overflow-hidden">
+    <Card className="w-[400px] h-[450px] flex flex-col">
+      <div className="h-48">
         <img
-          src={imageUrl || "/placeholder.svg?height=300&width=400"}
-          alt="Event space"
+          src={imageUrl}
           className="object-cover w-full h-full"
         />
       </div>
-      <CardContent className="flex-grow pt-6 space-y-4">
-        <h2 className="text-xl font-semibold leading-tight line-clamp-2">
-          {title}
-        </h2>
-        <div className="space-y-3">
-          <div className="flex items-center gap-3 text-muted-foreground">
-            <MapPin className="w-5 h-5 text-muted-foreground/70 flex-shrink-0" />
-            <span className="truncate">{location}</span>
-          </div>
-          <div className="flex items-center gap-3 text-muted-foreground">
-            <Clock className="w-5 h-5 text-muted-foreground/70 flex-shrink-0" />
-            <span>{startTime} - {endTime}</span>
-          </div>
-          <div className="flex items-center gap-3 text-muted-foreground">
-            <Calendar className="w-5 h-5 text-muted-foreground/70 flex-shrink-0" />
-            <span>{date}</span>
+      <CardContent className="flex-grow flex flex-col justify-between p-4">
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold leading-tight">
+            {title}
+          </h2>
+          <div className="space-y-3 text-black">
+            <div className="flex items-center">
+              <MapPin className="w-5 h-5 mr-2 flex-shrink-0" />
+              <span className="truncate">{location}</span>
+            </div>
+            <div className="flex items-center">
+              <Clock className="w-5 h-5 mr-2 flex-shrink-0" />
+              <span>{startTime} - {endTime}</span>
+            </div>
+            <div className="flex items-center">
+              <Calendar className="w-5 h-5 mr-2 flex-shrink-0" />
+              <span>{date}</span>
+            </div>
           </div>
         </div>
       </CardContent>
-      <CardFooter className="pt-4 pb-6">
+      <CardFooter className="p-4">
         <Button 
-          variant="outline" 
           className="w-full"
           onClick={onSeeDetails}
+          variant = "outline"
         >
           SEE DETAILS
         </Button>
