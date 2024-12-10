@@ -29,10 +29,9 @@ const Header = () => {
           ))}
         </nav>
 
-        <div className="flex items-center space-x-4">
-          <Button variant='ghost'>LOGIN</Button>
-          <Button>SIGNUP</Button>
-
+        <div className="flex items-center space-x-4"> 
+          
+          <Button>SIGN IN</Button>
           <Button
             variant="menu"
             size="icon"
@@ -47,12 +46,12 @@ const Header = () => {
 
       {isMenuOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
-          <nav className="container mx-auto px-4 py-4 flex flex-col space-y-4">
+          <nav className="container mx-auto px-4 py-4 flex flex-col space-y-4 items-center">
             {navItems.map((item) => (
               <a
                 key={item.name}
                 href={item.href}
-                className="text-gray-600 hover:text-gray-900 transition-colors"
+                className="text-gray-400 hover:text-gray-900 transition-colors "
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.name}
