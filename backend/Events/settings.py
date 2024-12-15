@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # My App
     'components',
+    'Api',
 
     # Default Django Apps
     'django.contrib.admin',
@@ -48,7 +49,6 @@ INSTALLED_APPS = [
     'api'
 ]
 
-CORS_ALLOWED_ORIGINS = [""]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -131,3 +131,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
