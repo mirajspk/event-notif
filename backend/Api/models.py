@@ -33,3 +33,8 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.type}) by {self.host}"
+
+
+class Clubs(models.Model):
+    club_name = models.CharField(max_length=30) # Name of the club
+    club_description = models.CharField(max_length=1000)
