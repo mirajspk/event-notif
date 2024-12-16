@@ -1,9 +1,11 @@
-import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
-export default function Home() {
+const App = () => {
   return (
-    <div>
-      <Button>Click me</Button>
+    <div className="px-5 py-5">
+      <Input type="email" placeholder="Email" className="w-60" />
     </div>
-  )
-}
+  );
+};
+
+export default App; 
