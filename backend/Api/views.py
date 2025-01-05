@@ -35,3 +35,7 @@ class ClubsView(APIView):
         events = Clubs.objects.all()
         serializer = ClubsSerializer(events, many = True)
         return Response(serializer.data, status = status.HTTP_200_OK)
+    
+class EventListView(ListAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
