@@ -39,3 +39,5 @@ class ClubsView(APIView):
 class EventListView(ListAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    # This specifies the serialier class to use for converting the Evnet model instance to add from JSON
+    
