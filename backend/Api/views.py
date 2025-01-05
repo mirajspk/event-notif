@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from .serializers import EventSerializer , ClubsSerializer
 from .models import Event , Clubs
 from rest_framework.generics import ListAPIView # type: ignore
