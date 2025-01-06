@@ -9,8 +9,7 @@ function App() {
     <Router>
       <Routes>
         {/* Define your routes here */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/events" element={<EventListPage />} />
+        <Route path="/events" element={<EventsPage/>} />
       </Routes>
     </Router>
   );

@@ -7,8 +7,7 @@ import EventsPage from "@/components/Rendering/EventPage";
 function MainRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/events" element={<EventListPage />} />
+      <Route path="/events" element={<EventsPage />} />
     </Routes>
   );
 }

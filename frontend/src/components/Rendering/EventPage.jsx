@@ -7,7 +7,7 @@ const EventsPage = () => {
   useEffect(() => {
     // Fetch events from the API
     axios
-      .get("http://127.0.0.1:8000/api/events-list/") // Replace with your backend URL
+      .get("http://127.0.0.1:8000/Api/event-list/") // Replace with your backend URL
       .then((response) => {
         setEvents(response.data);
       })

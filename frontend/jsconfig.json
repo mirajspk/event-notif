@@ -1,8 +1,12 @@
 {
-    "compilerOptions": {
-      "baseUrl": ".",
-      "paths": {
-        "@/*": ["./src/*"]
-      }
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
     }
-  }
+  },
+  "include": [
+    "src/**/*",        // Include all files in the src folder
+    "node_modules/**/*"  // Include files from node_modules if needed
+  ]
+}
