@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -7,7 +8,7 @@ const EventsPage = () => {
   useEffect(() => {
     // Fetch events from the API
     axios
-      .get("http://127.0.0.1:8000/Api/event-list/") // Replace with your backend URL
+      .get("http://127.0.0.1:8000/Api/event-list/") 
       .then((response) => {
         setEvents(response.data);
       })
