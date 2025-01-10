@@ -7,7 +7,7 @@ const Homepage = () => {
   return (
     <div>
       <Navbar />
-      <Searchbar />
+      {/* <Searchbar /> */}
 
     </div>
   )
