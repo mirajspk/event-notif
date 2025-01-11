@@ -24,7 +24,8 @@ const events = [
   { id: '3', name: 'Kailali multiple campus', date: 'Sep 5', location: 'Dhangadhi' },
   { id: '4', name: 'Harvard College', date: 'Oct 1', location: 'Modern Art Museum' },
 ]
-
+//SearchBar components that allow users to search for events.
+//display a list of events filterted by the search query.
 export default function Searchbar() {
   const [open, setOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
