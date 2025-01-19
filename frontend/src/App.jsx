@@ -1,5 +1,4 @@
-
-import EventCard from '@/components/ui/EventCard'
+import EventCard from "./components/ui/custom/eventcard"
 
 const App = () => {
   const handleOnClick = (eventId) => {
