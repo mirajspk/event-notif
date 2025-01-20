@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/custom/customButton"
 
 const navItems = [
   { name: "Home", href: "#" },
@@ -45,7 +45,7 @@ const Header = () => {
       </div>
 
       {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
           <nav className="container mx-auto px-4 py-4 flex flex-col space-y-4 items-center">
             {navItems.map((item) => (
               <a
