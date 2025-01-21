@@ -1,0 +1,84 @@
+.event-card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px;
+    max-width: 400px;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .event-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .event-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333333;
+  }
+  
+  .event-type {
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 20px;
+    color: #ffffff;
+    text-transform: capitalize;
+  }
+  
+  .event-type.event {
+    background: #007bff;
+  }
+  
+  .event-type.workshop {
+    background: #28a745;
+  }
+  
+  .event-details p {
+    margin: 8px 0;
+    font-size: 0.95rem;
+    color: #555555;
+  }
+  
+  .event-details strong {
+    font-weight: bold;
+    color: #333333;
+  }
+  
+  .event-footer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .register-button {
+    background: #ff5722;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    transition: background 0.2s ease-in-out;
+  }
+  
+  .register-button:hover {
+    background: #e64a19;
+  }
+  
+  .no-registration {
+    font-size: 0.9rem;
+    color: #666666;
+    font-style: italic;
+  }
+  
