@@ -30,7 +30,7 @@ class Event(models.Model):
     type = models.CharField(max_length=50, choices=TYPE_CHOICES)  # Type: Event or Workshop
     registration_link = models.URLField(max_length=500)  # Link for registration
     time = models.TimeField(null=True, blank=True)  # New Time field
-    description = models.TextField(null=True, blank=True)  # New Description field
+    description = models.TextField(null= True, blank=True)  # New Description field
 
     def __str__(self):
         return f"{self.name} ({self.type}) by {self.host}"
