@@ -43,7 +43,7 @@ const EventCard = ({
       <CardFooter className="p-4">
         <a
           className="w-full border border-primary text-primary bg-white hover:bg-primary hover:text-white h-10 px-4 py-2 inline-flex items-center justify-center text-sm font-medium transition-colors cursor-pointer"
-          onClick={onSeeDetails}
+          href = "#"
         >
           SEE DETAILS
         </a>
