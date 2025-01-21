@@ -11,19 +11,17 @@ const Footer = () => {
         <div className="Upper-footer">
           <div className="footer-nav">
             <h2 className="text-2xl font-bold mb-4">KUevents</h2>
-            <nav>
-              <ul className="nav-item space-y-4 md:space-y-0 md:space-x-14">
-                <li><a href="#" className="hover:text-white">Home</a></li>
-                <li><a href="#" className="hover:text-white">Events</a></li>
-                <li><a href="#" className="hover:text-white">Clubs</a></li>
-                <li><a href="#" className="hover:text-white">Contact</a></li>
-                <li><a href="#" className="hover:text-white">FAQs</a></li>
-                <li><a href="#" className="hover:text-white">About</a></li>
-              </ul>
-            </nav>
+            <ul className="nav-item flex space-y-4 md:space-y-0 md:space-x-10">
+              <li><a href="#" className="hover:text-white">Home</a></li>
+              <li><a href="#" className="hover:text-white">Events</a></li>
+              <li><a href="#" className="hover:text-white">Clubs</a></li>
+              <li><a href="#" className="hover:text-white">Contact</a></li>
+              <li><a href="#" className="hover:text-white">FAQs</a></li>
+              <li><a href="#" className="hover:text-white">About</a></li>
+            </ul>
           </div>
           <div className="subscribe">
-            <h3 className="text-lg font-semibold mb-2">Subscribe to get event notifications</h3>
+            <h3 className="subscrible-text text-lg font-semibold mb-2 md:text-nowrap">Subscribe to get event notifications</h3>
             <form className="form-button">
               <Input
                 type="email"
