@@ -17,17 +17,17 @@ class EventList(APIView):
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
-    def put(self, request, pk):
-        event = get_object_or_404(Event, pk=pk)
+
+    def put(self, request, id):
+        event = get_object_or_404(Event, pk=id)
         serializer = EventSerializer(event, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
-        event = get_object_or_404(Event, pk=pk)
+    def delete(self, request, id):
+        event = get_object_or_404(Event, pk=id)
         event.delete()
         return Response({"message": "Event deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
@@ -35,7 +35,11 @@ class EventList(APIView):
         events = Event.objects.all()
         serializer = EventSerializer(events, many = True)
         return Response(serializer.data, status = status.HTTP_200_OK)
-    
+
+class EventListView(ListAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
 class ClubsView(APIView):
     def post(self, request):
         serializer = ClubsSerializer(data = request.data)
@@ -43,9 +47,9 @@ class ClubsView(APIView):
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    def put(self, request, pk):
-        club = get_object_or_404(Clubs, pk=pk)
+
+    def put(self, request, id):
+        club = get_object_or_404(Clubs, pk=id)
         serializer = ClubsSerializer(club, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -57,7 +61,7 @@ class ClubsView(APIView):
         serializer = ClubsSerializer(events, many = True)
         return Response(serializer.data, status = status.HTTP_200_OK)
 
-   def delete(self, request, pk):
-        club = get_object_or_404(Clubs, pk=pk)
-        club.delete()
-        return Response({"message": "Club deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+def delete(self, request, id):
+    club = get_object_or_404(Clubs, pk=id)
+    club.delete()
+    return Response({"message": "Club deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
