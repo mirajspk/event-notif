@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
-import { useToast } from "@/hooks/use-toast";
+
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Mail, Lock } from "lucide-react";
@@ -15,7 +15,6 @@ import { loginSchema } from "@/lib/login-schema";
 
 function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
 
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -33,16 +32,7 @@ function LoginForm() {
 
       console.log(values);
 
-      toast({
-        title: "Logged in.",
-        description: "You have logged in successfully.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive",
-      });
+
     } finally {
       setIsLoading(false);
     }
@@ -103,7 +93,7 @@ function LoginForm() {
                     Logging in...
                   </>
                 ) : (
-                  "Sign up"
+                  "Login"
                 )}
               </Button>
             </form>
