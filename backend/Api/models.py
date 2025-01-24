@@ -31,6 +31,7 @@ class Event(models.Model):
     registration_link = models.URLField(max_length=500)  # Link for registration
     time = models.TimeField(null=True, blank=True)  # New Time field
     description = models.TextField(null= True, blank=True)  # New Description field
+    image_url = models.URLField(blank=True, null=True)  # Store image URL
 
     def __str__(self):
         return f"{self.name} ({self.type}) by {self.host}"
