@@ -1,7 +1,7 @@
 from django.urls import path
 from Api import views
 urlpatterns = [
-
+    
     #Events
     path('events/',views.EventList.as_view()),
     path('events/<int:pk>/', views.EventDetail.as_view(), name='event-detail'),

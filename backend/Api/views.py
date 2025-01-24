@@ -2,16 +2,28 @@ from django.shortcuts import render
 from rest_framework.compat import requests
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.schemas.coreapi import serializers
-from rest_framework.generics import ListAPIView # type: ignore
-from rest_framework.views import APIView # type: ignore
-# We can make a class based view with DRF's APIView
-from rest_framework.response import Response # type: ignore
-from rest_framework import status # type: ignore
-from rest_framework import viewsets # type: ignore
+from rest_framework.generics import ListAPIView 
+from rest_framework.views import APIView 
+from rest_framework.response import Response 
+from rest_framework import status 
+from rest_framework import viewsets 
 from django.db.utils import IntegrityError
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import EventSerializer, ClubsSerializer, UserSerializer, EventRegistrationSerializer, CustomTokenObtainPairSerializer
 from .models import Event, Clubs, EventRegistration, User
+
+
+class UserRegistrationView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({'messsage': 'User Registered successfully',
+                             'user_type': user.user_type 
+                             }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class EventList(APIView):
@@ -33,7 +45,6 @@ class EventList(APIView):
         events = Event.objects.all().orderd_by('date')
         serializer = EventSerializer(events, many = True)
         return Response(serializer.data, status = status.HTTP_200_OK)
-
 
 
 class RelatedEventsView(APIView):

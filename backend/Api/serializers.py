@@ -2,6 +2,10 @@ from django.db.models.expressions import fields
 from rest_framework import serializers # type: ignore
 from .models import Event, Clubs, User, EventRegistration
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -31,9 +35,26 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
+    formatted_time = serializers.SerializerMethodField()
+    formatted_date = serializers.SerializerMethodField()
+    host_details = serializers.SerializerMethodField()
+
     class Meta:
         model = Event
-        fields = '__all__'
+        fields = ['id', 'name', 'location', 'formatted_time', 'formatted_date', 
+                 'host', 'description', 'registration_link', 'host_details']
+
+    def get_formatted_time(self, obj):
+        return obj.get_formatted_time()
+
+    def get_formatted_date(self, obj):
+        return obj.get_formatted_date()
+
+    def get_host_details(self, obj):
+        return {
+            'name': obj.host,
+            'logo_url': f'/static/club_logos/{obj.host.lower().replace(" ", "_")}.png'
+        }
 
 
 class ClubsSerializer(serializers.ModelSerializer):
