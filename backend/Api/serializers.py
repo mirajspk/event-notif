@@ -1,6 +1,6 @@
 from django.db.models.expressions import fields
 from rest_framework import serializers # type: ignore
-from .models import Event , Clubs, User
+from .models import Event, Clubs, User, EventRegistration
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -47,3 +47,9 @@ class UserSerializer(serializers.ModelSerializer):
             user_type=validated_data.get('user_type', 'PARTICIPANT')
         )
         return user
+
+
+class EventRegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventRegistration
+        fields = '__all__'

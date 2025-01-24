@@ -1,10 +1,9 @@
 from django.shortcuts import render
-from django.urls import Resolver404
 from rest_framework.compat import requests
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.schemas.coreapi import serializers
-from .serializers import EventSerializer , ClubsSerializer
-from .models import Event , Clubs
+from .serializers import EventSerializer, ClubsSerializer, UserSerializer, EventRegistrationSerializer
+from .models import Event, Clubs, EventRegistration, User
 from rest_framework.generics import ListAPIView # type: ignore
 from rest_framework.views import APIView # type: ignore
 # We can make a class based view with DRF's APIView
@@ -35,6 +34,7 @@ class EventList(APIView):
 
 
 class RelatedEventsView(APIView):
+    permission_classes = [AllowAny]
 
     def get(self, request, host):
         events = Event.objects.filter(host=host).order_by('date')[:3]
@@ -79,6 +79,37 @@ class EventDetail(APIView):
 
         event.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class EventRegistrationView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, event_id):
+        if request.user.user_type == 'ADMIN':
+            return Response({'error': 'Admins cannot register for events'}, 
+                          status=status.HTTP_403_FORBIDDEN)
+        
+        try:
+            event = Event.objects.get(pk=event_id)
+            EventRegistration.objects.create(
+                event=event,
+                participant=request.user
+            )
+            return Response({'message': 'Successfully registered'}, 
+                          status=status.HTTP_201_CREATED)
+        except Event.DoesNotExist:
+            return Response({'error': 'Event not found'}, 
+                          status=status.HTTP_404_NOT_FOUND)
+        except IntegrityError:
+            return Response({'error': 'Already registered'}, 
+                          status=status.HTTP_400_BAD_REQUEST)
+
+
+    def get(self, request):
+        registrations = EventRegistration.objects.filter(participant=request.user)
+        serializer = EventRegistrationSerializer(registrations, many=True)
+        return Response(serializer.data)
+
 
 
 class ClubsView(APIView):
