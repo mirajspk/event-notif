@@ -1,6 +1,34 @@
 from django.db import models
+from django.db.models.query import django
+from django.contrib.auth.models import AbstractUser, Group, Permission 
 
 from django.db import models
+
+
+class User(AbstractUser):
+    USER_TYPE_CHOICES = [
+        ('ADMIN','Admin'),
+        ('PARTICIPANT','Participant')
+    ]
+
+    username = models.CharField(max_length=100, unique=True)
+    email = models.EmailField()
+    user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='Participant')
+
+    groups = models.ManyToManyField(
+        Group,
+        related_name="custom_user_groups",
+        blank=True,
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        related_name="custom_user_permissions",
+        blank=True,
+    )
+
+    def is_admin_user(self):
+        return self.user_type == 'Admin'
+
 
 class Event(models.Model):
     # Choices for 'Host'
