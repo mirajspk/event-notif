@@ -8,7 +8,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { useToast } from "@/hooks/use-toast";
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import { Mail, Lock, User } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
 import { Icons } from "./ui/icons";
 
 import { loginSchema } from "@/lib/login-schema";
@@ -28,7 +28,7 @@ function LoginForm() {
   async function onSubmit(values) {
     setIsLoading(true);
     try {
-      // Simulating API call (sign up logic should be here)
+      // Simulating API call (login logic should be here)
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       console.log(values);
