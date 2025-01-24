@@ -1,6 +1,7 @@
 from django.db.models.expressions import fields
 from rest_framework import serializers # type: ignore
 from .models import Event, Clubs, User, EventRegistration
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -19,6 +20,14 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             user_type=validated_data['user_type']
         )
         return user
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data['user_type'] = self.user.user_type
+        data['username'] = self.user.username
+        return data
 
 
 class EventSerializer(serializers.ModelSerializer):

@@ -2,14 +2,17 @@ from django.shortcuts import render
 from rest_framework.compat import requests
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.schemas.coreapi import serializers
-from .serializers import EventSerializer, ClubsSerializer, UserSerializer, EventRegistrationSerializer
-from .models import Event, Clubs, EventRegistration, User
 from rest_framework.generics import ListAPIView # type: ignore
 from rest_framework.views import APIView # type: ignore
 # We can make a class based view with DRF's APIView
 from rest_framework.response import Response # type: ignore
 from rest_framework import status # type: ignore
 from rest_framework import viewsets # type: ignore
+from django.db.utils import IntegrityError
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import EventSerializer, ClubsSerializer, UserSerializer, EventRegistrationSerializer, CustomTokenObtainPairSerializer
+from .models import Event, Clubs, EventRegistration, User
+
 
 class EventList(APIView):
     permission_classes = [AllowAny]
@@ -124,3 +127,7 @@ class ClubsView(APIView):
         events = Clubs.objects.all()
         serializer = ClubsSerializer(events, many = True)
         return Response(serializer.data, status = status.HTTP_200_OK)
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer

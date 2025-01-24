@@ -6,6 +6,7 @@ from time import timezone
 from django.utils import choices 
 from enum import unique
 
+
 class User(AbstractUser):
     USER_TYPE_CHOICES = [
         ('ADMIN','Admin'),
