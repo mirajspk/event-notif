@@ -1,9 +1,10 @@
 from django.db import models
 from django.db.models.query import django
 from django.contrib.auth.models import AbstractUser, Group, Permission 
-
-from django.db import models
-
+from django.utils import timezone
+from time import timezone
+from django.utils import choices 
+from enum import unique
 
 class User(AbstractUser):
     USER_TYPE_CHOICES = [
@@ -59,8 +60,17 @@ class Event(models.Model):
     type = models.CharField(max_length=50, choices=TYPE_CHOICES)  # Type: Event or Workshop
     registration_link = models.URLField(max_length=500)  # Link for registration
 
-    def __str__(self):
-        return f"{self.name} ({self.type}) by {self.host}"
+    description = models.TextField()
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_events', null=True, blank=True)
+
+    
+class EventRegistration(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    participant = models.ForeignKey(User, on_delete=models.CASCADE)
+    registration_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['event', 'participant']
 
 
 class Clubs(models.Model):
