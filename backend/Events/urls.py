@@ -22,6 +22,10 @@ from Api.views import CustomTokenObtainPairView, UserRegistrationView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('components.urls')),
+    path('', include('Api.urls')),
     path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('register/', UserRegistrationView.as_view(), name='register'),     path('Api/', include("Api.urls"))   
+    path('register/', UserRegistrationView.as_view(), name='register'),
+    path('Api/', include("Api.urls")), 
+    path('accounts/', include('allauth.urls')),
+    path('/', include('Api.urls')),
 ]

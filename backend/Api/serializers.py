@@ -7,14 +7,13 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'user_type')
-        extra_kwargs ={'password': {'write_only':True}}
+        fields = ('username', 'email', 'password', 'user_type') 
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         user = User.objects.create_user(
@@ -35,20 +34,20 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
-    formatted_time = serializers.SerializerMethodField()
-    formatted_date = serializers.SerializerMethodField()
+    #formatted_time = serializers.SerializerMethodField()
+    #formatted_date = serializers.SerializerMethodField()
     host_details = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
-        fields = ['id', 'name', 'location', 'formatted_time', 'formatted_date', 
-                 'host', 'description', 'registration_link', 'host_details']
+        fields = ['id', 'name', 'location', 'host',
+                  'description', 'registration_link', 'host_details']
 
-    def get_formatted_time(self, obj):
-        return obj.get_formatted_time()
-
-    def get_formatted_date(self, obj):
-        return obj.get_formatted_date()
+    # def get_formatted_time(self, obj):
+    #     return obj.get_formatted_time()
+    #
+    # def get_formatted_date(self, obj):
+    #     return obj.get_formatted_date()
 
     def get_host_details(self, obj):
         return {

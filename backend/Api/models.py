@@ -59,14 +59,25 @@ class Event(models.Model):
     name = models.CharField(max_length=255)  
     location = models.CharField(max_length=255)  
     date = models.DateField()
+    #time = models.DateTimeField(default=timezone.now)
     host = models.CharField(max_length=50, choices=CLUB_CHOICES)  
     type = models.CharField(max_length=50, choices=TYPE_CHOICES)  
     registration_link = models.URLField(max_length=500)  
 
     description = models.TextField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_events', null=True, blank=True)
-
     
+
+    """ def get_formatted_time(self):
+        if self.time:  # Ensures the field is not None
+            return self.time.strftime('%H:%M:%S')  # Custom time format
+        return None
+
+    def get_formatted_date(self):
+        if self.time:  # Ensures the field is not None
+            return self.time.strftime('%Y-%m-%d')  # Custom date format
+        return None"""
+
 class EventRegistration(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     participant = models.ForeignKey(User, on_delete=models.CASCADE)
