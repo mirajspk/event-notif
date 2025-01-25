@@ -21,7 +21,6 @@ export default function ScheduleEventForm() {
       date: "", 
       time: "",
       location: "",
-      registrationFee: "",
       thumbnail1: undefined,
       thumbnail2: undefined,
       description: "",
@@ -49,12 +48,13 @@ export default function ScheduleEventForm() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              
+
+            <div className="flex gap-4">
               <FormField
                 control={form.control}
                 name="eventTitle"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex-1">
                     <FormLabel>Event Title</FormLabel>
                     <FormControl>
                       <Input
@@ -67,6 +67,26 @@ export default function ScheduleEventForm() {
                   </FormItem>
                 )}
               />
+            
+
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Location</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter location"
+                          {...field}
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               
               <div className="flex gap-4">
@@ -109,47 +129,10 @@ export default function ScheduleEventForm() {
                 />
               </div>
 
-              
-              <div className="flex gap-4">
                 
-                <FormField
-                  control={form.control}
-                  name="location"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel>Location</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter location"
-                          {...field}
-                          disabled={isLoading}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
 
                 
-                <FormField
-                  control={form.control}
-                  name="registrationFee"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel>Registration Fee</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="Enter fee"
-                          {...field}
-                          disabled={isLoading}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+          
 
              
               <div className="flex gap-4">
