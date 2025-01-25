@@ -1,16 +1,17 @@
-from django.shortcuts import render
-from rest_framework.compat import requests
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.schemas.coreapi import serializers
 from rest_framework.generics import ListAPIView 
 from rest_framework.views import APIView 
 from rest_framework.response import Response 
 from rest_framework import status 
-from rest_framework import viewsets 
 from django.db.utils import IntegrityError
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import EventSerializer, ClubsSerializer, UserSerializer, EventRegistrationSerializer, CustomTokenObtainPairSerializer
 from .models import Event, Clubs, EventRegistration, User
+from google.oauth2 import id_token
+from google.auth.transport import requests
+from django.conf import settings
 
 
 class UserRegistrationView(APIView):
@@ -24,6 +25,37 @@ class UserRegistrationView(APIView):
                              'user_type': user.user_type 
                              }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GoogleSignInView(APIView):
+    permission_classes = [AllowAny]
+
+    def post (self, request):
+        token = request.data.get('token')
+        try:
+            idinfo = id_token.verify_oauth2_token(
+                token, requests.Request(), settings.Google_OAUTH2_CLIENT_ID)
+
+            email = idinfo['email']
+            user, created = User.objects.get_or_create(
+                email=email,
+                defaults={
+                    'username': email,
+                    'google_id': idinfo['sub'],
+                    'user_type': request.data.get('user_type', 'PARTICIPANT')
+                }
+            )
+            
+            # Return JWT token
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'user_type': user.user_type
+            })
+        except ValueError:
+            return Response({'error': 'Invalid token'}, 
+                          status=status.HTTP_400_BAD_REQUEST)
 
 
 class EventList(APIView):
@@ -70,7 +102,7 @@ class EventDetail(APIView):
             return Response({'error': 'Admin access required'}, 
                           status=status.HTTP_403_FORBIDDEN)
 
-        event = self.get_object(pl)
+        event = self.get_object(pk)
         if not event:
             return Response({'error': 'Event not found'}, 
                           status=status.HTTP_404_NOT_FOUND)

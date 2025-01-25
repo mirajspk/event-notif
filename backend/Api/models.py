@@ -5,6 +5,7 @@ from django.utils import timezone
 from time import timezone
 from django.utils import choices 
 from enum import unique
+from google.auth import default
 
 
 class User(AbstractUser):
@@ -12,10 +13,11 @@ class User(AbstractUser):
         ('ADMIN','Admin'),
         ('PARTICIPANT','Participant')
     ]
-
     username = models.CharField(max_length=100, unique=True)
     email = models.EmailField()
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='Participant')
+    google_id = models.CharField(max_length=100, null=True, blank=True)
+
 
     groups = models.ManyToManyField(
         Group,
@@ -54,12 +56,12 @@ class Event(models.Model):
     ]
 
     # Fields for the Event Model
-    name = models.CharField(max_length=255)  # Event/workshop name
-    location = models.CharField(max_length=255)  # Location of the event/workshop
-    date = models.DateField()  # Date of the event/workshop
-    host = models.CharField(max_length=50, choices=CLUB_CHOICES)  # Host club
-    type = models.CharField(max_length=50, choices=TYPE_CHOICES)  # Type: Event or Workshop
-    registration_link = models.URLField(max_length=500)  # Link for registration
+    name = models.CharField(max_length=255)  
+    location = models.CharField(max_length=255)  
+    date = models.DateField()
+    host = models.CharField(max_length=50, choices=CLUB_CHOICES)  
+    type = models.CharField(max_length=50, choices=TYPE_CHOICES)  
+    registration_link = models.URLField(max_length=500)  
 
     description = models.TextField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_events', null=True, blank=True)
