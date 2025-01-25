@@ -31,7 +31,6 @@ function SignUpForm() {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       console.log(values);
-      
     } finally {
       setIsLoading(false);
     }
@@ -41,7 +40,7 @@ function SignUpForm() {
     <div className="w-full max-w-md mx-auto p-6">
       <Card>
         <CardHeader className="space-y-1">
-          <CardTitle className="text-3xl font-semibold">Sign up</CardTitle>
+          <CardTitle className="text-3xl font-semibold text-black">Sign up</CardTitle>
           <CardDescription>Create your account</CardDescription>
         </CardHeader>
         <CardContent>
@@ -59,7 +58,7 @@ function SignUpForm() {
                         <Input id="name" autoComplete="name" placeholder="Enter your name" {...field} disabled={isLoading} className="pl-10" />
                       </div>
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-red-500" />
                   </FormItem>
                 )}
               />
@@ -75,7 +74,7 @@ function SignUpForm() {
                         <Input id="email" autoComplete="email" placeholder="Enter your email" {...field} disabled={isLoading} className="pl-10" />
                       </div>
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-red-500" />
                   </FormItem>
                 )}
               />
@@ -97,11 +96,11 @@ function SignUpForm() {
                         />
                       </div>
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-red-500" />
                   </FormItem>
                 )}
               />
-              <Button className="w-full bg-[#00A8E5] hover:bg-[#4299cc]" type="submit" disabled={isLoading}>
+              <Button className="w-full text-white bg-[#00A8E5] hover:bg-[#4299cc]" type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
@@ -144,7 +143,6 @@ function SignUpForm() {
 }
 
 function handleGoogleSignUp() {
-  
   console.log("google sign up clicked");
 }
 
