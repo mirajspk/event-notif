@@ -1,83 +1,39 @@
+//Importing routers and pageNotfound page
+import { Route,  Routes } from "react-router-dom"
 import EventCard from "./components/ui/custom/eventcard"
+import PageNotFound from"./components/pageNotFound"
 
+//This is the functional component of the App 
 const App = () => {
+  //When The eventcard is clicked it will trigger alert 
   const handleOnClick = (eventId) => {
-   alert(`Viewing details for event ${eventId}`)
+    alert(`Viewing details for event ${eventId}`)
   }
 
-  const events = [
-    {
-      id: 1,
-      imageUrl: "./src/assets/placeholder.png?height=300&width=400",
-      title: "Web Development Workshop",
-      location: "Multi Purpose Hall",
-      startTime: "10:00 AM",
-      endTime: "4:00 PM",
-      date: "November 22, Sunday",
-    },
-    {
-      id: 2,
-      imageUrl: "./src/assets/placeholder.png?height=300&width=400",
-      title: "Web Development Workshop 2",
-      location: "Multi Purpose Hall 2",
-      startTime: "10:00 AM",
-      endTime: "4:00 PM",
-      date: "November 32, Monday",
-    },
-    {
-      id: 3,
-      imageUrl: "./src/assets/placeholder.png?height=300&width=400",
-      title: "Web Development Workshop 2",
-      location: "Multi Purpose Hall 2",
-      startTime: "10:00 AM",
-      endTime: "4:00 PM",
-      date: "November 32, Monday",
-    },
-    {
-      id: 4,
-      imageUrl: "./src/assets/placeholder.png?height=300&width=400",
-      title: "Web Development Workshop 2",
-      location: "Multi Purpose Hall 2",
-      startTime: "10:00 AM",
-      endTime: "4:00 PM",
-      date: "November 32, Monday",
-    },
-    {
-      id: 5,
-      imageUrl: "./src/assets/placeholder.png?height=300&width=400",
-      title: "Web Development Workshop 2",
-      location: "Multi Purpose Hall 2",
-      startTime: "10:00 AM",
-      endTime: "4:00 PM",
-      date: "November 32, Monday",
-    },
-    {
-      id: 6,
-      imageUrl: "./src/assets/placeholder.png?height=300&width=400",
-      title: "Web Development Workshop 2",
-      location: "Multi Purpose Hall 2",
-      startTime: "10:00 AM",
-      endTime: "4:00 PM",
-      date: "November 32, Monday",
-    }
-  ]
+  //Array which holds The values of the event details
+  const events = [ ]
 
+  //Return defines Which component will get rendered
   return (
-      <div className="flex flex-wrap justify-center my-9 gap-9">
-        {events.map((event) => (
-          <EventCard
-            key={event.id}
-            imageUrl={event.imageUrl}
-            title={event.title}
-            location={event.location}
-            startTime={event.startTime}
-            endTime={event.endTime}
-            date={event.date}
-            onSeeDetails={() => handleOnClick(event.id)}
-          />
-        ))}
-      </div>
-  )
+    <div className="flex flex-wrap justify-center my-9 gap-9">
+      {events.map((event) => (
+        <EventCard
+          key={event.id}
+          imageUrl={event.imageUrl}
+          name={event.name}
+          location={event.location}
+          startTime={event.startTime}
+          endTime={event.endTime}
+          date={event.date}
+          onSeeDetails={() => handleOnClick(event.id)}
+        />
+      ))}
+      <Routes>
+        <Route path="/events" element={<EventCard /> } />
+        <Route path="*" element={<PageNotFound /> } />
+      </Routes>
+    </div>
+  )  
 }
 
 export default App
