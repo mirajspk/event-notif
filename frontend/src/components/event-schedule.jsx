@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { eventSchema } from "@/lib/schedule-schema";
 import { Icons } from "./ui/icons";
+import { DatePickerDemo } from "./ui/date-picker";
 import {
   Select,
   SelectTrigger,
@@ -163,8 +164,7 @@ export default function ScheduleEventForm() {
                     <FormItem className="flex-1">
                       <FormLabel>Date</FormLabel>
                       <FormControl>
-                        <Input
-                          type="date"
+                        <DatePickerDemo
                           {...field}
                           disabled={isLoading}
                         />
