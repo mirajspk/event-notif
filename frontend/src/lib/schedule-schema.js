@@ -8,4 +8,6 @@ export const eventSchema = z.object({
   thumbnail1: z.instanceof(File).optional(),
   thumbnail2: z.instanceof(File).optional(),
   description: z.string().min(1, "Description is required"),
+  host: z.string().min(1, "Host is required"),
+  programType: z.string().min(1,"Program type is required")
 });
