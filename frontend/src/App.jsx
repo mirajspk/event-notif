@@ -8,7 +8,7 @@ import EventCard from "./components/ui/custom/eventcard";
 export default function Home() {
   const eventsData = [
     {
-      imageUrl: "./public/assets/placeholder.png",
+      imageUrl: "./assets/placeholder.png",
       title: "Bio Hackathon",
       location: "Multi Purpose Hall",
       startTime: "10:00 AM - 4:00 PM",
@@ -29,15 +29,13 @@ export default function Home() {
       date: "November 24, Tuesday",
     },
   ];
-  const textstyle = "font-bold text-[rgb(90,90,90)] ";
-  const sectionstyle = "flex sm:flex-row gap-4 align-middle items-center";
 
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <EventDetail />
-      <div className="">
-        <h2 className="text-2xl font-bold my-20 text-center">Upcoming Events</h2>
+      <div className="mx-auto md:w-3/4 overflow-y-auto flex-grow">
+        <EventDetail className="border border-black" />
+        <h2 className="text-xl font-semibold my-20 text-left md:mx-10">Other Events by: Kathmandu univerity computer club</h2>
         <div className="flex flex-wrap justify-center gap-6">
           {eventsData.map((event, index) => (
             <EventCard

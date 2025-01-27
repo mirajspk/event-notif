@@ -1,15 +1,15 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Calendar, Clock, MapPin } from 'lucide-react'
-import { Button } from "./button"
+import { Button } from "./customButton"
 
-const EventCard = ({ 
-  imageUrl, 
-  title, 
-  location, 
-  startTime, 
-  endTime, 
-  date, 
-  onSeeDetails 
+const EventCard = ({
+  imageUrl,
+  title,
+  location,
+  startTime,
+  endTime,
+  date,
+  onSeeDetails
 }) => {
   return (
     <Card className="w-[400px] h-[450px] flex flex-col">
@@ -41,10 +41,10 @@ const EventCard = ({
         </div>
       </CardContent>
       <CardFooter className="p-4">
-        <Button 
+        <Button
           className="w-full"
           onClick={onSeeDetails}
-          variant = "outline"
+          variant="outline"
         >
           SEE DETAILS
         </Button>
