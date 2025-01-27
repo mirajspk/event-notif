@@ -1,6 +1,6 @@
 import React from 'react'
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { Input } from "../input"
+import { Button } from "./customButton"
 import { Facebook, Instagram, Twitter, Linkedin } from 'lucide-react'
 import "./Footer.css"
 
