@@ -8,7 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { eventSchema } from "@/lib/schedule-schema";
+import { eventSchema } from "@/lib/schedule-schema"; // Import your Zod schema
 import { Icons } from "./ui/icons";
 import { DatePickerDemo } from "./ui/date-picker";
 import {
@@ -18,6 +18,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import TimePicker from "./ui/time-picker"; // Import the TimePicker component
 
 export default function ScheduleEventForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -26,14 +27,14 @@ export default function ScheduleEventForm() {
     resolver: zodResolver(eventSchema),
     defaultValues: {
       eventTitle: "",
-      date: "",
-      time: "",
+      date: new Date(),
+      time: "", // Time will be handled by TimePicker
       location: "",
       thumbnail1: undefined,
       thumbnail2: undefined,
       description: "",
-      host: "", 
-      programType: "", 
+      host: "",
+      programType: "",
     },
   });
 
@@ -41,7 +42,9 @@ export default function ScheduleEventForm() {
     setIsLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
+
       console.log(values);
+      
     } finally {
       setIsLoading(false);
     }
@@ -57,7 +60,7 @@ export default function ScheduleEventForm() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              
+              {/* Event Title and Location */}
               <div className="flex gap-4">
                 <FormField
                   control={form.control}
@@ -96,7 +99,7 @@ export default function ScheduleEventForm() {
                 />
               </div>
 
-              
+              {/* Host and Program Type */}
               <div className="flex gap-4">
                 <FormField
                   control={form.control}
@@ -155,7 +158,7 @@ export default function ScheduleEventForm() {
                 />
               </div>
 
-              {/* Rest of the form fields */}
+              {/* Date and Time */}
               <div className="flex gap-4">
                 <FormField
                   control={form.control}
@@ -167,6 +170,8 @@ export default function ScheduleEventForm() {
                         <DatePickerDemo
                           {...field}
                           disabled={isLoading}
+                          selected={form.watch("date")} 
+                          onSelect={(date) => form.setValue("date", date)}
                         />
                       </FormControl>
                       <FormMessage />
@@ -181,10 +186,10 @@ export default function ScheduleEventForm() {
                     <FormItem className="flex-1">
                       <FormLabel>Time</FormLabel>
                       <FormControl>
-                        <Input
-                          type="time"
-                          {...field}
+                        <TimePicker
+                          onTimeChange={(time) => field.onChange(time)} // Pass the selected time to react-hook-form
                           disabled={isLoading}
+                          className="w-full" // Ensure TimePicker takes full width
                         />
                       </FormControl>
                       <FormMessage />
@@ -193,13 +198,14 @@ export default function ScheduleEventForm() {
                 />
               </div>
 
+              {/* Thumbnails */}
               <div className="flex gap-4">
                 <FormField
                   control={form.control}
-                  name="thumbnail1"
+                  name="img1"
                   render={({ field }) => (
                     <FormItem className="flex-1">
-                      <FormLabel>Upload Thumbnail 1</FormLabel>
+                      <FormLabel>Upload Image 1</FormLabel>
                       <FormControl>
                         <Input
                           type="file"
@@ -215,10 +221,10 @@ export default function ScheduleEventForm() {
 
                 <FormField
                   control={form.control}
-                  name="thumbnail2"
+                  name="img2"
                   render={({ field }) => (
                     <FormItem className="flex-1">
-                      <FormLabel>Upload Thumbnail 2</FormLabel>
+                      <FormLabel>Upload Image 2</FormLabel>
                       <FormControl>
                         <Input
                           type="file"
@@ -233,6 +239,7 @@ export default function ScheduleEventForm() {
                 />
               </div>
 
+              {/* Description */}
               <FormField
                 control={form.control}
                 name="description"
@@ -252,6 +259,7 @@ export default function ScheduleEventForm() {
                 )}
               />
 
+              {/* Submit Button */}
               <Button className="w-full bg-[#00A8E5] hover:bg-[#4299cc]" type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <>

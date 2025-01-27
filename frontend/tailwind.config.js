@@ -53,6 +53,9 @@ export default {
   		}
   	}
   },
+  extend:{
+	placeholder: ['responsive', 'focus'],
+  },
   plugins: [require("tailwindcss-animate")],
 }
 
