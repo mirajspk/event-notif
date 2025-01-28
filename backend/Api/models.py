@@ -30,8 +30,7 @@ class Event(models.Model):
     host = models.CharField(max_length=500, choices=CLUB_CHOICES)  # Host club
     type = models.CharField(max_length=50, choices=TYPE_CHOICES)  # Type: Event or Workshop
     registration_link = models.URLField(max_length=500)  # Link for registration
-    startTime= models.TimeField(null=True, blank=True)  # New Time field
-    endTime = models.TimeField(null=True, blank=True)  # New Time field
+    startTime= models.CharField(max_length=50, blank=True)  # New Time field
     description = models.TextField(null= True, blank=True)  # New Description field
     imageUrl = models.URLField(blank=True, null=True)  # Store image URL
 
