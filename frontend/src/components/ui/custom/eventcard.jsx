@@ -12,7 +12,7 @@ const EventCard = ({
   onSeeDetails
 }) => {
   return (
-    <Card className="w-[400px] h-[450px] flex flex-col">
+    <Card className="w-[300px] h-[450px] flex flex-col">
       <div className="h-48">
         <img
           src={imageUrl}

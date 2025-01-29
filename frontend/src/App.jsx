@@ -15,14 +15,14 @@ export default function Home() {
       date: "November 22, Sunday",
     },
     {
-      imageUrl: "./public/assets/placeholder.png",
+      imageUrl: "./assets/placeholder.png",
       title: "Research Seminar",
       location: "Conference Room A",
       startTime: "1:00 PM - 5:00 PM",
       date: "November 23, Monday",
     },
     {
-      imageUrl: "./public/assets/placeholder.png",
+      imageUrl: "./assets/placeholder.png",
       title: "KU Hackfest",
       location: "Auditorium",
       startTime: "9:00 AM - 12:00 PM",
@@ -33,7 +33,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <div className="mx-auto md:w-3/4 overflow-y-auto flex-grow">
+      <div className="md:mx-auto md:w-3/4 overflow-y-auto flex-grow">
         <EventDetail className="border border-black" />
         <h2 className="text-xl font-semibold my-20 text-left md:mx-10">Other Events by: Kathmandu univerity computer club</h2>
         <div className="flex flex-wrap justify-center gap-6">
