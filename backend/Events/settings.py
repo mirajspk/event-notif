@@ -13,22 +13,21 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-from pathlib import Path
 
 
 load_dotenv()
 
 
-GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID')
-if not GOOGLE_OAUTH_CLIENT_ID:
-    raise ValueError(
-        'GOOGLE_OAUTH_CLIENT_ID is missing.' 
-        'Have you put it in a file at core/.env ?'
-    )
-
-# We need these lines below to allow the Google sign in popup to work.
-SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
-SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
+# GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID')
+# if not GOOGLE_OAUTH_CLIENT_ID:
+#     raise ValueError(
+#         'GOOGLE_OAUTH_CLIENT_ID is missing.' 
+#         'Have you put it in a file at core/.env ?'
+#     )
+#
+# # We need these lines below to allow the Google sign in popup to work.
+# SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
+# SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -67,27 +66,22 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 
     #Others
-    'social_django',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
     'api',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
 ]
 
 
-SITE_ID = 1
+# SITE_ID = 1
 
 
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': ['profile', 'email'],
-        'AUTH_PARAMS': {'access_type': 'online'},
-    }
-}
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'SCOPE': ['profile', 'email'],
+#         'AUTH_PARAMS': {'access_type': 'online'},
+#     }
+# }
 
 
 MIDDLEWARE = [
@@ -95,7 +89,6 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -205,18 +198,18 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 
 
-GOOGLE_OAUTH2_CLIENT_ID = '131535575512-7pcu86summdih5rf7f0hjbh0ukkfgbrf.apps.googleusercontent.com'
-GOOGLE_OAUTH2_CLIENT_SECRET = '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'
-
-
-AUTHENTICATION_BACKENDS = {
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend', 
-}
-
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-ACCOUNT_EMAIL_REQUIRED = True
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-LOGIN_URL = '/accounts/login'
+# GOOGLE_OAUTH2_CLIENT_ID = '131535575512-7pcu86summdih5rf7f0hjbh0ukkfgbrf.apps.googleusercontent.com'
+# GOOGLE_OAUTH2_CLIENT_SECRET = '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'
+#
+#
+# AUTHENTICATION_BACKENDS = {
+#     'django.contrib.auth.backends.ModelBackend',
+#     'allauth.account.auth_backends.AuthenticationBackend', 
+# }
+#
+# ACCOUNT_EMAIL_VERIFICATION = 'none'
+# ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+# ACCOUNT_EMAIL_REQUIRED = True
+# LOGIN_REDIRECT_URL = '/'
+# LOGOUT_REDIRECT_URL = '/'
+# LOGIN_URL = '/accounts/login'

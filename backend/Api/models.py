@@ -1,11 +1,5 @@
 from django.db import models
-from django.db.models.query import django
-from django.contrib.auth.models import AbstractUser, Group, Permission 
-from django.utils import timezone
-from time import timezone
-from django.utils import choices 
-from enum import unique
-from google.auth import default
+from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
@@ -16,26 +10,19 @@ class User(AbstractUser):
     username = models.CharField(max_length=100, unique=True)
     email = models.EmailField()
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='Participant')
-    google_id = models.CharField(max_length=100, null=True, blank=True)
-
-
-    groups = models.ManyToManyField(
-        Group,
-        related_name="custom_user_groups",
-        blank=True,
-    )
-    user_permissions = models.ManyToManyField(
-        Permission,
-        related_name="custom_user_permissions",
-        blank=True,
-    )
+    club = models.ForeignKey('Clubs', on_delete=models.SET_NULL, null=True, blank=True, related_name='admins')
 
     def is_admin_user(self):
-        return self.user_type == 'Admin'
+        return self.user_type == 'ADMIN'
+
+
+class Clubs(models.Model):
+    club_name = models.CharField(max_length=30) # Name of the club
+    club_description = models.CharField(max_length=1000)
+    logo_url = models.URLField(max_length=500, blank=True, null=True)
 
 
 class Event(models.Model):
-    # Choices for 'Host'
     CLUB_CHOICES = [
         ('Coding Club', 'Coding Club'),
         ('Music Club', 'Music Club'),
@@ -49,44 +36,32 @@ class Event(models.Model):
         ('Science Club', 'Science Club'),
     ]
 
-    # Choices for 'Type'
     TYPE_CHOICES = [
         ('Event', 'Event'),
         ('Workshop', 'Workshop'),
     ]
 
-    # Fields for the Event Model
     name = models.CharField(max_length=255)  
     location = models.CharField(max_length=255)  
     date = models.DateField()
-    #time = models.DateTimeField(default=timezone.now)
-    host = models.CharField(max_length=50, choices=CLUB_CHOICES)  
+    host = models.ForeignKey(Clubs, on_delete=models.CASCADE)
     type = models.CharField(max_length=50, choices=TYPE_CHOICES)  
     registration_link = models.URLField(max_length=500)  
 
     description = models.TextField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_events', null=True, blank=True)
-    
 
-    """ def get_formatted_time(self):
-        if self.time:  # Ensures the field is not None
-            return self.time.strftime('%H:%M:%S')  # Custom time format
-        return None
-
-    def get_formatted_date(self):
-        if self.time:  # Ensures the field is not None
-            return self.time.strftime('%Y-%m-%d')  # Custom date format
-        return None"""
 
 class EventRegistration(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    participant = models.ForeignKey(User, on_delete=models.CASCADE)
     registration_date = models.DateTimeField(auto_now_add=True)
+    email = models.EmailField()
 
     class Meta:
-        unique_together = ['event', 'participant']
+        unique_together = ['event', 'email']
 
 
-class Clubs(models.Model):
-    club_name = models.CharField(max_length=30) # Name of the club
-    club_description = models.CharField(max_length=1000)
+class Subscriber(models.Model):
+    email = models.EmailField(unique=True)
+    clubs = models.ManyToManyField(Clubs)
+    subscribed_at = models.DateTimeField(auto_now_add=True)

@@ -1,125 +1,60 @@
-import os
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.schemas.coreapi import serializers
 from rest_framework.views import APIView 
 from rest_framework.response import Response 
 from rest_framework import status 
 from django.db.utils import IntegrityError
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import EventSerializer, ClubsSerializer, UserSerializer, EventRegistrationSerializer, CustomTokenObtainPairSerializer, UserRegistrationSerializer
-from .models import Event, Clubs, EventRegistration, User
-from google.oauth2 import id_token
-from google.auth.transport import requests
+from .serializers import EventSerializer, ClubsSerializer, SubscribeSerializer, EventRegistrationSerializer
+from .models import Event, Clubs, EventRegistration, Subscriber, User
+from django.core.mail import send_mail
 from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-
-
-@csrf_exempt
-def sign_in(request):
-    return render(request, 'sign_in.html')
-
-
-@csrf_exempt
-def auth_receiver(request):
-    """
-    Google calls this URL after the user has signed in with their Google account.
-    """
-    print('Inside')
-    token = request.POST['credential']
-
-    try:
-        user_data = id_token.verify_oauth2_token(
-            token, requests.Request(), os.environ['GOOGLE_OAUTH_CLIENT_ID']
-        )
-    except ValueError:
-        return HttpResponse(status=403)
-
-    # In a real app, I'd also save any new user here to the database.
-    # You could also authenticate the user here using the details from Google (https://docs.djangoproject.com/en/4.2/topics/auth/default/#how-to-log-a-user-in)
-    request.session['user_data'] = user_data
-
-    return redirect('sign_in')
-
-
-def sign_out(request):
-    del request.session['user_data']
-    return redirect('sign_in')
-
-
-
-class UserRegistrationView(APIView):
-    permission_classes = [AllowAny]
-
-    def post(self, request):
-        serializer = UserRegistrationSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            return Response({'messsage': 'User Registered successfully',
-                             'user_type': user.user_type 
-                             }, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class GoogleSignInView(APIView):
-    permission_classes = [AllowAny]
-
-    def post (self, request):
-        token = request.data.get('token')
-        try:
-            idinfo = id_token.verify_oauth2_token(
-                token, requests.Request(), settings.Google_OAUTH2_CLIENT_ID)
-
-            email = idinfo['email']
-            user, created = User.objects.get_or_create(
-                email=email,
-                defaults={
-                    'username': email,
-                    'google_id': idinfo['sub'],
-                    'user_type': request.data.get('user_type', 'PARTICIPANT')
-                }
-            )
-            
-            # Return JWT token
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-                'user_type': user.user_type
-            })
-        except ValueError:
-            return Response({'error': 'Invalid token'}, 
-                          status=status.HTTP_400_BAD_REQUEST)
+from django.shortcuts import get_object_or_404
 
 
 class EventList(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        if not request.user.is_authenticated or request.user.user_type != 'ADMIN':
-            return Response({'error': 'Admin access required'}, 
-                          status=status.HTTP_403_FORBIDDEN)
+        if not request.user.is_authenticated or not request.user.is_admin_user():
+            return Response({'error': 'Admin access required'}, status=status.HTTP_403_FORBIDDEN)
 
-        serializer = EventSerializer(data = request.data)
+        serializer = EventSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(created_by=request.user)
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
+            event = serializer.save(created_by=request.user)
+
+            # Send email to subscribers of the event's club
+            subscribers = Subscriber.objects.filter(clubs=event.host)
+            subject = f'New Event: {event.name}'
+            message = f'''
+                Event: {event.name}
+                Host: {event.host.club_name}
+                Date: {event.date}
+                Description: {event.description}
+                Registration Link: {event.registration_link}
+            '''
+            recipient_list = [sub.email for sub in subscribers]
+            
+            send_mail(
+                subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                recipient_list,
+                fail_silently=False
+            )
+            
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
     def get(self, request):
         events = Event.objects.all().order_by('date')
-        serializer = EventSerializer(events, many = True)
-        return Response(serializer.data, status = status.HTTP_200_OK)
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class RelatedEventsView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, host):
-        events = Event.objects.filter(host=host).order_by('date')[:3]
+        events = Event.objects.filter(host__club_name=host).order_by('date')[:3]
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data)
 
@@ -130,18 +65,16 @@ class EventDetail(APIView):
     def get_object(self, pk):
         try:
             return Event.objects.get(pk=pk)
-        except Event.DoesNotExit:
+        except Event.DoesNotExist:
             return None
 
     def put(self, request, pk):
-        if request.user.user_type != 'ADMIN':
-            return Response({'error': 'Admin access required'}, 
-                          status=status.HTTP_403_FORBIDDEN)
+        if not request.user.is_admin_user():
+            return Response({'error': 'Admin access required'}, status=status.HTTP_403_FORBIDDEN)
 
         event = self.get_object(pk)
         if not event:
-            return Response({'error': 'Event not found'}, 
-                          status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Event not found'}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = EventSerializer(event, data=request.data)
         if serializer.is_valid():
@@ -149,49 +82,41 @@ class EventDetail(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
 
-    def delete(self,request, pk):
-        if request.user.user_type != "ADMIN":
-            return Response({'error': 'Admin Access Required'},
-                            status=status.HTTP_403_FORBIDDEN)
+    def delete(self, request, pk):
+        if not request.user.is_admin_user():
+            return Response({'error': 'Admin access required'}, status=status.HTTP_403_FORBIDDEN)
 
         event = self.get_object(pk)
         if not event:
-            return Response({'error': 'Event not found'}, 
-                        status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Event not found'}, status=status.HTTP_404_NOT_FOUND)
 
         event.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class EventRegistrationView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request, event_id):
-        if request.user.user_type == 'ADMIN':
-            return Response({'error': 'Admins cannot register for events'}, 
-                          status=status.HTTP_403_FORBIDDEN)
-        
-        try:
-            event = Event.objects.get(pk=event_id)
-            EventRegistration.objects.create(
-                event=event,
-                participant=request.user
-            )
-            return Response({'message': 'Successfully registered'}, 
-                          status=status.HTTP_201_CREATED)
-        except Event.DoesNotExist:
-            return Response({'error': 'Event not found'}, 
-                          status=status.HTTP_404_NOT_FOUND)
-        except IntegrityError:
-            return Response({'error': 'Already registered'}, 
-                          status=status.HTTP_400_BAD_REQUEST)
+        email = request.data.get('email')
+        if not email:
+            return Response({'error': 'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
 
+        event = get_object_or_404(Event, pk=event_id)
+        try:
+            EventRegistration.objects.create(event=event, email=email)
+            return Response({'message': 'Successfully registered'}, status=status.HTTP_201_CREATED)
+        except IntegrityError:
+            return Response({'error': 'You are already registered for this event'}, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        registrations = EventRegistration.objects.filter(participant=request.user)
-        serializer = EventRegistrationSerializer(registrations, many=True)
-        return Response(serializer.data)
+        email = request.query_params.get('email')
+        if not email:
+            return Response({'error': 'Email parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
 
+        registrations = EventRegistration.objects.filter(email=email)
+        serializer = EventRegistrationSerializer(registrations, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ClubsView(APIView):
@@ -208,5 +133,18 @@ class ClubsView(APIView):
         return Response(serializer.data, status = status.HTTP_200_OK)
 
 
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
+class SubscribeView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = SubscribeSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            clubs = serializer.validated_data['clubs']
+
+            subscriber, created = Subscriber.objects.get_or_create(email=email)
+            subscriber.clubs.set(clubs)
+            subscriber.save()
+
+            return Response({'message': 'Subscribed successfully!'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
