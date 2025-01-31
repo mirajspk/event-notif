@@ -11,6 +11,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { eventSchema } from "@/lib/schedule-schema"; // Import your Zod schema
 import { Icons } from "./ui/icons";
 import { DatePickerDemo } from "./ui/date-picker";
+import axios from "axios";
 import {
   Select,
   SelectTrigger,
@@ -41,10 +42,28 @@ export default function ScheduleEventForm() {
   async function onSubmit(values) {
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const formData = new FormData();
+      formData.append("title", values.eventTitle);
+      formData.append("location", values.location);
+      formData.append("date", values.date.toISOString().split("T")[0]); // Convert date
+      formData.append("startTime", values.time);
+      formData.append("host", values.host);
+      formData.append("type", values.programType);
+      formData.append("description", values.description);
+      formData.append("registration_link", "https://example.com");
 
-      console.log(values);
-      
+      if (values.img1) formData.append("image", values.img1);
+      if (values.img2) formData.append("imageTwo", values.img2);
+
+      const response = await axios.post("http://127.0.0.1:8000/Api/events/", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      console.log("Success:", response.data);
+      alert("Event Created Successfully!");
+    } catch (error) {
+      console.error("Error response:", error.response?.data || error.message);
+      alert("Failed to create event: " + (error.response?.data?.detail || error.message));
     } finally {
       setIsLoading(false);
     }
@@ -115,6 +134,7 @@ export default function ScheduleEventForm() {
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="kucc">Computer Club (KUCC)</SelectItem>
+                          <SelectItem value="Coding Club">Coding Club</SelectItem>
                           <SelectItem value="kurc">Robotics Club (KURC)</SelectItem>
                           <SelectItem value="kucec">Civil Engineering Club (KUCEC)</SelectItem>
                           <SelectItem value="kucmc">Computational Mathematics Club (KUCMC)</SelectItem>
@@ -267,8 +287,8 @@ export default function ScheduleEventForm() {
                     Scheduling...
                   </>
                 ) : (
-                  "Schedule Event"
-                )}
+                    "Schedule Event"
+                  )}
               </Button>
             </form>
           </Form>
