@@ -6,7 +6,7 @@ import "./Footer.css"
 
 const Footer = () => {
   return (
-    <footer className="Footer">
+    <footer className="Footer bg-[#1a202c] text-[#e2e8f0] px-8 py-6 w-full">
       <div className="container mx-auto">
         <div className="Upper-footer">
           <div className="footer-nav">
