@@ -1,0 +1,15 @@
+# Django Devlopment
+ This is a instruction on How to start devloping project 
+ 
+1. setup enviroment variable with the name of .venv
+    command: python -m venv .venv
+
+2. Install the required packages inside the virtual environment. 
+    command: pip install -r requirement.txt
+
+3. Then you can start devloping by creating your respective branch.
+    Note: Try to make sure Your branch shows the feature that you are working on 
+    command: git checkout -b <your-branch-name>
+
+
+
