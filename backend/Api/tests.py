@@ -28,26 +28,30 @@ class EventTests(TestCase):
 
         self.event_data['host'] = self.club
 
+    def test_subscription(self):
+        url = reverse('subscribe')
+        data = {"email": "user@example.com", "clubs": [self.club.id]}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
     def test_event_creation(self):
         self.client.force_authenticate(user=self.admin_user)
-        url = reverse('event-list')  # Adjust as per your URL config
-
-
+        url = reverse('event-list')  
         event_data = {
             'name': 'Test Event',
             'date': '2025-02-01',
             'location': 'Test Location',
             'description': 'Test Description',
-            'host': self.club.id,  # Passing the club instance ID or use the instance directly
+            'host': self.club.id,  
             'type': 'Event',
             'registration_link': 'https://example.com/register',
         }
 
         response = self.client.post(url, event_data, format='json')
-        print(response.data)  # Debug response to see what's wrong
+        print(response.data)  
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-   def test_event_deletion(self):
+    def test_event_deletion(self):
         self.client.force_authenticate(user=self.admin_user)
         event = Event.objects.create(**self.event_data, created_by=self.admin_user)
         url = reverse('event-detail', args=[event.id])
