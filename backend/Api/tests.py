@@ -57,3 +57,27 @@ class EventTests(TestCase):
         url = reverse('event-detail', args=[event.id])
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_event_registration(self):
+        event = Event.objects.create(**self.event_data, created_by=self.admin_user)
+        url = reverse('event-registration', args=[event.id])
+        data = {"email": "user@example.com"}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_get_event_registration(self):
+        event = Event.objects.create(**self.event_data, created_by=self.admin_user)
+        registration_url = reverse('event-registration', args=[event.id])
+        self.client.post(registration_url, {"email": "user@example.com"}, format='json')
+    
+        url = reverse('my-registrations')  
+        response = self.client.get(url, {"email": "user@example.com"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    def test_related_events(self):
+        Event.objects.create(**self.event_data, created_by=self.admin_user)
+        url = reverse('related_events', args=[self.club.club_name])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
