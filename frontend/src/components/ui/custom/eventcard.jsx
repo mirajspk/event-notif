@@ -15,11 +15,17 @@ const EventCard = ({
   return (
     <Card className="w-[400px] h-[450px] flex flex-col">
       <div className="h-48">
-        <img
-          src={imageUrl}
-          className="object-cover w-full h-full"
-          alt={title} // Added alt attribute for accessibility
-        />
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            className="object-cover w-full h-full"
+            alt={title}
+          />
+        ) : (
+            <div className="flex items-center justify-center h-full bg-gray-200">
+              <span className="text-gray-500">No Image Available</span>
+            </div>
+          )}
       </div>
       <CardContent className="flex-grow flex flex-col justify-between p-4">
         <div className="space-y-4">
@@ -68,32 +74,39 @@ const EventList = () => {
   //After calling useEffect pass it a function that contains side effect 
   //it takes 2 argument 1: function 
   //2: empty depenndency array [] <which implies effect will only run once>
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        //uses get Http methode from our backend Api
         const response = await axios.get('http://127.0.0.1:8000/Api/events');
-        setEvents(response.data); // Set the events data
+        // Append the backend media URL to images
+        const formattedEvents = response.data.map(event => ({
+          ...event,
+          image: event.image ? `http://127.0.0.1:8000${event.image}` : null,
+          imageTwo: event.imageTwo ? `http://127.0.0.1:8000${event.imageTwo}` : null
+        }));
+        setEvents(formattedEvents);
       } catch (err) {
-        setError(err); // Set error if the request fails
+        setError(err);
       } finally {
-        setLoading(false); // Set loading to false after fetching
+        setLoading(false);
       }
     };
 
-    fetchEvents(); // Call the fetch function
-  }, []); // Empty dependency array means this runs once on mount
+    fetchEvents();
+  }, []);
 
-  if (loading) return <div>Loading...</div>; // Loading state
-  if (error) return <div>Error: {error.message}</div>; // Error state
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
-//Creates the event card for the Information stored form backend
+  //Creates the event card for the Information stored form backend
   return (
     <div className="flex flex-wrap justify-center gap-6"> {/* Added gap-6 for spacing */}
       {events.map(event => (
         <div key={event.id} className="mb-6"> {/* Added margin-bottom for spacing */}
           <EventCard 
-            imageUrl={event.imageUrl }
+            key={event.id}
+            imageUrl={event.image}
             title={event.title}
             location={event.location}
             startTime={event.startTime}

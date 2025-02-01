@@ -4,8 +4,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import EventSerializer, ClubsSerializer
 from .models import Event, Clubs
+from rest_framework.parsers import MultiPartParser, FormParser
 
 class EventList(APIView):
+    # To parse the formfield and image upload by the frontend
+    parser_classes = (MultiPartParser, FormParser)
+
     def get(self, request, id=None):
         if id:
             # Return single event if id is provided

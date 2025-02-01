@@ -2,6 +2,7 @@
 import { Route,  Routes } from "react-router-dom"
 import EventCard from "./components/ui/custom/eventcard"
 import PageNotFound from"./components/pageNotFound"
+import ScheduleEventForm from "./components/event-schedule"
 
 //This is the functional component of the App 
 const App = () => {
@@ -19,22 +20,24 @@ const App = () => {
       {events.map((event) => (
         <EventCard
           key={event.id}
-          imageUrl={event.imageUrl}
+          imageUrl={event.image}
           name={event.name}
           location={event.location}
           startTime={event.startTime}
-          endTime={event.endTime}
           date={event.date}
           onSeeDetails={() => handleOnClick(event.id)}
         />
       ))}
+      <div>
+        <ScheduleEventForm/>
+      </div>
       <Routes>
         <Route path="/events" element={<EventCard /> } />
         <Route path="*" element={<PageNotFound /> } />
       </Routes>
     </div>
-  )  
-}
 
+  )
+}
 export default App
 
