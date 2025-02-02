@@ -133,20 +133,21 @@ export default function ScheduleEventForm() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="KUCC">Computer Club (KUCC)</SelectItem>
-                          <SelectItem value="KURC">Robotics Club (KURC)</SelectItem>
-                          <SelectItem value="KUCEC">Civil Engineering Club (KUCEC)</SelectItem>
-                          <SelectItem value="KUCMC">Computational Mathematics Club (KUCMC)</SelectItem>
-                          <SelectItem value="KUARC">Architecture Students’ Club (KUARC)</SelectItem>
-                          <SelectItem value="GES">Geomatics Engineering Society (GES)</SelectItem>
-                          <SelectItem value="KUBIC">Biotechnology Creatives (KUBiC)</SelectItem>
-                          <SelectItem value="SEEE">Society of Electrical and Electronic Engineering (SEEE)</SelectItem>
-                          <SelectItem value="FoP">Forum for Pharmacy (FoP)</SelectItem>
-                          <SelectItem value="SBIS">Society of Business Information Students (SBIS)</SelectItem>
-                          <SelectItem value="KUAIC">Artificial Intelligence Club (KUAIC)</SelectItem>
-                          <SelectItem value="KUGIC">Indoors Games Clubs (KUIGC)</SelectItem>
-                          <SelectItem value="KUSMC">Society of Music and Culture (KUSMC)</SelectItem>
-                          <SelectItem value="FECAM">Forum for Environmental Conservation and Management (FECAM)</SelectItem>
+                          <SelectItem value="kucc">Computer Club (KUCC)</SelectItem>
+                          <SelectItem value="Coding Club">Coding Club</SelectItem>
+                          <SelectItem value="kurc">Robotics Club (KURC)</SelectItem>
+                          <SelectItem value="kucec">Civil Engineering Club (KUCEC)</SelectItem>
+                          <SelectItem value="kucmc">Computational Mathematics Club (KUCMC)</SelectItem>
+                          <SelectItem value="kuarc">Architecture Students’ Club (KUARC)</SelectItem>
+                          <SelectItem value="ges">Geomatics Engineering Society (GES)</SelectItem>
+                          <SelectItem value="kubic">Biotechnology Creatives (KUBiC)</SelectItem>
+                          <SelectItem value="seee">Society of Electrical and Electronic Engineering (SEEE)</SelectItem>
+                          <SelectItem value="fop">Forum for Pharmacy (FoP)</SelectItem>
+                          <SelectItem value="sbis">Society of Business Information Students (SBIS)</SelectItem>
+                          <SelectItem value="kuaic">Artificial Intelligence Club (KUAIC)</SelectItem>
+                          <SelectItem value="kuigc">Indoors Games Clubs (KUIGC)</SelectItem>
+                          <SelectItem value="kusmc">Society of Music and Culture (KUSMC)</SelectItem>
+                          <SelectItem value="fecam">Forum for Environmental Conservation and Management (FECAM)</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />

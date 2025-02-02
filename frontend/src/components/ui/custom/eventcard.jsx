@@ -5,7 +5,7 @@ import axios from 'axios'; // Import axios for making HTTP requests
 
 //This component renders single event card and defines on How it should look like
 const EventCard = ({ 
-  imageUrl, 
+  image, 
   title, 
   location, 
   startTime, 
@@ -15,17 +15,11 @@ const EventCard = ({
   return (
     <Card className="w-[400px] h-[450px] flex flex-col">
       <div className="h-48">
-        {imageUrl ? (
           <img
-            src={imageUrl}
+            src={image}
             className="object-cover w-full h-full"
             alt={title}
           />
-        ) : (
-            <div className="flex items-center justify-center h-full bg-gray-200">
-              <span className="text-gray-500">No Image Available</span>
-            </div>
-          )}
       </div>
       <CardContent className="flex-grow flex flex-col justify-between p-4">
         <div className="space-y-4">
@@ -79,13 +73,7 @@ const EventList = () => {
     const fetchEvents = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:8000/Api/events');
-        // Append the backend media URL to images
-        const formattedEvents = response.data.map(event => ({
-          ...event,
-          image: event.image ? `http://127.0.0.1:8000${event.image}` : null,
-          imageTwo: event.imageTwo ? `http://127.0.0.1:8000${event.imageTwo}` : null
-        }));
-        setEvents(formattedEvents);
+        setEvents(response.data);
       } catch (err) {
         setError(err);
       } finally {
@@ -106,7 +94,7 @@ const EventList = () => {
         <div key={event.id} className="mb-6"> {/* Added margin-bottom for spacing */}
           <EventCard 
             key={event.id}
-            imageUrl={event.image}
+            image ={event.image}
             title={event.title}
             location={event.location}
             startTime={event.startTime}

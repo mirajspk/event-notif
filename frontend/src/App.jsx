@@ -20,7 +20,7 @@ const App = () => {
       {events.map((event) => (
         <EventCard
           key={event.id}
-          imageUrl={event.image}
+          image ={event.image}
           name={event.name}
           location={event.location}
           startTime={event.startTime}

@@ -1,5 +1,3 @@
-from django.conf import settings
-from django.conf.urls.static import static
 from django.urls import path
 from Api import views
 
@@ -13,4 +11,3 @@ urlpatterns = [
     # path('clubs/<int:id>/', views.ClubsView.as_view(), name='club-detail'),  
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
