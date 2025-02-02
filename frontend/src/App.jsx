@@ -19,11 +19,10 @@ const App = () => {
       {events.map((event) => (
         <EventCard
           key={event.id}
-          imageUrl={event.imageUrl}
+          image ={event.image}
           name={event.name}
           location={event.location}
           startTime={event.startTime}
-          endTime={event.endTime}
           date={event.date}
           onSeeDetails={() => handleOnClick(event.id)}
         />

@@ -5,7 +5,7 @@ import axios from 'axios'; // Import axios for making HTTP requests
 
 //This component renders single event card and defines on How it should look like
 const EventCard = ({ 
-  imageUrl, 
+  image, 
   title, 
   location, 
   startTime, 
@@ -16,7 +16,7 @@ const EventCard = ({
     <Card className="w-[400px] h-[450px] flex flex-col">
       <div className="h-48">
         <img
-          src={imageUrl}
+          src={image}
           className="object-cover w-full h-full"
           alt={title} // Added alt attribute for accessibility
         />
@@ -93,7 +93,7 @@ const EventList = () => {
       {events.map(event => (
         <div key={event.id} className="mb-6"> {/* Added margin-bottom for spacing */}
           <EventCard 
-            imageUrl={event.imageUrl }
+            image ={event.image}
             title={event.title}
             location={event.location}
             startTime={event.startTime}
