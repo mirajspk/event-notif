@@ -36,6 +36,7 @@ export default function ScheduleEventForm() {
       description: "",
       host: "",
       programType: "",
+      registration_link: "",
     },
   });
 
@@ -50,10 +51,10 @@ export default function ScheduleEventForm() {
       formData.append("host", values.host);
       formData.append("type", values.programType);
       formData.append("description", values.description);
-      formData.append("registration_link", "https://example.com");
+      formData.append("registration_link", "https://127.0.0.123"); //Added just a andom link
 
-      if (values.img1) formData.append("image", values.img1);
-      if (values.img2) formData.append("imageTwo", values.img2);
+     if(values.thumbnail1) formData.append("image", values.thumbnail1);
+     if(values.thumbnail2)formData.append("imageTwo", values.thumbnail2);
 
       const response = await axios.post("http://127.0.0.1:8000/Api/events/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -133,21 +134,20 @@ export default function ScheduleEventForm() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="kucc">Computer Club (KUCC)</SelectItem>
-                          <SelectItem value="Coding Club">Coding Club</SelectItem>
-                          <SelectItem value="kurc">Robotics Club (KURC)</SelectItem>
-                          <SelectItem value="kucec">Civil Engineering Club (KUCEC)</SelectItem>
-                          <SelectItem value="kucmc">Computational Mathematics Club (KUCMC)</SelectItem>
-                          <SelectItem value="kuarc">Architecture Students’ Club (KUARC)</SelectItem>
-                          <SelectItem value="ges">Geomatics Engineering Society (GES)</SelectItem>
-                          <SelectItem value="kubic">Biotechnology Creatives (KUBiC)</SelectItem>
-                          <SelectItem value="seee">Society of Electrical and Electronic Engineering (SEEE)</SelectItem>
-                          <SelectItem value="fop">Forum for Pharmacy (FoP)</SelectItem>
-                          <SelectItem value="sbis">Society of Business Information Students (SBIS)</SelectItem>
-                          <SelectItem value="kuaic">Artificial Intelligence Club (KUAIC)</SelectItem>
-                          <SelectItem value="kuigc">Indoors Games Clubs (KUIGC)</SelectItem>
-                          <SelectItem value="kusmc">Society of Music and Culture (KUSMC)</SelectItem>
-                          <SelectItem value="fecam">Forum for Environmental Conservation and Management (FECAM)</SelectItem>
+                          <SelectItem value="KUCC">Computer Club (KUCC)</SelectItem>
+                          <SelectItem value="KURC">Robotics Club (KURC)</SelectItem>
+                          <SelectItem value="KUCEC">Civil Engineering Club (KUCEC)</SelectItem>
+                          <SelectItem value="KUCMC">Computational Mathematics Club (KUCMC)</SelectItem>
+                          <SelectItem value="KUARC">Architecture Students’ Club (KUARC)</SelectItem>
+                          <SelectItem value="GES">Geomatics Engineering Society (GES)</SelectItem>
+                          <SelectItem value="KUBIC">Biotechnology Creatives (KUBiC)</SelectItem>
+                          <SelectItem value="SEEE">Society of Electrical and Electronic Engineering (SEEE)</SelectItem>
+                          <SelectItem value="Fop">Forum for Pharmacy (FoP)</SelectItem>
+                          <SelectItem value="SBIS">Society of Business Information Students (SBIS)</SelectItem>
+                          <SelectItem value="KUAIC">Artificial Intelligence Club (KUAIC)</SelectItem>
+                          <SelectItem value="KUIGC">Indoors Games Clubs (KUIGC)</SelectItem>
+                          <SelectItem value="KUSMC">Society of Music and Culture (KUSMC)</SelectItem>
+                          <SelectItem value="FECAM">Forum for Environmental Conservation and Management (FECAM)</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -222,7 +222,7 @@ export default function ScheduleEventForm() {
               <div className="flex gap-4">
                 <FormField
                   control={form.control}
-                  name="img1"
+                  name="thumbnail1"
                   render={({ field }) => (
                     <FormItem className="flex-1">
                       <FormLabel>Upload Image 1</FormLabel>
@@ -241,7 +241,7 @@ export default function ScheduleEventForm() {
 
                 <FormField
                   control={form.control}
-                  name="img2"
+                  name="thumbnail2"
                   render={({ field }) => (
                     <FormItem className="flex-1">
                       <FormLabel>Upload Image 2</FormLabel>
