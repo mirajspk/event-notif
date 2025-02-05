@@ -43,7 +43,7 @@ export default function Home() {
               imageUrl={event.imageUrl}
               title={event.title}
               location={event.location}
-              startTime={event.startTime} a
+              startTime={event.startTime} 
               date={event.date}
             />
           ))}
@@ -58,5 +58,4 @@ export default function Home() {
 
   )
 }
-
 
