@@ -1,27 +1,79 @@
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.views import APIView 
-from rest_framework.response import Response 
-from rest_framework import status 
-from django.db.utils import IntegrityError
-from .serializers import EventSerializer, ClubsSerializer, SubscribeSerializer, EventRegistrationSerializer
-from .models import Event, Clubs, EventRegistration, Subscriber, User
 from django.core.mail import send_mail
 from django.conf import settings
 from django.shortcuts import get_object_or_404
+from .models import Clubs, Subscriber, Event, EventRegistration
+from .serializers import UserSerializer, ClubsSerializer, SubscriberSerializer, EventSerializer, EventRegistrationSerializer
+from django.contrib.auth import get_user_model
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+User = get_user_model()
 
 
-class EventList(APIView):
+class RegisterClubAdminView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        if not request.user.is_authenticated or not request.user.is_admin_user():
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            user.user_type = 'ADMIN'  # Mark as club admin
+            user.is_staff = True  # Allow access to Django admin (optional)
+            user.save()
+            return Response({"message": "Club admin registered successfully!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ClubsView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = ClubsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        clubs = Club.objects.all()
+        serializer = ClubsSerializer(clubs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class SubscribeView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = SubscriberSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            clubs = serializer.validated_data['clubs']
+
+            subscriber, created = Subscriber.objects.get_or_create(email=email)
+            subscriber.clubs.set(clubs)
+            subscriber.save()
+
+            return Response({'message': 'Subscribed successfully!'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class EventList(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        if not request.user.is_admin_user():
             return Response({'error': 'Admin access required'}, status=status.HTTP_403_FORBIDDEN)
 
         serializer = EventSerializer(data=request.data)
         if serializer.is_valid():
             event = serializer.save(created_by=request.user)
 
-            # Send email to subscribers of the event's club
             subscribers = Subscriber.objects.filter(clubs=event.host)
             subject = f'New Event: {event.name}'
             message = f'''
@@ -32,7 +84,7 @@ class EventList(APIView):
                 Registration Link: {event.registration_link}
             '''
             recipient_list = [sub.email for sub in subscribers]
-            
+
             send_mail(
                 subject,
                 message,
@@ -40,7 +92,7 @@ class EventList(APIView):
                 recipient_list,
                 fail_silently=False
             )
-            
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -58,7 +110,7 @@ class RelatedEventsView(APIView):
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data)
 
-   
+
 class EventDetail(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -117,34 +169,3 @@ class EventRegistrationView(APIView):
         registrations = EventRegistration.objects.filter(email=email)
         serializer = EventRegistrationSerializer(registrations, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class ClubsView(APIView):
-    def post(self, request):
-        serializer = ClubsSerializer(data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    def get(self, request):
-        events = Clubs.objects.all()
-        serializer = ClubsSerializer(events, many = True)
-        return Response(serializer.data, status = status.HTTP_200_OK)
-
-
-class SubscribeView(APIView):
-    permission_classes = [AllowAny]
-
-    def post(self, request):
-        serializer = SubscribeSerializer(data=request.data)
-        if serializer.is_valid():
-            email = serializer.validated_data['email']
-            clubs = serializer.validated_data['clubs']
-
-            subscriber, created = Subscriber.objects.get_or_create(email=email)
-            subscriber.clubs.set(clubs)
-            subscriber.save()
-
-            return Response({'message': 'Subscribed successfully!'}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

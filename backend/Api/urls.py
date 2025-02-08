@@ -1,5 +1,6 @@
 from django.urls import path
 from Api import views
+from .views import RegisterClubAdminView, SubscribeView
 
 urlpatterns = [
 
@@ -16,4 +17,6 @@ urlpatterns = [
 
     #subscription
     path('subscribe/', views.SubscribeView.as_view(), name='subscribe'),
+    path('register/', RegisterClubAdminView.as_view(), name='register-club'),
+    path('subscribe/', SubscribeView.as_view(), name='subscribe'),
 ]
