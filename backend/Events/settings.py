@@ -44,9 +44,15 @@ INSTALLED_APPS = [
     'corsheaders',
     'api'
     'crispy_forms',
-    'crispy_tailwind'
+    'crispy_tailwind',
 
 ]
+
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+
+CRISPY_TEMPLATE_PACK = "tailwind"
+
 CORS_ALLOWED_ORIGINS = ['http://localhost:5173']
 
 MIDDLEWARE = [
