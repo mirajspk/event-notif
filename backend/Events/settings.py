@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     #Others
     'rest_framework',
     'corsheaders',
-    'api'
+    'api',
     'crispy_forms',
     'crispy_tailwind',
 
