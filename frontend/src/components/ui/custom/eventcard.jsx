@@ -10,7 +10,8 @@ const EventCard = ({
   location, 
   startTime, 
   date, 
-  onSeeDetails 
+  onSeeDetails ,
+  
 }) => {
   return (
     <Card className="w-[400px] h-[450px] flex flex-col">
@@ -60,6 +61,7 @@ const EventList = () => {
   //After initializing useState, It returns array with 2 elements:
   // current state variable=> events
   // function to update state=> setEvents
+  const [numberOfEvent , setEventLength] = useState(0)
   const [events, setEvents] = useState([]); 
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null);
@@ -73,7 +75,8 @@ const EventList = () => {
       try {
         //uses get Http methode from our backend Api
         const response = await axios.get('http://127.0.0.1:8000/Api/events');
-        setEvents(response.data); // Set the events data
+        setEvents(response.data); // Update state for sorted events
+        setEventLength(response.data.length);
       } catch (err) {
         setError(err); // Set error if the request fails
       } finally {
@@ -89,6 +92,7 @@ const EventList = () => {
 
 //Creates the event card for the Information stored form backend
   return (
+
     <div className="flex flex-wrap justify-center gap-6"> {/* Added gap-6 for spacing */}
       {events.map(event => (
         <div key={event.id} className="mb-6"> {/* Added margin-bottom for spacing */}
