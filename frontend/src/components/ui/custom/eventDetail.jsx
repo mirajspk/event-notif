@@ -1,7 +1,8 @@
 import { useEffect , useState } from "react"
 import axios from "axios"
 
-const EventDetail = ({ image, 
+const EventDetail = ({ 
+  image, 
   title, 
   location, 
   startTime, 
