@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'api'
+    'crispy_forms',
+    'crispy_tailwind'
+
 ]
 CORS_ALLOWED_ORIGINS = ['http://localhost:5173']
 

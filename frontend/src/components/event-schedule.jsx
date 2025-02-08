@@ -4,11 +4,24 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { eventSchema } from "@/lib/schedule-schema"; // Import your Zod schema
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
+import { eventSchema } from "@/lib/schedule-schema"; // Your Zod schema for validation
 import { Icons } from "./ui/icons";
 import { DatePickerDemo } from "./ui/date-picker";
 import axios from "axios";
@@ -19,17 +32,18 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import TimePicker from "./ui/time-picker"; // Import the TimePicker component
+import TimePicker from "./ui/time-picker"; // Your TimePicker component
 
 export default function ScheduleEventForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState(""); // For success/error messages
 
   const form = useForm({
     resolver: zodResolver(eventSchema),
     defaultValues: {
       eventTitle: "",
       date: new Date(),
-      time: "", // Time will be handled by TimePicker
+      time: "", // Time handled by TimePicker
       location: "",
       thumbnail1: undefined,
       thumbnail2: undefined,
@@ -42,29 +56,38 @@ export default function ScheduleEventForm() {
 
   async function onSubmit(values) {
     setIsLoading(true);
+    setMessage(""); // Reset message before submission
     try {
+      // Create a FormData object to handle file uploads and other form fields
       const formData = new FormData();
       formData.append("title", values.eventTitle);
       formData.append("location", values.location);
-      formData.append("date", values.date.toISOString().split("T")[0]); // Convert date
+      // Convert date to YYYY-MM-DD format
+      formData.append("date", values.date.toISOString().split("T")[0]);
       formData.append("startTime", values.time);
       formData.append("host", values.host);
       formData.append("type", values.programType);
       formData.append("description", values.description);
-      formData.append("registration_link", "https://127.0.0.123"); //Added just a andom link
+      formData.append("registration_link", values.registration_link);
+      
+      // Append images if provided
+      if (values.thumbnail1) {
+        formData.append("image", values.thumbnail1);
+      }
+      if (values.thumbnail2) {
+        formData.append("imageTwo", values.thumbnail2);
+      }
 
-     if(values.thumbnail1) formData.append("image", values.thumbnail1);
-     if(values.thumbnail2)formData.append("imageTwo", values.thumbnail2);
-
+      // Post the form data to your Django backend endpoint
       const response = await axios.post("http://127.0.0.1:8000/Api/events/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       console.log("Success:", response.data);
-      alert("Event Created Successfully!");
+      setMessage("Event added successfully!");
     } catch (error) {
       console.error("Error response:", error.response?.data || error.message);
-      alert("Failed to create event: " + (error.response?.data?.detail || error.message));
+      setMessage("Failed to create event: " + (error.response?.data?.detail || error.message));
     } finally {
       setIsLoading(false);
     }
@@ -190,7 +213,7 @@ export default function ScheduleEventForm() {
                         <DatePickerDemo
                           {...field}
                           disabled={isLoading}
-                          selected={form.watch("date")} 
+                          selected={form.watch("date")}
                           onSelect={(date) => form.setValue("date", date)}
                         />
                       </FormControl>
@@ -207,9 +230,9 @@ export default function ScheduleEventForm() {
                       <FormLabel>Time</FormLabel>
                       <FormControl>
                         <TimePicker
-                          onTimeChange={(time) => field.onChange(time)} // Pass the selected time to react-hook-form
+                          onTimeChange={(time) => field.onChange(time)}
                           disabled={isLoading}
-                          className="w-full" // Ensure TimePicker takes full width
+                          className="w-full"
                         />
                       </FormControl>
                       <FormMessage />
@@ -230,7 +253,9 @@ export default function ScheduleEventForm() {
                         <Input
                           type="file"
                           accept="image/*"
-                          onChange={(e) => field.onChange(e.target.files?.[0])}
+                          onChange={(e) =>
+                            field.onChange(e.target.files?.[0] || null)
+                          }
                           disabled={isLoading}
                         />
                       </FormControl>
@@ -249,7 +274,9 @@ export default function ScheduleEventForm() {
                         <Input
                           type="file"
                           accept="image/*"
-                          onChange={(e) => field.onChange(e.target.files?.[0])}
+                          onChange={(e) =>
+                            field.onChange(e.target.files?.[0] || null)
+                          }
                           disabled={isLoading}
                         />
                       </FormControl>
@@ -280,16 +307,22 @@ export default function ScheduleEventForm() {
               />
 
               {/* Submit Button */}
-              <Button className="w-full bg-[#00A8E5] hover:bg-[#4299cc]" type="submit" disabled={isLoading}>
+              <Button
+                className="w-full bg-[#00A8E5] hover:bg-[#4299cc]"
+                type="submit"
+                disabled={isLoading}
+              >
                 {isLoading ? (
                   <>
                     <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                     Scheduling...
                   </>
                 ) : (
-                    "Schedule Event"
-                  )}
+                  "Schedule Event"
+                )}
               </Button>
+              {/* Display success/error message */}
+              {message && <p className="mt-4 text-center">{message}</p>}
             </form>
           </Form>
         </CardContent>
