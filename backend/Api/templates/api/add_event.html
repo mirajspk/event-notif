@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg p-4">
+        <h2 class="text-center mb-4">Add New Event</h2>
+
+        <!-- Display Success & Error Messages -->
+        {% if messages %}
+        <div class="alert-container">
+            {% for message in messages %}
+            <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %}" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data" class="needs-validation">
+            {% csrf_token %}
+
+            <!-- Title -->
+            <div class="mb-3">
+                <label class="form-label">Event Title</label>
+                <input type="text" name="title" class="form-control" placeholder="Enter event title" required>
+            </div>
+
+            <!-- Location -->
+            <div class="mb-3">
+                <label class="form-label">Location</label>
+                <input type="text" name="location" class="form-control" placeholder="Enter event location" required>
+            </div>
+
+            <!-- Date -->
+            <div class="mb-3">
+                <label class="form-label">Event Date</label>
+                <input type="date" name="date" class="form-control" required>
+            </div>
+
+            <!-- Host Club -->
+            <div class="mb-3">
+                <label class="form-label">Host Club</label>
+                <select name="host" class="form-select" required>
+                    {% for value, label in form.host.field.choices %}
+                        <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Event Type -->
+            <div class="mb-3">
+                <label class="form-label">Type (Event or Workshop)</label>
+                <input type="text" name="type" class="form-control" placeholder="Enter event type" required>
+            </div>
+
+            <!-- Registration Link -->
+            <div class="mb-3">
+                <label class="form-label">Registration Link</label>
+                <input type="url" name="registration_link" class="form-control" placeholder="Enter registration link">
+            </div>
+
+            <!-- Start Time -->
+            <div class="mb-3">
+                <label class="form-label">Start Time</label>
+                <input type="time" name="startTime" class="form-control">
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-control" rows="4" placeholder="Describe the event..."></textarea>
+            </div>
+
+            <!-- Image Upload -->
+            <div class="mb-3">
+                <label class="form-label">Event Image 1</label>
+                <input type="file" name="image" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Event Image 2</label>
+                <input type="file" name="imageTwo" class="form-control">
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary px-4">Add Event</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
