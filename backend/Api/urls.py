@@ -20,3 +20,6 @@ urlpatterns = [
     path('register/', RegisterClubAdminView.as_view(), name='register-club'),
     path('subscribe/', SubscribeView.as_view(), name='subscribe'),
 ]
+
+    # path('clubs/', views.ClubsView.as_view(), name='club-list'),  
+    # path('clubs/<int:id>/', views.ClubsView.as_view(), name='club-detail'),  

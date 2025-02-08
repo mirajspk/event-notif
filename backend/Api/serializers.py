@@ -29,7 +29,6 @@ class EventSerializer(serializers.ModelSerializer):
             'logo_url': obj.host.logo_url
         }
 
-
 class ClubsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Clubs

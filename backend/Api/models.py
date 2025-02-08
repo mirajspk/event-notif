@@ -30,16 +30,25 @@ class Clubs(models.Model):
 
 class Event(models.Model):
     CLUB_CHOICES = [
-        ('Coding Club', 'Coding Club'),
-        ('Music Club', 'Music Club'),
-        ('Drama Club', 'Drama Club'),
-        ('Sports Club', 'Sports Club'),
-        ('Photography Club', 'Photography Club'),
-        ('Literature Club', 'Literature Club'),
-        ('Art Club', 'Art Club'),
-        ('Environment Club', 'Environment Club'),
-        ('Robotics Club', 'Robotics Club'),
-        ('Science Club', 'Science Club'),
+
+        ('KUCC','Kathmandu University Computer Club' ),
+        ('AMES','Association of Mechanical Engineering'),
+        ('KUCMC','Compuatiional Mathematics Club'),
+        ('FECAM','Forum for Environmental Conservation and Management'),
+        ('FoP','Forum of Pharmacy'),
+        ('KUARC','Kathmandu University Architecture Students Club'),
+        ('GES','Geomatics Engineering Society'),
+        ('KUCONC','Kathmandu University Circle of Noble Chemineers'),
+        ('KUCEC','Kathmandu University Civil Engineering Club'),
+        ('KUCC','Kathmandu University Computer Club'),
+        ('NSCS','Natural and Social Concern Society',),
+        ('KURC','Kathmandu University Robotics Club',),
+        ('KUBIC','Biotechnology Creatives',),
+        ('SEEE','Society of Electrical and Electronic Engineers',),
+        ('SBIS','Society of business Information Student',),
+        ('KUAIC','Artificial Intellengence Club'),
+        ('KUGIC','Kathmandu University Indoors Games Club'),
+        ('KUSMC','Kathmandu University Society of Music and Clulture'),
     ]
 
     TYPE_CHOICES = [
@@ -47,15 +56,21 @@ class Event(models.Model):
         ('Workshop', 'Workshop'),
     ]
 
-    name = models.CharField(max_length=255)  
-    location = models.CharField(max_length=255)  
-    date = models.DateField()
-    host = models.ForeignKey('Clubs', on_delete=models.CASCADE)
-    type = models.CharField(max_length=50, choices=TYPE_CHOICES)  
-    registration_link = models.URLField(max_length=500)  
-
-    description = models.TextField()
+    # Fields for the Event Model
+    name = models.CharField(max_length=2555, null= True)  # Event/workshop name
+    location = models.CharField(max_length=2555, null = True)  # Location of the event/workshop
+    date = models.DateField()  # Date of the event/workshop
+    host = models.CharField(max_length=500, choices=CLUB_CHOICES)  # Host club
+    type = models.CharField(max_length=50)  # Type: Event or Workshop
+    registration_link = models.URLField(max_length=500)  # Link for registration
+    startTime= models.CharField(max_length=50, blank=True)  # New Time field
+    description = models.TextField(null= True, blank=True)  # New Description field
+    image = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image 
+    imageTwo = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image
     created_by = models.ForeignKey('User', on_delete=models.CASCADE, related_name='created_events', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.type}) by {self.host}"
 
 
 class EventRegistration(models.Model):
@@ -71,3 +86,4 @@ class Subscriber(models.Model):
     email = models.EmailField(unique=True)
     clubs = models.ManyToManyField(Clubs)
     subscribed_at = models.DateTimeField(auto_now_add=True)
+
