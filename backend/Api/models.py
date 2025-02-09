@@ -26,12 +26,17 @@ class Event(models.Model):
         ('KUSMC','Kathmandu University Society of Music and Clulture'),
     ]
 
+    EVENT_TYPE = [
+        ("Workshop","Workshop"),
+        ("Event", "Event"),
+    ]
+
     # Fields for the Event Model
     title = models.CharField(max_length=2555, null= True)  # Event/workshop name
     location = models.CharField(max_length=2555, null = True)  # Location of the event/workshop
     date = models.DateField()  # Date of the event/workshop
     host = models.CharField(max_length=500, choices=CLUB_CHOICES)  # Host club
-    type = models.CharField(max_length=50)  # Type: Event or Workshop
+    type = models.CharField(max_length=50 ,choices=EVENT_TYPE)  # Type: Event or Workshop
     registration_link = models.URLField(max_length=500)  # Link for registration
     startTime= models.CharField(max_length=50, blank=True)  # New Time field
     description = models.TextField(null= True, blank=True)  # New Description field
