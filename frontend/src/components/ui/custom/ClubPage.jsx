@@ -5,11 +5,11 @@ import Club from "@/components/ui/custom/Club";
 
 export default function ClubPage() {
   const clubNames = [
-    'Kathmandu university computer club',
-    'Architecture Student society',
+    'Computer Club',
+    'Architecture Student Society',
     'Robotics Club',
     'Civil Engineering Club',
-    'Society of Electrical and Electronic Engineering',
+    'Society of Electrical & Electronic Engineering',
     'Society of Music and Culture'
   ];
 
