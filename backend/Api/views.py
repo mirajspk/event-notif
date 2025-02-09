@@ -67,7 +67,7 @@ class AddEventView(APIView):
         if form.is_valid():
             form.save()
             messages.success(request, "Event added successfully!")
-            return redirect("add_event")  # ✅ Ensure this matches the `name` in `urls.py`
+            return redirect("add_event")  # This most be same as name in url
         else:
             messages.error(request, "Please correct the errors below.")
         return render(request, "api/add_event.html", {"form": form})
