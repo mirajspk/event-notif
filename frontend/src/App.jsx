@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //Importing routers and pageNotfound page
 import { Route,  Routes } from "react-router-dom"
 import EventList from "./components/ui/custom/eventcard"
@@ -15,6 +16,20 @@ const App = () => {
       </Routes>
     </div>
   )  
+=======
+
+import { Header } from "./components/ui/custom/Header"
+
+
+export default function App() {
+  return (
+    <>
+      <Header></Header>
+    </>
+    
+    
+  )
+>>>>>>> origin/feature/header
 }
 
 export default App
