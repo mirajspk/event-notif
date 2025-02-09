@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.core.mail import send_mail
 from django.conf import settings
@@ -8,6 +8,9 @@ from django.shortcuts import get_object_or_404
 from .models import Clubs, Subscriber, Event, EventRegistration
 from .serializers import UserSerializer, ClubsSerializer, SubscriberSerializer, EventSerializer, EventRegistrationSerializer
 from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework import viewsets
+from rest_framework.decorators import api_view
 
 import logging
 
@@ -63,7 +66,10 @@ class SubscribeView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class EventList(APIView):
+class EventList(viewsets.ModelViewSet):
+
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -169,3 +175,11 @@ class EventRegistrationView(APIView):
         registrations = EventRegistration.objects.filter(email=email)
         serializer = EventRegistrationSerializer(registrations, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class LoginView(TokenObtainPairView):
+    permission_classes = [AllowAny]
+
+
+class TokenRefreshView(TokenRefreshView):
+    permission_classes = [AllowAny]
