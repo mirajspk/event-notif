@@ -15,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 class EventSerializer(serializers.ModelSerializer):
-    host_details = serializers.SerializerMethodField()
+    host = serializers.PrimaryKeyRelatedField(queryset=Clubs.objects.all())  
 
     class Meta:
         model = Event
@@ -24,9 +24,9 @@ class EventSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_host_details(self, obj):
+        host_name = dict(Event.CLUB_CHOICES).get(obj.host, 'Unknown Host')
         return {
-            'name': obj.host.club_name,
-            'logo_url': obj.host.logo_url
+            'name': host_name
         }
 
 class ClubsSerializer(serializers.ModelSerializer):

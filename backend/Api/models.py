@@ -65,9 +65,14 @@ class Event(models.Model):
     registration_link = models.URLField(max_length=500)  # Link for registration
     startTime= models.CharField(max_length=50, blank=True)  # New Time field
     description = models.TextField(null= True, blank=True)  # New Description field
-    image = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image 
-    imageTwo = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image
+    # image = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image 
+    # imageTwo = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image
     created_by = models.ForeignKey('User', on_delete=models.CASCADE, related_name='created_events', null=True, blank=True)
+
+    def get_host_details(self, obj):
+        return {
+            'name': obj.host
+        }
 
     def __str__(self):
         return f"{self.name} ({self.type}) by {self.host}"
@@ -86,4 +91,7 @@ class Subscriber(models.Model):
     email = models.EmailField(unique=True)
     clubs = models.ManyToManyField(Clubs)
     subscribed_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.email} subscribed to {self.club.club_name}"
 
