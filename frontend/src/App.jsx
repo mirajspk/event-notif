@@ -1,6 +1,7 @@
 import { Header } from "./components/ui/custom/Header";
 import Hero from "./components/ui/custom/hero";
 import { Button } from "./components/ui/custom/customButton";
+import Footer from "./components/footer"
 
 const eventsData = [
   {
@@ -36,11 +37,15 @@ export default function App() {
         <div className="flex justify-center my-20">
         <Button>More events</Button>
         </div>
+
+        <div className="flex flex-col min-h-screen mt-[60px]">
+      <main className="flex-grow">
+        {/* <Homepage /> */}
+      </main>
+      <Footer />
+    </div>
         
       </div>
     </>
     
-    
-  )
-}
-
+  )}
