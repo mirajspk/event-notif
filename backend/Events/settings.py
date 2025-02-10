@@ -191,3 +191,5 @@ EMAIL_HOST_USER = 'girishchaulagain5@gmail.com'
 EMAIL_HOST_PASSWORD = 'mcvg atro vdqm otby'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+
+SITE_ID = 1

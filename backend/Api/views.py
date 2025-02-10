@@ -78,9 +78,12 @@ class EventList(viewsets.ModelViewSet):
 
         serializer = EventSerializer(data=request.data)
         if serializer.is_valid():
-            event = serializer.save(created_by=request.user)
+ # Get the club object for the host (based on the 'host' value in the request)
+            host_club = Clubs.objects.get(id=request.data['host'])  # Use 'id' or the relevant field to match
+            event = serializer.save(created_by=request.user, host=host_club)
 
-            subscribers = Subscriber.objects.filter(clubs=event.host)
+            # Send email to subscribers of the club hosting the event
+            subscribers = Subscriber.objects.filter(clubs=host_club)
             subject = f'New Event: {event.name}'
             message = f'''
                 Event: {event.name}
