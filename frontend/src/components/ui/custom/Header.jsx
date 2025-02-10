@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Button } from "@/components/ui/custom/customButton"
+import { Button } from "./button"
 
 const navItems = [
   { name: "Home", href: "#" },

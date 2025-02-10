@@ -3,19 +3,18 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Calendar, Clock, MapPin } from 'lucide-react';
 import axios from 'axios'; // Import axios for making HTTP requests
 
-//This component renders single event card and defines on How it should look like
+// This component renders single event card and defines on How it should look like
 const EventCard = ({ 
   image, 
   title, 
   location, 
   startTime, 
   date, 
-  onSeeDetails ,
-  
+  onSeeDetails,
 }) => {
   return (
-    <Card className="w-[400px] h-[450px] flex flex-col">
-      <div className="h-48">
+    <Card className="w-[350px] h-[400px] flex flex-col"> {/* Scaled down the card size */}
+      <div className="h-40"> {/* Scaled down the image height */}
         <img
           src={image}
           className="object-cover w-full h-full"
@@ -24,20 +23,20 @@ const EventCard = ({
       </div>
       <CardContent className="flex-grow flex flex-col justify-between p-4">
         <div className="space-y-4">
-          <h2 className="text-2xl font-semibold leading-tight">
+          <h2 className="text-xl font-semibold leading-tight"> {/* Scaled down the title font size */}
             {title}
           </h2>
           <div className="space-y-3 text-black">
             <div className="flex items-center">
-              <MapPin className="w-5 h-5 mr-2 flex-shrink-0" />
+              <MapPin className="w-4 h-4 mr-2 flex-shrink-0" /> {/* Scaled down the icon size */}
               <span className="truncate">{location}</span>
             </div>
             <div className="flex items-center">
-              <Clock className="w-5 h-5 mr-2 flex-shrink-0" />
+              <Clock className="w-4 h-4 mr-2 flex-shrink-0" /> {/* Scaled down the icon size */}
               <span> {startTime} </span>
             </div>
             <div className="flex items-center">
-              <Calendar className="w-5 h-5 mr-2 flex-shrink-0" />
+              <Calendar className="w-4 h-4 mr-2 flex-shrink-0" /> {/* Scaled down the icon size */}
               <span>{date}</span>
             </div>
           </div>
@@ -45,7 +44,7 @@ const EventCard = ({
       </CardContent>
       <CardFooter className="p-4">
         <button
-          className="w-full border border-primary text-primary bg-white hover:bg-primary hover:text-white h-10 px-4 py-2 inline-flex items-center justify-center text-sm font-medium transition-colors cursor-pointer"
+          className="w-full border border-primary text-primary bg-white hover:bg-primary hover:text-white h-8 px-3 py-1 inline-flex items-center justify-center text-sm font-medium transition-colors cursor-pointer"
           onClick={onSeeDetails} // Use onClick to handle details view
         >
           SEE DETAILS
@@ -55,54 +54,41 @@ const EventCard = ({
   );
 };
 
-//This component stores the list of the Events from the Api 
+// This component stores the list of the Events from the API 
 const EventList = () => {
-  //useState:
-  //After initializing useState, It returns array with 2 elements:
-  // current state variable=> events
-  // function to update state=> setEvents
-  const [numberOfEvent , setEventLength] = useState(0)
   const [events, setEvents] = useState([]); 
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null);
-  //useEffect 
-  //It is used to define the side effects(fetching, subscriptions)
-  //After calling useEffect pass it a function that contains side effect 
-  //it takes 2 argument 1: function 
-  //2: empty depenndency array [] <which implies effect will only run once>
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        //uses get Http methode from our backend Api
-        const response = await axios.get('http://127.0.0.1:8000/Api/events');
-        setEvents(response.data); // Update state for sorted events
-        setEventLength(response.data.length);
+        const response = await axios.get('http://127.0.0.1:8000/Api/events'); 
+        setEvents(response.data); 
       } catch (err) {
-        setError(err); // Set error if the request fails
+        setError(err); 
       } finally {
-        setLoading(false); // Set loading to false after fetching
+        setLoading(false); 
       }
     };
 
-    fetchEvents(); // Call the fetch function
-  }, []); // Empty dependency array means this runs once on mount
+    fetchEvents(); 
+  }, []); 
 
-  if (loading) return <div>Loading...</div>; // Loading state
-  if (error) return <div>Error: {error.message}</div>; // Error state
+  if (loading) return <div>Loading...</div>; 
+  if (error) return <div>Error: {error.message}</div>; 
 
-//Creates the event card for the Information stored form backend
   return (
-
-    <div className="flex flex-wrap justify-center gap-6"> {/* Added gap-6 for spacing */}
+    <div className="flex flex-wrap justify-center gap-6"> 
       {events.map(event => (
-        <div key={event.id} className="mb-6"> {/* Added margin-bottom for spacing */}
+        <div key={event.id} className="mb-6"> 
           <EventCard 
-            image ={event.image}
+            image={event.image}
             title={event.title}
             location={event.location}
             startTime={event.startTime}
             date={event.date}
-            onSeeDetails={() => console.log(`See details for ${event.title}`)} // Placeholder for details function
+            onSeeDetails={() => console.log(`See details for ${event.title}`)} 
           />
         </div>
       ))}
