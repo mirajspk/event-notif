@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Footer from "@/components/ui/custom/Footer";
+import Footer from '@/components/footer';
 import { Header } from "@/components/ui/custom/Header";
 import Club from "@/components/ui/custom/Club";
 
