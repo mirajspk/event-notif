@@ -54,12 +54,9 @@ INSTALLED_APPS = [
 
 ]
 CORS_ALLOWED_ORIGINS = ['http://localhost:5173']
-<<<<<<< HEAD
-=======
 
 
 
->>>>>>> merge/auth/backend
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -68,14 +65,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-<<<<<<< HEAD
     #django corsheaders
     'corsheaders.middleware.CorsMiddleware',
-=======
-    'corsheaders.middleware.CorsMiddleware',
-    #django corsheaders
->>>>>>> merge/auth/backend
-    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'Events.urls'
