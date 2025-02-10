@@ -2,6 +2,9 @@ import { Header } from "./components/ui/custom/Header";
 import Hero from "./components/ui/custom/hero";
 import { Button } from "./components/ui/custom/customButton";
 import Footer from "./components/footer"
+import LoginForm from "./components/login";
+import SignUpForm from "./components/signup";
+
 
 const eventsData = [
   {
@@ -46,6 +49,8 @@ export default function App() {
     </div>
         
       </div>
+      <LoginForm></LoginForm>
+      <SignUpForm></SignUpForm>
     </>
     
   )}
