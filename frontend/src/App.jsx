@@ -35,18 +35,6 @@ export default function App() {
       <Hero />
       <div className="">
         <h2 className="text-2xl font-bold my-20 text-center">Upcoming Events</h2>
-        <div className="flex flex-wrap justify-center gap-6">
-          {eventsData.map((event, index) => (
-            <EventCard
-              key={index}
-              imageUrl={event.imageUrl}
-              title={event.title}
-              location={event.location}
-              startTime={event.startTime}a
-              date={event.date}
-            />
-          ))}
-        </div>
         <div className="flex justify-center my-20">
         <Button>More events</Button>
         </div>
