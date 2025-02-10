@@ -4,6 +4,7 @@ import { Button } from "./components/ui/custom/customButton";
 import Footer from "./components/footer"
 import LoginForm from "./components/login";
 import SignUpForm from "./components/signup";
+import ClubPage from "./components/ui/custom/ClubPage";
 
 
 const eventsData = [
@@ -51,6 +52,8 @@ export default function App() {
       </div>
       <LoginForm></LoginForm>
       <SignUpForm></SignUpForm>
+      <ClubPage/>
+      
     </>
     
   )}

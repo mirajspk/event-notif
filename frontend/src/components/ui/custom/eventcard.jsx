@@ -1,15 +1,14 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Calendar, Clock, MapPin } from 'lucide-react'
 
-
-const EventCard = ({ 
-  imageUrl, 
-  title, 
-  location, 
-  startTime, 
-  endTime, 
-  date, 
-  onSeeDetails 
+const EventCard = ({
+  imageUrl,
+  title,
+  location,
+  startTime,
+  endTime,
+  date,
+  onSeeDetails
 }) => {
   return (
     <Card className="sm:w-[350px] lg:w-[380px] h-[450px] flex flex-col gap-2"> {/* Added mx-2 for left and right margins */}
