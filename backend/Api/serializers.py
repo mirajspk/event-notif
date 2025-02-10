@@ -15,11 +15,8 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 class EventSerializer(serializers.ModelSerializer):
-<<<<<<< HEAD
     image = serializers.ImageField(use_url=True)  # ✅ Use ImageField for proper URL handling
-=======
     host = serializers.PrimaryKeyRelatedField(queryset=Clubs.objects.all())  
->>>>>>> merge/auth/backend
 
     class Meta:
         model = Event

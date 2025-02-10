@@ -1,17 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from Api import views
-<<<<<<< HEAD
-
-urlpatterns = [
-    # Event endpoints
-    path('events/', views.EventList.as_view(), name='event-list'),
-    path('events/<int:id>/', views.EventList.as_view(), name='event-detail'),
-
-    # # Clubs endpoints
-    # path('clubs/', views.ClubsView.as_view(), name='club-list'),  
-    # path('clubs/<int:id>/', views.ClubsView.as_view(), name='club-detail'),  
-=======
 from .views import (
     RegisterClubAdminView, SubscribeView, LoginView, EventList,
     EventDetail, RelatedEventsView, EventRegistrationView
@@ -41,6 +30,5 @@ urlpatterns = [
     path('api/login/', LoginView.as_view(), name='login'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
->>>>>>> merge/auth/backend
 ]
 

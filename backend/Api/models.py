@@ -30,31 +30,6 @@ class Clubs(models.Model):
 
 class Event(models.Model):
     CLUB_CHOICES = [
-<<<<<<< HEAD
-
-        ('KUCC','Kathmandu University Computer Club' ),
-        ('AMES','Association of Mechanical Engineering'),
-        ('KUCMC','Compuatiional Mathematics Club'),
-        ('FECAM','Forum for Environmental Conservation and Management'),
-        ('FoP','Forum of Pharmacy'),
-        ('KUARC','Kathmandu University Architecture Students Club'),
-        ('GES','Geomatics Engineering Society'),
-        ('KUCONC','Kathmandu University Circle of Noble Chemineers'),
-        ('KUCEC','Kathmandu University Civil Engineering Club'),
-        ('KUCC','Kathmandu University Computer Club'),
-        ('NSCS','Natural and Social Concern Society',),
-        ('KURC','Kathmandu University Robotics Club',),
-        ('KUBIC','Biotechnology Creatives',),
-        ('SEEE','Society of Electrical and Electronic Engineers',),
-        ('SBIS','Society of business Information Student',),
-        ('KUAIC','Artificial Intellengence Club'),
-        ('KUGIC','Kathmandu University Indoors Games Club'),
-        ('KUSMC','Kathmandu University Society of Music and Clulture'),
-    ]
-
-    # Fields for the Event Model
-    title = models.CharField(max_length=2555, null= True)  # Event/workshop name
-=======
 
         ('KUCC','Kathmandu University Computer Club' ),
         ('AMES','Association of Mechanical Engineering'),
@@ -83,7 +58,6 @@ class Event(models.Model):
 
     # Fields for the Event Model
     name = models.CharField(max_length=2555, null= True)  # Event/workshop name
->>>>>>> merge/auth/backend
     location = models.CharField(max_length=2555, null = True)  # Location of the event/workshop
     date = models.DateField()  # Date of the event/workshop
     host = models.CharField(max_length=500, choices=CLUB_CHOICES)  # Host club
@@ -91,10 +65,6 @@ class Event(models.Model):
     registration_link = models.URLField(max_length=500)  # Link for registration
     startTime= models.CharField(max_length=50, blank=True)  # New Time field
     description = models.TextField(null= True, blank=True)  # New Description field
-<<<<<<< HEAD
-    image = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image 
-    imageTwo = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image
-=======
     # image = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image 
     # imageTwo = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image
     created_by = models.ForeignKey('User', on_delete=models.CASCADE, related_name='created_events', null=True, blank=True)
@@ -103,17 +73,11 @@ class Event(models.Model):
         return {
             'name': obj.host
         }
->>>>>>> merge/auth/backend
 
     def __str__(self):
         return f"{self.name} ({self.type}) by {self.host}"
 
 
-<<<<<<< HEAD
-class Clubs(models.Model):
-    club_name = models.CharField(max_length=30) # Name of the club
-    club_description = models.CharField(max_length=1000)
-=======
 class EventRegistration(models.Model):
     event = models.ForeignKey('Event', on_delete=models.CASCADE)
     registration_date = models.DateTimeField(auto_now_add=True)
@@ -131,4 +95,3 @@ class Subscriber(models.Model):
     def __str__(self):
         return f"{self.email} subscribed to {self.club.club_name}"
 
->>>>>>> merge/auth/backend

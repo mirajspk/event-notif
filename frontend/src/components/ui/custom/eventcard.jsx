@@ -61,7 +61,6 @@ const EventList = () => {
   //After initializing useState, It returns array with 2 elements:
   // current state variable=> events
   // function to update state=> setEvents
-  const [numberOfEvent , setEventLength] = useState(0)
   const [events, setEvents] = useState([]); 
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null);
@@ -98,11 +97,11 @@ const EventList = () => {
         <div key={event.id} className="mb-6"> {/* Added margin-bottom for spacing */}
           <EventCard 
             image ={event.image}
-            title={event.title}
+            title={event.name}
             location={event.location}
             startTime={event.startTime}
             date={event.date}
-            onSeeDetails={() => console.log(`See details for ${event.title}`)} // Placeholder for details function
+            onSeeDetails={() => console.log(`See details for ${event.name}`)} // Placeholder for details function
           />
         </div>
       ))}
