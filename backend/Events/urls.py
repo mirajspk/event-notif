@@ -18,10 +18,16 @@ from django.contrib import admin
 from django.urls import path ,include
 from django.conf import settings
 from django.conf.urls.static import static
-
+from Api.views import TokenRefreshView, LoginView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('components.urls')),
-    path('Api/', include("Api.urls"))   
+    path('', include('Api.urls')),
+    path('Api/', include("Api.urls")), 
+    
+    #login urls
+
+    path('login/', LoginView.as_view(), name='login'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
