@@ -8,7 +8,7 @@ class User(AbstractUser):
     ]
     
     username = models.CharField(max_length=100, unique=True)
-    email = models.EmailField(unique=True)  
+    email = models.EmailField(unique=False)  
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='PARTICIPANT')
     club = models.ForeignKey('Clubs', on_delete=models.SET_NULL, null=True, blank=True, related_name='admins')
 
@@ -88,7 +88,7 @@ class EventRegistration(models.Model):
 
 
 class Subscriber(models.Model):
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=False)
     clubs = models.ManyToManyField(Clubs, related_name="subscribers")  
     subscribed_at = models.DateTimeField(auto_now_add=True)
 
