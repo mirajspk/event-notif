@@ -228,9 +228,72 @@ class EventRegistrationView(APIView):
 class LoginView(TokenObtainPairView):
     permission_classes = [AllowAny]
 
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        
+        # Extract the tokens
+        access_token = response.data.get("access")
+        refresh_token = response.data.get("refresh")
+
+        if access_token and refresh_token:
+            # Set cookies
+            response.set_cookie(
+                key="access_token",
+                value=access_token,
+                httponly=True, 
+                secure=settings.DEBUG is False,  # Secure in production
+                samesite="Lax",
+                path="/",
+            )
+            response.set_cookie(
+                key="refresh_token",
+                value=refresh_token,
+                httponly=True,
+                secure=settings.DEBUG is False,
+                samesite="Lax",
+                path="/api/token/refresh/",
+            )
+
+            # Remove tokens from response body for security
+            del response.data["access"]
+            del response.data["refresh"]
+
+        return response
 
 class TokenRefreshView(TokenRefreshView):
     permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        # Get refresh token from cookies
+        request.data["refresh"] = request.COOKIES.get("refresh_token")
+
+        if not request.data["refresh"]:
+            return Response({"error": "No refresh token provided"}, status=400)
+
+        response = super().post(request, *args, **kwargs)
+
+        # Set new access token in cookie
+        access_token = response.data.get("access")
+        if access_token:
+            response.set_cookie(
+                key="access_token",
+                value=access_token,
+                httponly=True,
+                secure=settings.DEBUG is False,
+                samesite="Lax",
+                path="/",
+            )
+            del response.data["access"]  # Remove from response body for security
+
+        return response
+
+# login and refresh views for not storing token in cookies 
+# class LoginView(TokenObtainPairView):
+#     permission_classes = [AllowAny]
+#
+#
+# class TokenRefreshView(TokenRefreshView):
+#     permission_classes = [AllowAny]
 
 
 class AddEventView(APIView):
