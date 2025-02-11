@@ -51,12 +51,21 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'api',
+    'crispy_forms',
+    'crispy_tailwind',
 
 ]
 CORS_ALLOWED_ORIGINS = ['http://localhost:5173']
 
 
 
+
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+
+CRISPY_TEMPLATE_PACK = "tailwind"
+
+CORS_ALLOWED_ORIGINS = ['http://localhost:5173']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -65,8 +74,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     #django corsheaders
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
 ]
 
@@ -161,8 +170,10 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=15),
     'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 
@@ -191,3 +202,5 @@ EMAIL_HOST_USER = 'girishchaulagain5@gmail.com'
 EMAIL_HOST_PASSWORD = 'mcvg atro vdqm otby'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+
+SITE_ID = 1
