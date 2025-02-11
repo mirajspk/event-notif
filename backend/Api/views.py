@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -9,15 +10,9 @@ from .models import Clubs, Subscriber, Event, EventRegistration
 from .serializers import UserSerializer, ClubsSerializer, SubscriberSerializer, EventSerializer, EventRegistrationSerializer
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from rest_framework import viewsets
-from rest_framework.decorators import api_view
-from django.urls import reverse_lazy
-from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic import CreateView
 from rest_framework.parsers import MultiPartParser, FormParser
 from .forms import EventForm
 from django.contrib import messages
-from rest_framework import viewsets
 
 import logging
 
@@ -51,7 +46,7 @@ class ClubsView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        clubs = Club.objects.all()
+        clubs = Clubs.objects.all()  # Fix: Use `Clubs` instead of `Club`
         serializer = ClubsSerializer(clubs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -66,29 +61,31 @@ class SubscribeView(APIView):
             clubs = serializer.validated_data['clubs']
 
             subscriber, created = Subscriber.objects.get_or_create(email=email)
-            subscriber.clubs.set(clubs)
+            subscriber.clubs.add(*clubs)
             subscriber.save()
 
             return Response({'message': 'Subscribed successfully!'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class EventList(viewsets.ModelViewSet):
-
+class EventList(APIView):  # Changed from ModelViewSet to APIView
     parser_classes = (MultiPartParser, FormParser)
-    queryset = Event.objects.all()
-    serializer_class = EventSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]  # Default permission (GET is public)
 
-    # get post from authentication/backend
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAdminUser()]  # Only admins can POST
+        return [AllowAny()]  # Everyone can GET
+
+    def get(self, request):
+        events = Event.objects.all()
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def post(self, request):
-        if not request.user.is_admin_user():
-            return Response({'error': 'Admin access required'}, status=status.HTTP_403_FORBIDDEN)
-
         serializer = EventSerializer(data=request.data)
         if serializer.is_valid():
- # Get the club object for the host (based on the 'host' value in the request)
-            host_club = Clubs.objects.get(id=request.data['host'])  # Use 'id' or the relevant field to match
+            host_club = Clubs.objects.get(id=request.data['host'])
             event = serializer.save(created_by=request.user, host=host_club)
 
             # Send email to subscribers of the club hosting the event
@@ -103,6 +100,7 @@ class EventList(viewsets.ModelViewSet):
             '''
             recipient_list = [sub.email for sub in subscribers]
 
+
             send_mail(
                 subject,
                 message,
@@ -112,48 +110,11 @@ class EventList(viewsets.ModelViewSet):
             )
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        #from backend/GET_POST (response)
         logger.error(f"Validation failed: {serializer.errors}")
-        
         return Response({
             'error': 'Bad Request',
             'details': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
-
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  #from authentication/backend
-        
-    # def get from authentication/backend
-    # def get(self, request):
-    #     events = Event.objects.all().order_by('date')
-    #     serializer = EventSerializer(events, many=True)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
-
-    #def get from backend/GET_POST
-    def get(self, request, id=None):
-        if id:
-            event = get_object_or_404(Event, pk=id)
-            serializer = EventSerializer(event, context={'request': request})
-            return Response(serializer.data)
-        
-        events = Event.objects.all()
-        serializer = EventSerializer(events, many=True, context={'request': request})
-        return Response(serializer.data)
-
-    #def put and def delete from backend/GET_POST
-    def put(self, request, id):
-        event = get_object_or_404(Event, pk=id)
-        serializer = EventSerializer(event, data=request.data, context={'request': request})
-        
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, id):
-        event = get_object_or_404(Event, pk=id)
-        event.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class RelatedEventsView(APIView):
@@ -166,7 +127,12 @@ class RelatedEventsView(APIView):
 
 
 class EventDetail(APIView):
-    permission_classes = [IsAuthenticated]
+    # Allow anyone to view event details (GET)
+    # Restrict PUT, DELETE to admins only
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAdminUser()]
 
     def get_object(self, pk):
         try:
@@ -174,10 +140,15 @@ class EventDetail(APIView):
         except Event.DoesNotExist:
             return None
 
-    def put(self, request, pk):
-        if not request.user.is_admin_user():
-            return Response({'error': 'Admin access required'}, status=status.HTTP_403_FORBIDDEN)
+    def get(self, request, pk):
+        event = self.get_object(pk)
+        if not event:
+            return Response({'error': 'Event not found'}, status=status.HTTP_404_NOT_FOUND)
 
+        serializer = EventSerializer(event)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
         event = self.get_object(pk)
         if not event:
             return Response({'error': 'Event not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -186,12 +157,9 @@ class EventDetail(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
-        if not request.user.is_admin_user():
-            return Response({'error': 'Admin access required'}, status=status.HTTP_403_FORBIDDEN)
-
         event = self.get_object(pk)
         if not event:
             return Response({'error': 'Event not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -255,8 +223,9 @@ class LoginView(TokenObtainPairView):
             )
 
             # Remove tokens from response body for security
-            del response.data["access"]
-            del response.data["refresh"]
+            # uncomment if you want to hide access and refresh token in endpoint 
+            # del response.data["access"]
+            # del response.data["refresh"]
 
         return response
 
@@ -306,8 +275,7 @@ class AddEventView(APIView):
         if form.is_valid():
             form.save()
             messages.success(request, "Event added successfully!")
-            return redirect("add_event")  # This most be same as name in url
+            return redirect("add_event")  # This must be the same as the name in the URL
         else:
             messages.error(request, "Please correct the errors below.")
         return render(request, "api/add_event.html", {"form": form})
-
