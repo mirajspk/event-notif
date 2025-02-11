@@ -1,4 +1,5 @@
 import { useEffect , useState } from "react"
+import { useParams } from 'react-router-dom'
 import axios from "axios"
 
 const EventDetail = ({ 
@@ -71,21 +72,37 @@ const EventDetails = () => {
   const [event, setEvent] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-
-  useEffect (() => {
-    const fetchEvents = async () => {
+  const { id } = useParams(); // Extract the id parameter from the URL
+  
+  useEffect(() => {
+    const fetchEvent = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/events/1')
-        setEvent(response.data)
+        const response = await axios.get(`http://127.0.0.1:8000/api/events/${id}`);
+        setEvent(response.data);
       } catch (err) {
-        setError(err)
+        setError(err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }; 
+    };
 
-    fetchEvents()
-  },[])
+    fetchEvent();
+  }, [id]); // Re-run the effect if the id changes
+
+  // useEffect (() => {
+  //   const fetchEvents = async () => {
+  //     try {
+  //       const response = await axios.get('http://127.0.0.1:8000/api/events/1')
+  //       setEvent(response.data)
+  //     } catch (err) {
+  //       setError(err)
+  //     } finally {
+  //       setLoading(false)
+  //     }
+  //   }; 
+  //
+  //   fetchEvents()
+  // },[])
 
   if (loading) return <div>Loading...</div>; // Loading state
   if (error) return <div>Error: {error.message}</div>; // Error state

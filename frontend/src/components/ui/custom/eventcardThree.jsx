@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Calendar, Clock, MapPin } from 'lucide-react';
 import axios from 'axios'; // Import axios for making HTTP requests
+import { useNavigate } from 'react-router-dom';
 
 //This component renders single event card and defines on How it should look like
 const EventCard = ({ 
@@ -63,6 +64,7 @@ const EventList = () => {
   const [events, setEvents] = useState([]); 
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null);
+  const navigate = useNavigate()
   //useEffect 
   //It is used to define the side effects(fetching, subscriptions)
   //After calling useEffect pass it a function that contains side effect 
@@ -104,7 +106,7 @@ const EventList = () => {
             location={event.location}
             startTime={event.startTime}
             date={event.date}
-            onSeeDetails={() => console.log(`See details for ${event.name}`)} // Placeholder for details function
+            onSeeDetails={() => navigate(`/events/${event.id}`)} // Use the navigate function
           />
         </div>
       ))}

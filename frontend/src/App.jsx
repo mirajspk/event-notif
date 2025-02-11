@@ -27,7 +27,7 @@ const App = () => {
         <Route path="/signup" element={<SignUpForm />}/>
         <Route path="*" element={<PageNotFound /> } />
         <Route path="/recentevent" element={<EventListThree /> } />
-        <Route path="eventdetails" element={<EventDetail />} />
+        <Route path="/events/:id" element={<EventDetail />} />
       </Routes>
     </div>
   )  
