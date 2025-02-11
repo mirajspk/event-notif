@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/custom/customButton"
 import EventDetail from "./components/ui/custom/eventDetail";
 import Footer from "./components/ui/custom/Footer"
 import { Header } from "./components/ui/custom/Header";
-import EventList from "./components/ui/custom/eventcard";
+import EventList from "./components/ui/custom/eventcardThree";
 
 const App = () => {
 
