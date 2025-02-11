@@ -77,10 +77,15 @@ class EventList(APIView):  # Changed from ModelViewSet to APIView
             return [IsAdminUser()]  # Only admins can POST
         return [AllowAny()]  # Everyone can GET
 
-    def get(self, request):
+    def get(self, request, id=None):
+        if id:
+            event = get_object_or_404(Event, pk=id)
+            serializer = EventSerializer(event, context={'request': request})
+            return Response(serializer.data)
+
         events = Event.objects.all()
-        serializer = EventSerializer(events, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = EventSerializer(events, many=True, context={'request': request})
+        return Response(serializer.data)
 
     def post(self, request):
         serializer = EventSerializer(data=request.data)
@@ -140,13 +145,16 @@ class EventDetail(APIView):
         except Event.DoesNotExist:
             return None
 
-    def get(self, request, pk):
-        event = self.get_object(pk)
-        if not event:
-            return Response({'error': 'Event not found'}, status=status.HTTP_404_NOT_FOUND)
+    def get(self, request, id=None):
+        if id:
+            event = get_object_or_404(Event, pk=id)
+            serializer = EventSerializer(event, context={'request': request})
+            return Response(serializer.data)
 
-        serializer = EventSerializer(event)
+        events = Event.objects.all()
+        serializer = EventSerializer(events, many=True, context={'request': request})
         return Response(serializer.data)
+
 
     def put(self, request, pk):
         event = self.get_object(pk)
@@ -198,7 +206,7 @@ class LoginView(TokenObtainPairView):
 
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
-        
+
         # Extract the tokens
         access_token = response.data.get("access")
         refresh_token = response.data.get("refresh")

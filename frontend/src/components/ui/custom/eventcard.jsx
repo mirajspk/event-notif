@@ -95,11 +95,11 @@ const EventList = () => {
           <EventCard 
             key={event.id}
             image ={event.image}
-            title={event.title}
+            title={event.name}
             location={event.location}
             startTime={event.startTime}
             date={event.date}
-            onSeeDetails={() => console.log(`See details for ${event.title}`)} // Placeholder for details function
+            onSeeDetails={() => console.log(`See details for ${event.name}`)} // Placeholder for details function
           />
         </div>
       ))}
