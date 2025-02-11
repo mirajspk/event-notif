@@ -3,7 +3,7 @@ import HeroImage from './HeroImage'
 import FeaturesSection from './FeaturesSection'
 
 const Hero = () => (
-<div className="bg-white">
+  <div className="bg-white">
     <div className="relative w-full">
       <div className="relative w-full">
         <HeroImage />

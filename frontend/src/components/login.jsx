@@ -10,6 +10,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Mail, Lock } from "lucide-react";
 import { Icons } from "./ui/icons";
+import { Link } from "react-router";
 
 import { loginSchema } from "@/lib/login-schema";
 
@@ -102,13 +103,16 @@ function LoginForm() {
         <CardFooter className="flex flex-col space-y-4">
           <div className="text-center text-sm">
             Don't have an account?{" "}
-            <a href="/login" className="text-[#00A8E5] hover:underline decoration-[#00A8E5] underline-offset-4">
+            <a href="/signup" className="text-[#00A8E5] hover:underline decoration-[#00A8E5] underline-offset-4">
               Sign Up
             </a>
           </div>
-          
+
         </CardFooter>
       </Card>
+      <div className="mt-5">
+        <Link to="/" className="text-primary">Go back to home</Link>
+      </div>
     </div>
   );
 }

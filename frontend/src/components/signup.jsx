@@ -9,6 +9,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Mail, Lock, User } from "lucide-react";
 import { Icons } from "./ui/icons";
+import { Link } from "react-router";
 
 import { signUpSchema } from "@/lib/schema";
 
@@ -31,7 +32,7 @@ function SignUpForm() {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       console.log(values);
-      
+
     } finally {
       setIsLoading(false);
     }
@@ -123,6 +124,9 @@ function SignUpForm() {
           </div>
         </CardFooter>
       </Card>
+      <div className="mt-5">
+        <Link to="/" className="text-primary">Go back to home</Link>
+      </div>
     </div>
   );
 }

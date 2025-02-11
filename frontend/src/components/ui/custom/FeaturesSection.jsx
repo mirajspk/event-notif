@@ -8,11 +8,13 @@ const FeaturesSection = () => (
       <div className="flex flex-col lg:flex-row gap-6">
         <FeatureCard
           title="Explore Clubs"
+          href="/clubs"
           icon={Search}
           description="Search for clubs, societies, and organizations that match your interests."
         />
         <FeatureCard
           title="Attend Events"
+          href="/events"
           icon={Calendar}
           description="Discover and participate in a wide range of events happening on campus."
         />

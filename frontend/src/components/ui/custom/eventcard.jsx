@@ -1,5 +1,6 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Calendar, Clock, MapPin } from 'lucide-react'
+import { Link } from 'react-router'
 
 const EventCard = ({
   imageUrl,
@@ -39,15 +40,18 @@ const EventCard = ({
           </div>
         </div>
       </CardContent>
-      <CardFooter className="p-4">
-        <a
-          className="w-full border border-primary text-primary bg-white hover:bg-primary hover:text-white h-10 px-4 py-2 inline-flex items-center justify-center text-sm font-medium transition-colors cursor-pointer"
-          onClick={onSeeDetails}
-        >
-          SEE DETAILS
-        </a>
-      </CardFooter>
-    </Card>
+      <Link key={title} to={`/Events/${title}`}>
+        <CardFooter className="p-4">
+          <a
+            className="w-full border border-primary text-primary bg-white hover:bg-primary hover:text-white h-10 px-4 py-2 inline-flex items-center justify-center text-sm font-medium transition-colors cursor-pointer"
+            onClick={onSeeDetails}
+          >
+            SEE DETAILS
+
+          </a>
+        </CardFooter>
+      </Link>
+    </Card >
   )
 }
 

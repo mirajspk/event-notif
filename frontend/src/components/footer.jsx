@@ -1,5 +1,6 @@
 import React from 'react';
 import { Facebook, Instagram, Twitter, Linkedin } from 'lucide-react';
+import { Link } from 'react-router';
 
 const Footer = () => {
   return (
@@ -7,25 +8,27 @@ const Footer = () => {
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div className="mb-8 md:mb-0">
-            <h2 className="text-3xl font-mono mb-6">KUevents</h2>
+            <a href='/'>
+              <h2 className="text-3xl font-mono mb-6">KUevents</h2>
+            </a>
             <ul className="space-y-4 md:space-y-0 md:flex md:space-x-10">
               <li>
-                <a href="#" className="hover:text-white">Home</a>
+                <a href="/" className="hover:text-white">Home</a>
               </li>
               <li>
-                <a href="#" className="hover:text-white">Events</a>
+                <a href="/events" className="hover:text-white">Events</a>
               </li>
               <li>
-                <a href="#" className="hover:text-white">Clubs</a>
+                <a href="/clubs" className="hover:text-white">Clubs</a>
               </li>
               <li>
-                <a href="#" className="hover:text-white">Contact</a>
+                <a href="/contact" className="hover:text-white">Contact</a>
               </li>
               <li>
-                <a href="#" className="hover:text-white">FAQs</a>
+                <a href="/faq" className="hover:text-white">FAQs</a>
               </li>
               <li>
-                <a href="#" className="hover:text-white">About</a>
+                <a href="/about" className="hover:text-white">About</a>
               </li>
             </ul>
           </div>
@@ -51,7 +54,7 @@ const Footer = () => {
           </p>
         </div>
       </div>
-    </footer>
+    </footer >
   );
 };
 
