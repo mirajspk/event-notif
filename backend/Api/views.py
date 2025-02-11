@@ -4,13 +4,20 @@ from rest_framework import status, permissions
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.core.mail import send_mail
 from django.conf import settings
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404 , render , redirect
 from .models import Clubs, Subscriber, Event, EventRegistration
 from .serializers import UserSerializer, ClubsSerializer, SubscriberSerializer, EventSerializer, EventRegistrationSerializer
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
+from django.urls import reverse_lazy
+from django.contrib.messages.views import SuccessMessageMixin
+from django.views.generic import CreateView
+from rest_framework.parsers import MultiPartParser, FormParser
+from .forms import EventForm
+from django.contrib import messages
+from rest_framework import viewsets
 
 import logging
 
@@ -68,10 +75,12 @@ class SubscribeView(APIView):
 
 class EventList(viewsets.ModelViewSet):
 
+    parser_classes = (MultiPartParser, FormParser)
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     permission_classes = [IsAuthenticated]
 
+    # get post from authentication/backend
     def post(self, request):
         if not request.user.is_admin_user():
             return Response({'error': 'Admin access required'}, status=status.HTTP_403_FORBIDDEN)
@@ -103,12 +112,48 @@ class EventList(viewsets.ModelViewSet):
             )
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #from backend/GET_POST (response)
+        logger.error(f"Validation failed: {serializer.errors}")
+        
+        return Response({
+            'error': 'Bad Request',
+            'details': serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  #from authentication/backend
+        
+    # def get from authentication/backend
+    # def get(self, request):
+    #     events = Event.objects.all().order_by('date')
+    #     serializer = EventSerializer(events, many=True)
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
+
+    #def get from backend/GET_POST
+    def get(self, request, id=None):
+        if id:
+            event = get_object_or_404(Event, pk=id)
+            serializer = EventSerializer(event, context={'request': request})
+            return Response(serializer.data)
+        
+        events = Event.objects.all()
+        serializer = EventSerializer(events, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    #def put and def delete from backend/GET_POST
+    def put(self, request, id):
+        event = get_object_or_404(Event, pk=id)
+        serializer = EventSerializer(event, data=request.data, context={'request': request})
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request):
-        events = Event.objects.all().order_by('date')
-        serializer = EventSerializer(events, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def delete(self, request, id):
+        event = get_object_or_404(Event, pk=id)
+        event.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class RelatedEventsView(APIView):
@@ -186,3 +231,20 @@ class LoginView(TokenObtainPairView):
 
 class TokenRefreshView(TokenRefreshView):
     permission_classes = [AllowAny]
+
+
+class AddEventView(APIView):
+    def get(self, request):
+        form = EventForm()
+        return render(request, "api/add_event.html", {"form": form})
+
+    def post(self, request):
+        form = EventForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Event added successfully!")
+            return redirect("add_event")  # This most be same as name in url
+        else:
+            messages.error(request, "Please correct the errors below.")
+        return render(request, "api/add_event.html", {"form": form})
+

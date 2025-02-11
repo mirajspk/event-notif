@@ -64,7 +64,7 @@ class Event(models.Model):
     registration_link = models.URLField(max_length=500)  # Link for registration
     startTime= models.CharField(max_length=50, blank=True)  # New Time field
     description = models.TextField(null= True, blank=True)  # New Description field
-    # image = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image 
+    image = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image 
     # imageTwo = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image
     created_by = models.CharField(max_length=500, choices=CLUB_CHOICES, null=True, blank=True) 
 
@@ -74,7 +74,6 @@ class Event(models.Model):
         return {
             'name': obj.host
         }
-
     def __str__(self):
         return f"{self.name} ({self.type}) by {self.host}"
 
