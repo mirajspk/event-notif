@@ -75,7 +75,7 @@ const EventDetails = () => {
   useEffect (() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/Api/events/7')
+        const response = await axios.get('http://127.0.0.1:8000/api/events/1')
         setEvent(response.data)
       } catch (err) {
         setError(err)
@@ -93,7 +93,7 @@ const EventDetails = () => {
   return(
     <EventDetail
       image = {event.image}
-      title = {event.title}
+      title = {event.name}
       startTime = {event.startTime}
       description = {event.description}
       location = {event.location}

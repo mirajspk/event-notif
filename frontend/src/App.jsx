@@ -14,7 +14,6 @@ import Footer from "./components/ui/custom/Footer"
 import { Header } from "./components/ui/custom/Header"
 import EventListThree from "./components/ui/custom/eventcardThree"
 
-const App = () => {
 
 //This is the functional component of the App 
 const App = () => {

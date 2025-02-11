@@ -72,7 +72,7 @@ const EventList = () => {
     const fetchEvents = async () => {
       try {
         //uses get Http methode from our backend Api
-        const response = await axios.get('http://127.0.0.1:8000/Api/events');
+        const response = await axios.get('http://127.0.0.1:8000/api/events');
         const today = new Date(); // Get today's date
         const futureEvents = response.data.filter(event => new Date(event.date) > today); // Filter events that are in the future
         const sortedEvents = futureEvents
@@ -100,11 +100,11 @@ const EventList = () => {
         <div key={event.id} className="mb-6"> {/* Added margin-bottom for spacing */}
           <EventCard 
             image ={event.image}
-            title={event.title}
+            title={event.name}
             location={event.location}
             startTime={event.startTime}
             date={event.date}
-            onSeeDetails={() => console.log(`See details for ${event.title}`)} // Placeholder for details function
+            onSeeDetails={() => console.log(`See details for ${event.name}`)} // Placeholder for details function
           />
         </div>
       ))}
