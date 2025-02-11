@@ -20,6 +20,7 @@ const FeaturesSection = () => (
         />
         <FeatureCard
           title="Schedule Event"
+          href="/signup"
           icon={Home}
           description="Keep track of your participation and achievements in various activities."
         />

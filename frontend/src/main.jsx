@@ -9,6 +9,7 @@ import EventsPage from './pages/eventsPage'
 import ClubsPage from './components/ui/custom/ClubPage.jsx'
 import SignUpForm from './components/signup.jsx'
 import LoginForm from './components/login.jsx'
+import Contact from './pages/Contact.jsx'
 
 
 const router = createBrowserRouter([
@@ -41,7 +42,12 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginForm />,
-    eroorElement: <NotFoundPage />,
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: '/contact',
+    element: <Contact />,
+    errorElement: <NotFoundPage />,
   }
 ]);
 

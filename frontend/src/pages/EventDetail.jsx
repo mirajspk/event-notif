@@ -4,6 +4,7 @@ import Footer from '@/components/footer'
 import EventDetail from '@/components/ui/custom/eventDetail'
 import EventCard from '@/components/ui/custom/eventcard'
 import { Button } from '@/components/ui/custom/customButton'
+import { Link } from 'react-router'
 export default function EventDetailPage() {
   const eventsData = [
     {
@@ -47,7 +48,9 @@ export default function EventDetailPage() {
           ))}
         </div>
         <div className="flex justify-center my-20">
-          <Button>More events</Button>
+          <Link to="/events">
+            <Button>More events</Button>
+          </Link>
         </div>
 
       </div>

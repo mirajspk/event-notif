@@ -11,6 +11,8 @@ import { Menu, X } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Link } from "react-router"
+import { Header } from "@/components/ui/custom/Header"
+import Footer from "@/components/footer"
 
 const EventsPage = () => {
   const [events, setEvents] = useState([])
@@ -207,50 +209,54 @@ const EventsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4">
-        {/* Mobile Filter Toggle */}
-        <div className="lg:hidden flex justify-end my-4">
-          <Button
-            variant={isFilterOpen ? "secondary" : "outline"}
-            onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className="bg-white"
-          >
-            {isFilterOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-            {isFilterOpen ? "Close Filters" : "Show Filters"}
-          </Button>
-        </div>
+    <>
+      <Header />
+      <div className="min-h-screen bg-background my-10">
+        <main className="container mx-auto px-4">
+          {/* Mobile Filter Toggle */}
+          <div className="lg:hidden flex justify-end my-4">
+            <Button
+              variant={isFilterOpen ? "secondary" : "outline"}
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="bg-white"
+            >
+              {isFilterOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+              {isFilterOpen ? "Close Filters" : "Show Filters"}
+            </Button>
+          </div>
 
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Filter Panel - Mobile */}
-          <div
-            className={`lg:hidden fixed inset-0 z-50 bg-white transition-transform duration-200 ease-in-out ${isFilterOpen ? "translate-x-0" : "-translate-x-full"
-              }`}
-          >
-            <div className="p-4 h-full overflow-y-auto">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-center">Events</h2>
-                <Button variant="ghost" size="icon" onClick={() => setIsFilterOpen(false)}>
-                  <X className="h-4 w-4" />
-                </Button>
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Filter Panel - Mobile */}
+            <div
+              className={`lg:hidden fixed inset-0 z-50 bg-white transition-transform duration-200 ease-in-out ${isFilterOpen ? "translate-x-0" : "-translate-x-full"
+                }`}
+            >
+              <div className="p-4 h-full overflow-y-auto">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold text-center">Events</h2>
+                  <Button variant="ghost" size="icon" onClick={() => setIsFilterOpen(false)}>
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                <FilterPanel />
               </div>
+            </div>
+
+            {/* Filter Panel - Desktop */}
+            <div className="hidden lg:block sticky top-4 h-fit">
+              <h1 className="text-2xl font-semibold mb-4">Events</h1>
               <FilterPanel />
             </div>
-          </div>
 
-          {/* Filter Panel - Desktop */}
-          <div className="hidden lg:block sticky top-4 h-fit">
-            <h1 className="text-2xl font-semibold mb-4">Events</h1>
-            <FilterPanel />
+            {/* Event List */}
+            <div className="flex-1 mt-12">
+              <EventList events={filteredEvents} />
+            </div>
           </div>
-
-          {/* Event List */}
-          <div className="flex-1">
-            <EventList events={filteredEvents} />
-          </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+      <Footer />
+    </>
   )
 }
 
