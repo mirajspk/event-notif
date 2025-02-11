@@ -88,7 +88,7 @@ class EventRegistration(models.Model):
 
 
 class Subscriber(models.Model):
-    email = models.EmailField(unique=True)
+    email = models.EmailField()
     clubs = models.ManyToManyField(Clubs, related_name="subscribers")  
     subscribed_at = models.DateTimeField(auto_now_add=True)
 
