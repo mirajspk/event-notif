@@ -122,7 +122,7 @@ export default function Searchbar() {
       </div>
       {isOpen && (
         <div
-          className="absolute top-full left-0 right-0 w-full mt-1 rounded-md border bg-popover shadow-md z-50"
+          className="absolute top-full left-0 right-0 w-full mt-1 rounded-md border bg-white shadow-md z-100"
           onMouseMove={handleMouseMove}
         >
           <Command shouldFilter={false}>
@@ -137,7 +137,7 @@ export default function Searchbar() {
                       setIsOpen(false)
                       setSelectedIndex(-1)
                     }}
-                    className={`px-4 py-3 cursor-pointer ${index === selectedIndex ? "bg-accent text-accent-foreground" : ""
+                    className={`px-4 py-3 cursor-pointer ${index === selectedIndex ? "bg-gray-100 text-accent-foreground" : ""
                       }`}
                     onMouseEnter={() => handleMouseEnter(index)}
                   >
