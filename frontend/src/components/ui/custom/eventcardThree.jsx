@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Calendar, Clock, MapPin } from 'lucide-react';
 import axios from 'axios'; // Import axios for making HTTP requests
+import { useNavigate } from 'react-router-dom';
 
 // This component renders single event card and defines on How it should look like
 const EventCard = ({ 
@@ -59,12 +60,24 @@ const EventList = () => {
   const [events, setEvents] = useState([]); 
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null);
-
+  const navigate = useNavigate()
+  //useEffect 
+  //It is used to define the side effects(fetching, subscriptions)
+  //After calling useEffect pass it a function that contains side effect 
+  //it takes 2 argument 1: function 
+  //2: empty depenndency array [] <which implies effect will only run once>
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/Api/events'); 
-        setEvents(response.data); 
+        //uses get Http methode from our backend Api
+        const response = await axios.get('http://127.0.0.1:8000/api/events');
+        const today = new Date(); // Get today's date
+        const futureEvents = response.data.filter(event => new Date(event.date) > today); // Filter events that are in the future
+        const sortedEvents = futureEvents
+          .sort((a, b) => new Date(a.date) - new Date(b.date)) // Sort by date
+          .slice(0, 3); // Get the first 3 events
+        setEvents(sortedEvents); // Update state
+
       } catch (err) {
         setError(err); 
       } finally {
@@ -83,12 +96,12 @@ const EventList = () => {
       {events.map(event => (
         <div key={event.id} className="mb-6"> 
           <EventCard 
-            image={event.image}
-            title={event.title}
+            image ={event.image}
+            title={event.name}
             location={event.location}
             startTime={event.startTime}
             date={event.date}
-            onSeeDetails={() => console.log(`See details for ${event.title}`)} 
+            onSeeDetails={() => navigate(`/events/${event.id}`)} // Use the navigate function
           />
         </div>
       ))}
