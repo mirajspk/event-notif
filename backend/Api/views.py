@@ -13,6 +13,10 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.parsers import MultiPartParser, FormParser
 from .forms import EventForm
 from django.contrib import messages
+from django.contrib.auth import authenticate, login
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+from django.conf import settings
 
 import logging
 
@@ -204,31 +208,39 @@ class EventRegistrationView(APIView):
 class LoginView(TokenObtainPairView):
     permission_classes = [AllowAny]
 
-    def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
+    def post(self, request):
+        email = request.data.get("email")
+        password = request.data.get("password")
 
-        # Extract the tokens
-        access_token = response.data.get("access")
-        refresh_token = response.data.get("refresh")
+        user = authenticate(request, username=email, password=password)
+        if user is None:
+            return Response({"error": "Invalid credentials"}, status=401)
 
-        if access_token and refresh_token:
-            # Set cookies
-            response.set_cookie(
-                key="access_token",
-                value=access_token,
-                httponly=True, 
-                secure=settings.DEBUG is False,  # Secure in production
-                samesite="Lax",
-                path="/",
-            )
-            response.set_cookie(
-                key="refresh_token",
-                value=refresh_token,
-                httponly=True,
-                secure=settings.DEBUG is False,
-                samesite="Lax",
-                path="/api/token/refresh/",
-            )
+        refresh = RefreshToken.for_user(user)
+        response = Response({
+            "user": {
+                "email": user.email,
+                "is_staff": user.is_staff,
+            }
+        })
+
+        # Set JWT tokens in cookies
+        response.set_cookie(
+            key="access_token",
+            value=str(refresh.access_token),
+            httponly=True,
+            secure=not settings.DEBUG,
+            samesite="Lax",
+        )
+        response.set_cookie(
+            key="refresh_token",
+            value=str(refresh),
+            httponly=True,
+            secure=not settings.DEBUG,
+            samesite="Lax",
+        )
+
+        return response
 
             # Remove tokens from response body for security
             # uncomment if you want to hide access and refresh token in endpoint 
@@ -273,17 +285,104 @@ class TokenRefreshView(TokenRefreshView):
 #     permission_classes = [AllowAny]
 
 
-class AddEventView(APIView):
+# class AddEventView(APIView):
+#     def get(self, request):
+#         form = EventForm()
+#         return render(request, "api/add_event.html", {"form": form})
+#
+#     def post(self, request):
+#         form = EventForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, "Event added successfully!")
+#             return redirect("add_event")  # This must be the same as the name in the URL
+#         else:
+#             messages.error(request, "Please correct the errors below.")
+#         return render(request, "api/add_event.html", {"form": form})
+
+
+class AuthCheckView(APIView):
+    permission_classes=[AllowAny]
     def get(self, request):
+        if request.user.is_authenticated:
+            return Response({
+                'authenticated': True,
+                'user': {
+                    'email': request.user.email,
+                    'is_staff': request.user.is_staff
+                }
+            })
+        
+        access_token = request.COOKIES.get('access_token')
+        if access_token:
+            try:
+                token = AccessToken(access_token)
+                user = User.objects.get(id=token['user_id'])
+                return Response({
+                    'authenticated': True,
+                    'user': {
+                        'email': user.email,
+                        'is_staff': user.is_staff
+                    }
+                })
+            except (InvalidToken, TokenError, User.DoesNotExist):
+                pass
+        
+        return Response({'authenticated': False}, status=401)
+
+
+class AddEventView(APIView):
+
+    def get(self, request):
+        auth_result = self._check_authentication(request)
+        if auth_result:
+            return auth_result
+            
         form = EventForm()
-        return render(request, "api/add_event.html", {"form": form})
+        return render(request, "api/add_event.html", {"form": form})  
 
     def post(self, request):
+        auth_result = self._check_authentication(request)
+        if auth_result:
+            return auth_result
+
         form = EventForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, "Event added successfully!")
-            return redirect("add_event")  # This must be the same as the name in the URL
+            return redirect("add_event")
         else:
             messages.error(request, "Please correct the errors below.")
         return render(request, "api/add_event.html", {"form": form})
+
+    def _check_authentication(self, request):
+        # Check session auth first
+        if not request.user.is_authenticated:
+            # Fall back to JWT cookies
+            access_token = request.COOKIES.get('access_token')
+            if not access_token:
+                return redirect(f"{settings.FRONTEND_LOGIN_URL}?next={request.path}")
+
+            try:
+                token = AccessToken(access_token)
+                user = User.objects.get(id=token['user_id'])
+                if not user.is_active or not user.is_staff:
+                    raise InvalidToken()
+                # Simulate session auth for Django templates
+                request.user = user
+            except (InvalidToken, TokenError, User.DoesNotExist):
+                return redirect(f"{settings.FRONTEND_LOGIN_URL}?next={request.path}")
+        
+        # Final staff check
+        if not request.user.is_staff:
+            return redirect(f"{settings.FRONTEND_LOGIN_URL}?next={request.path}")
+        
+        return None
+
+
+class LogoutView(APIView):
+    def post(self, request):
+        response = Response({'detail': 'Successfully logged out'})
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+        return response

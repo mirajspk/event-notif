@@ -24,7 +24,6 @@ ALLOWED_HOSTS = []
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", 
-    "http://localhost:5174",  
 ]
 
 MEDIA_URL = "/media/"
@@ -174,25 +173,26 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_COOKIE': 'access_token',
+    'REFRESH_COOKIE': 'refresh_token',
+    'AUTH_COOKIE_SECURE': False,
+    'AUTH_COOKIE_HTTP_ONLY': True,
+    'AUTH_COOKIE_SAMESITE': 'Lax',
+    'AUTH_COOKIE_PATH': '/',
 }
 
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:8000"
 ]
 
 
 CORS_ALLOW_CREDENTIALS = True
 
 
-# ACCOUNT_EMAIL_VERIFICATION = 'none'
-# ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-# ACCOUNT_EMAIL_REQUIRED = True
-# LOGIN_REDIRECT_URL = '/'
-# LOGOUT_REDIRECT_URL = '/'
-# LOGIN_URL = '/accounts/login'
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development (prints emails in console)
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -204,3 +204,10 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 SITE_ID = 1
+
+
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = False 
+
+FRONTEND_LOGIN_URL = 'http://localhost:5173/login'

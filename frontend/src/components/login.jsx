@@ -1,3 +1,5 @@
+import { useAuth } from '@/context/auth-context';
+import { useLocation, useNavigate } from 'react-router-dom';
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +17,9 @@ import { Link } from "react-router";
 import { loginSchema } from "@/lib/login-schema";
 
 function LoginForm() {
+  const { login } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm({
@@ -24,16 +29,28 @@ function LoginForm() {
       password: "",
     },
   });
-
+  
   async function onSubmit(values) {
     setIsLoading(true);
-    try {
-      // Simulating API call (login logic should be here)
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      console.log(values);
-
-
+ try {
+      const success = await login(values.email, values.password);
+      if (success) {
+        // If we have a redirect URL in the location state, use it
+        const redirectTo = location.state?.from?.pathname || '/';
+        if (redirectTo === '/add-event') {
+          // For the event schedule page, do a full page redirect to the backend URL
+          window.location.href = 'http://127.0.0.1:8000/add_event/';
+        } else {
+          // For other pages, use React Router navigation
+          navigate(redirectTo);
+        }
+      } else {
+        // Handle login failure
+        form.setError('root', {
+          type: 'manual',
+          message: 'Invalid credentials'
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -87,6 +104,11 @@ function LoginForm() {
                   </FormItem>
                 )}
               />
+              {form.formState.errors.root && (
+                <div className="text-red-500 text-sm">
+                  {form.formState.errors.root.message}
+                </div>
+              )}
               <Button className="w-full bg-[#00A8E5] hover:bg-[#4299cc]" type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <>
@@ -103,11 +125,10 @@ function LoginForm() {
         <CardFooter className="flex flex-col space-y-4">
           <div className="text-center text-sm">
             Don't have an account?{" "}
-            <a href="/signup" className="text-[#00A8E5] hover:underline decoration-[#00A8E5] underline-offset-4">
+            <Link to="/signup" className="text-[#00A8E5] hover:underline decoration-[#00A8E5] underline-offset-4">
               Sign Up
-            </a>
+            </Link>
           </div>
-
         </CardFooter>
       </Card>
       <div className="mt-5">
