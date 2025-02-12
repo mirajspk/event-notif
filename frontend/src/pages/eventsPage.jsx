@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import axios from "axios"
-import EventList from "@/components/ui/custom/eventcardAll"
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -10,6 +9,15 @@ import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import EventcardAll from "@/components/ui/custom/eventcardAll"
+import EventcardEvent from "@/components/ui/custom/eventcardEvent"
+import EventcardPastEvents from "@/components/ui/custom/eventcardPastEvents"
+import EventcardPastWorkshop from "@/components/ui/custom/eventcardPastWorkshop"
+import EventcardSevenEvent from "@/components/ui/custom/eventcardSevenEvent"
+import EventcardSevenWorkshop from "@/components/ui/custom/eventcardSevenWorkshop"
+import EventcardThirtyEvent from "@/components/ui/custom/eventcardThirtyEvent"
+import EventcardThirtyWorkshop from "@/components/ui/custom/eventcardThirtyWorkshop"
+import EventcardWorkshop from "@/components/ui/custom/eventcardWorkshop"
 
 const EventsPage = () => {
   const [events, setEvents] = useState([])
@@ -20,15 +28,14 @@ const EventsPage = () => {
 
   // Simple form state
   const [filters, setFilters] = useState({
-    timeFilter: "all", // Default to "All events"
+    timeFilter: "upcoming", // Default to "All events"
     eventType: "both", // Default to "Both"
-    selectedClub: "",
   })
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/Api/events")
+        const response = await axios.get("http://127.0.0.1:8000/api/events")
         setEvents(response.data)
         setFilteredEvents(response.data)
       } catch (err) {
@@ -54,8 +61,8 @@ const EventsPage = () => {
       filtered = filtered.filter((event) => event.isWorkshop)
     }
 
+    const now = new Date()
     if (filters.timeFilter === "past") {
-      const now = new Date()
       filtered = filtered.filter((event) => new Date(event.date) < now)
     } else if (filters.timeFilter === "7days") {
       const sevenDaysAgo = new Date()
@@ -86,10 +93,10 @@ const EventsPage = () => {
             <h3 className="mb-4 text-sm font-medium">When</h3>
             <div className="space-y-2">
               {[
-                { value: "all", label: "All" },
-                { value: "past", label: "Past events" },
-                { value: "7days", label: "Next 7 days" },
-                { value: "30days", label: "Next 30 days" },
+                { value: "upcoming", label: "Upcoming" },
+                { value: "past", label: "Past" },
+                { value: "7days", label: "7 days" },
+                { value: "30days", label: "30 days" },
               ].map((option) => (
                 <div
                   key={option.value}
@@ -115,7 +122,7 @@ const EventsPage = () => {
             <h3 className="mb-4 text-sm font-medium">Type</h3>
             <div className="space-y-2">
               {[
-                { value: "both", label: "All" },
+                { value: "both", label: "Both" },
                 { value: "event", label: "Event" },
                 { value: "workshop", label: "Workshop" },
               ].map((option) => (
@@ -139,39 +146,10 @@ const EventsPage = () => {
             </div>
           </div>
 
-          <Select
-            value={filters.selectedClub}
-            onValueChange={(value) => setFilters({ ...filters, selectedClub: value })}
-          >
-            <SelectTrigger className="rounded-none">
-              <SelectValue placeholder="Select Clubs" />
-            </SelectTrigger>
-            <SelectContent className="bg-white">
-              <SelectItem value="kucc">Computer Club (KUCC)</SelectItem>
-              <SelectItem value="kurc">Robotics Club (KURC)</SelectItem>
-              <SelectItem value="kucec">Civil Engineering Club (KUCEC)</SelectItem>
-              <SelectItem value="kucmc">Computational Mathematics Club (KUCMC)</SelectItem>
-              <SelectItem value="kuarc">Architecture Students' Club (KUARC)</SelectItem>
-              <SelectItem value="ges">Geomatics Engineering Society (GES)</SelectItem>
-              <SelectItem value="kubic">Biotechnology Creatives (KUBiC)</SelectItem>
-              <SelectItem value="seee">Society of Electrical and Electronic Engineering (SEEE)</SelectItem>
-              <SelectItem value="fop">Forum for Pharmacy (FoP)</SelectItem>
-              <SelectItem value="sbis">Society of Business Information Students (SBIS)</SelectItem>
-              <SelectItem value="kuaic">Artificial Intelligence Club (KUAIC)</SelectItem>
-              <SelectItem value="kuigc">Indoors Games Clubs (KUIGC)</SelectItem>
-              <SelectItem value="kusmc">Society of Music and Culture (KUSMC)</SelectItem>
-              <SelectItem value="fecam">Forum for Environmental Conservation and Management (FECAM)</SelectItem>
-            </SelectContent>
-          </Select>
+          
 
           <div className="space-y-2">
-            <Button
-              type="button"
-              className="w-full rounded-none bg-[#00A8E5] text-white hover:bg-[#0077A2]"
-              onClick={() => setIsFilterOpen(false)}
-            >
-              Apply Filters
-            </Button>
+
             <Button
               type="button"
               variant="outline"
@@ -249,7 +227,33 @@ const EventsPage = () => {
 
           {/* Event List */}
           <div className="flex-1">
-            <EventList events={filteredEvents} />
+            {filters.eventType === "event" && filters.timeFilter === "past" && (
+              <EventcardPastEvents />
+            )}
+            {filters.eventType === "workshop" && filters.timeFilter === "past" && (
+              <EventcardPastWorkshop />
+            )}
+            {filters.eventType === "event" && filters.timeFilter === "7days" && (
+              <EventcardSevenEvent />
+            )}
+            {filters.eventType === "workshop" && filters.timeFilter === "7days" && (
+              <EventcardSevenWorkshop />
+            )}
+            {filters.eventType === "event" && filters.timeFilter === "30days" && (
+              <EventcardThirtyEvent />
+            )}
+            {filters.eventType === "workshop" && filters.timeFilter === "30days" && (
+              <EventcardThirtyWorkshop />
+            )}
+            {filters.eventType === "event" && filters.timeFilter === "upcoming" && (
+              <EventcardEvent />
+            )}
+            {filters.eventType === "workshop" && filters.timeFilter === "upcoming" && (
+              <EventcardWorkshop />
+            )}
+            {filters.eventType === "both" && filters.timeFilter === "upcoming" && (
+              <EventcardAll />
+            )}
           </div>
         </div>
       </main>
