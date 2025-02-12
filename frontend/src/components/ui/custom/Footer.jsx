@@ -1,6 +1,6 @@
 import React from 'react'
 import { Input } from "../input"
-import { Button } from "./customButton"
+import { Button } from '../button'
 import { Facebook, Instagram, Twitter, Linkedin } from 'lucide-react'
 import "./Footer.css"
 

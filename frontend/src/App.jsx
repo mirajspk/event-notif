@@ -9,8 +9,6 @@ import PageNotFound from"./components/pageNotFound"
 import LoginForm from "./components/login"
 import SignUpForm from "./components/signup"
 
-
-import { Button } from "@/components/ui/custom/customButton"
 // import { Icons } from "./components/icons"
 // import { ArrowRight } from "lucide-react"
 import EventDetail from "./components/ui/custom/eventDetail"
