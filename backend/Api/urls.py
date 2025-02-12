@@ -1,21 +1,18 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from Api import views
+from django.urls import path
 from .views import (
     RegisterClubAdminView, SubscribeView, LoginView, EventList,
-    EventDetail, RelatedEventsView, EventRegistrationView
+    EventDetail, RelatedEventsView, EventRegistrationView, AddEventView
 )
-from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
-
-router = DefaultRouter()
-router.register(r'events', EventList, basename='event')
+from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
-    # DRF Router for EventList (ViewSet)
-    path('api/', include(router.urls)),
+    # Event List Endpoint (GET and POST)
+    path('api/events/', EventList.as_view(), name='event-list'),
 
-    # Individual Event Endpoints
+    # Event Detail Endpoint (GET, PUT, DELETE)
     path('api/events/<int:pk>/', EventDetail.as_view(), name='event-detail'),
+
+    # Related Events Endpoint
     path('api/events/host/<str:host>/', RelatedEventsView.as_view(), name="related-events"),
 
     # Event Registration Endpoints
@@ -28,6 +25,8 @@ urlpatterns = [
 
     # Authentication Endpoints
     path('api/login/', LoginView.as_view(), name='login'),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    # Admin Add Event (HTML Form)
+    path('add_event/', AddEventView.as_view(), name='add_event'),
 ]
