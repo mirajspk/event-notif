@@ -301,7 +301,7 @@ class TokenRefreshView(TokenRefreshView):
 #         return render(request, "api/add_event.html", {"form": form})
 
 
-class AuthCheckView(APIView):
+class AuthCheckView(APIView): #check authentication
     permission_classes=[AllowAny]
     def get(self, request):
         if request.user.is_authenticated:
@@ -331,7 +331,7 @@ class AuthCheckView(APIView):
         return Response({'authenticated': False}, status=401)
 
 
-class AddEventView(APIView):
+class AddEventView(APIView): #add events view
 
     def get(self, request):
         auth_result = self._check_authentication(request)
@@ -380,7 +380,7 @@ class AddEventView(APIView):
         return None
 
 
-class LogoutView(APIView):
+class LogoutView(APIView): #logout view
     def post(self, request):
         response = Response({'detail': 'Successfully logged out'})
         response.delete_cookie('access_token')

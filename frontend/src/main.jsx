@@ -1,6 +1,6 @@
 import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { createBrowserRouter, RouterProvider, Navigate, useLocation } from 'react-router-dom';  // ✅ Correct import
+import { createBrowserRouter, RouterProvider, Navigate, useLocation } from 'react-router-dom'; 
 import './index.css';
 import App from './App.jsx';
 import NotFoundPage from './pages/NotFoundPage';
@@ -22,7 +22,6 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-// Component to handle backend redirect for Event Schedule
 const EventScheduleRedirect = () => {
   useEffect(() => {
     window.location.href = 'http://127.0.0.1:8000/add_event/';

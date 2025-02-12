@@ -37,7 +37,7 @@ function LoginForm() {
       if (success) {
         // If we have a redirect URL in the location state, use it
         const redirectTo = location.state?.from?.pathname || '/';
-        if (redirectTo === '/add-event') {
+        if (redirectTo === '/add_event') {
           // For the event schedule page, do a full page redirect to the backend URL
           window.location.href = 'http://127.0.0.1:8000/add_event/';
         } else {

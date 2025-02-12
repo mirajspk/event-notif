@@ -21,6 +21,7 @@ const FeaturesSection = () => (
         <FeatureCard
           title="Schedule Event"
           icon={Home}
+          href="/add_event"
           description="Keep track of your participation and achievements in various activities."
         />
       </div>
