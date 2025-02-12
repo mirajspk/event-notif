@@ -56,7 +56,7 @@ const EventCard = ({
 };
 
 //This component stores the list of the Events from the Api 
-const EventList = () => {
+const eventcardSevenEvent= () => {
   //useState:
   //After initializing useState, It returns array with 2 elements:
   // current state variable=> events
@@ -118,4 +118,4 @@ const EventList = () => {
   );
 };
 
-export default EventList;
+export default eventcardSevenEvent;

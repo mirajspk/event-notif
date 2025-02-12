@@ -2,7 +2,6 @@
 import { Route,  Routes } from "react-router-dom"
 import EventsPage from "./pages/eventsPage"
 
-import EventList from "./components/ui/custom/eventcardAll"
 import ClubPage from "./components/ui/custom/ClubPage"
 import Club from "./components/ui/custom/Club"
 import PageNotFound from"./components/pageNotFound"
@@ -19,7 +18,6 @@ const App = () => {
   return (
     <div className="flex flex-wrap justify-center my-9 gap-9">
       <Routes>
-        <Route path="/events" element={<EventList /> } />
         <Route path="/club" element={<Club/>}/>
         <Route path="/clubpage" element={<ClubPage/>}/>
         <Route path="/login" element={<LoginForm />}/>

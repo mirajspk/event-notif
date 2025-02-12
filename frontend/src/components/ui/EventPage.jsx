@@ -19,7 +19,7 @@ const EventPage = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/Api/events");
+        const response = await axios.get("http://127.0.0.1:8000/api/events");
         setEvents(response.data);
         setFilteredEvents(response.data);
       } catch (err) {

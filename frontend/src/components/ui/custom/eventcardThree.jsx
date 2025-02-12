@@ -56,7 +56,7 @@ const EventCard = ({
 };
 
 // This component stores the list of the Events from the API 
-const EventList = () => {
+const eventcardThree= () => {
   const [events, setEvents] = useState([]); 
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null);
@@ -109,4 +109,4 @@ const EventList = () => {
   );
 };
 
-export default EventList;
+export default eventcardThree;

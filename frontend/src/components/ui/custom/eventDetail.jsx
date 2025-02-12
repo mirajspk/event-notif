@@ -87,22 +87,7 @@ const EventDetails = () => {
     };
 
     fetchEvent();
-  }, [id]); // Re-run the effect if the id changes
-
-  // useEffect (() => {
-  //   const fetchEvents = async () => {
-  //     try {
-  //       const response = await axios.get('http://127.0.0.1:8000/api/events/1')
-  //       setEvent(response.data)
-  //     } catch (err) {
-  //       setError(err)
-  //     } finally {
-  //       setLoading(false)
-  //     }
-  //   }; 
-  //
-  //   fetchEvents()
-  // },[])
+  }, [id]); 
 
   if (loading) return <div>Loading...</div>; // Loading state
   if (error) return <div>Error: {error.message}</div>; // Error state
