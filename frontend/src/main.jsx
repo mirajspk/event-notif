@@ -10,6 +10,18 @@ import ClubsPage from './components/ui/custom/ClubPage.jsx';
 import SignUpForm from './components/signup.jsx';
 import LoginForm from './components/login.jsx';
 import { AuthProvider, useAuth } from './context/auth-context';
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { createBrowserRouter, RouterProvider } from 'react-router'
+import './index.css'
+import App from './App.jsx'
+import NotFoundPage from './pages/NotFoundPage'
+import EventDetailPage from './pages/EventDetail'
+import EventsPage from './pages/eventsPage'
+import ClubsPage from './components/ui/custom/ClubPage.jsx'
+import SignUpForm from './components/signup.jsx'
+import LoginForm from './components/login.jsx'
+import Contact from './pages/Contact'
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -70,6 +82,10 @@ const router = createBrowserRouter([
     ),
     errorElement: <NotFoundPage />,
   },
+    path: '/contact',
+    element: <Contact />,
+    errorElement: <NotFoundPage />,
+  }
 ]);
 
 createRoot(document.getElementById('root')).render(
