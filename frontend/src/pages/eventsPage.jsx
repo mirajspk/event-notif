@@ -20,8 +20,8 @@ const EventsPage = () => {
 
   // Simple form state
   const [filters, setFilters] = useState({
-    timeFilter: "7days",
-    eventType: "event",
+    timeFilter: "all", // Default to "All events"
+    eventType: "both", // Default to "Both"
     selectedClub: "",
   })
 
@@ -72,8 +72,8 @@ const EventsPage = () => {
 
   const handleReset = () => {
     setFilters({
-      timeFilter: "7days",
-      eventType: "event",
+      timeFilter: "all",
+      eventType: "both",
       selectedClub: "",
     })
   }
@@ -86,6 +86,7 @@ const EventsPage = () => {
             <h3 className="mb-4 text-sm font-medium">When</h3>
             <div className="space-y-2">
               {[
+                { value: "all", label: "All" },
                 { value: "past", label: "Past events" },
                 { value: "7days", label: "Next 7 days" },
                 { value: "30days", label: "Next 30 days" },
@@ -114,6 +115,7 @@ const EventsPage = () => {
             <h3 className="mb-4 text-sm font-medium">Type</h3>
             <div className="space-y-2">
               {[
+                { value: "both", label: "All" },
                 { value: "event", label: "Event" },
                 { value: "workshop", label: "Workshop" },
               ].map((option) => (
@@ -256,4 +258,3 @@ const EventsPage = () => {
 }
 
 export default EventsPage
-
