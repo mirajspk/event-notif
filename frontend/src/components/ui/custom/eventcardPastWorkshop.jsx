@@ -1,7 +1,8 @@
+
 import { useState, useEffect } from "react"; 
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Calendar, Clock, MapPin } from 'lucide-react';
+import { Calendar, Clock, Ear, MapPin } from 'lucide-react';
 import axios from 'axios'; // Import axios for making HTTP requests
 
 //This component renders single event card and defines on How it should look like
@@ -70,21 +71,20 @@ const EventList = () => {
   //After calling useEffect pass it a function that contains side effect 
   //it takes 2 argument 1: function 
   //2: empty depenndency array [] <which implies effect will only run once>
-     useEffect(() => {
+  //
+ useEffect(() => {
     const fetchEvents = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:8000/api/events');
-        const today = new Date(); // Get today's date
-        const sevenDaysFromNow = new Date(today); // Create a copy of today's date
-        sevenDaysFromNow.setDate(today.getDate() + 7); // Add 7 days to today's date
+        const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
 
-        // Filter events within the next 7 days
-        const filteredEvents = response.data.filter(event => {
-          const eventDate = new Date(event.date); // Convert event date to a Date object
-          return eventDate >= today && eventDate <= sevenDaysFromNow; // Check if the event is within the next 7 days
-        });
+        //FilterPast event with workshop type
+        const pastEvents = response.data.filter(event => 
+          event.date < today &&
+          event.type === "workshop"
+        );
 
-        setEvents(filteredEvents); // Set the filtered events
+        setEvents(pastEvents); // Set the filtered past events
       } catch (err) {
         setError(err);
       } finally {
@@ -95,6 +95,7 @@ const EventList = () => {
     fetchEvents();
   }, []);
 
+  
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 

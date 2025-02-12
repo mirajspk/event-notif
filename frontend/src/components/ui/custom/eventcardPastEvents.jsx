@@ -1,8 +1,7 @@
-
 import { useState, useEffect } from "react"; 
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Calendar, Clock, MapPin } from 'lucide-react';
+import { Calendar, Clock, Ear, MapPin } from 'lucide-react';
 import axios from 'axios'; // Import axios for making HTTP requests
 
 //This component renders single event card and defines on How it should look like
@@ -78,10 +77,11 @@ const EventList = () => {
         const response = await axios.get('http://127.0.0.1:8000/api/events');
         const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
 
-        // Filter past events
-        const pastEvents = response.data.filter(event => {
-          return event.date < today; // Compare event date with today's date
-        });
+        //FilterPast event with workshop type
+        const pastEvents = response.data.filter(event => 
+          event.date < today &&
+          event.type === "event"
+        );
 
         setEvents(pastEvents); // Set the filtered past events
       } catch (err) {
@@ -94,7 +94,7 @@ const EventList = () => {
     fetchEvents();
   }, []);
 
-
+  
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 

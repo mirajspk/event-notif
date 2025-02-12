@@ -70,21 +70,21 @@ const EventList = () => {
   //After calling useEffect pass it a function that contains side effect 
   //it takes 2 argument 1: function 
   //2: empty depenndency array [] <which implies effect will only run once>
- useEffect(() => {
+     useEffect(() => {
     const fetchEvents = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:8000/api/events');
-        const today = new Date().toISOString().split('T')[0]; // Today's date in YYYY-MM-DD
-        const thirtyDaysLater = new Date();
-        thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 30); // Add 30 days to today
-        const thirtyDaysLaterFormatted = thirtyDaysLater.toISOString().split('T')[0]; // Format to YYYY-MM-DD
+        const today = new Date(); // Get today's date
+        const sevenDaysFromNow = new Date(today); // Create a copy of today's date
+        sevenDaysFromNow.setDate(today.getDate() + 7); // Add 7 days to today's date
 
-        // Filter events within the next 30 days
-        const next30DaysEvents = response.data.filter(event => 
-          event.date >= today && event.date <= thirtyDaysLaterFormatted
-        );
+        // Filter events within the next 7 days
+        const filteredEvents = response.data.filter(event => {
+          const eventDate = new Date(event.date); // Convert event date to a Date object
+          return eventDate >= today && eventDate <= sevenDaysFromNow && event.type === "workshop"; // Check if the event is within the next 7 days
+        });
 
-        setEvents(next30DaysEvents); // Set filtered events
+        setEvents(filteredEvents); // Set the filtered events
       } catch (err) {
         setError(err);
       } finally {
