@@ -54,16 +54,16 @@ export default function Club({ clubname, clubId }) {
       </div>
       <div>
         <span className="font-medium">{clubname}</span>
-        
+
         {/* Corrected Form Structure */}
         <form onSubmit={handleSubmit(handleSubscribe)} className="flex mt-2 w-full">
           <Input
             {...register("email")}
             type="email"
             placeholder="Email..."
-            className="border border-[#000000] rounded-l-md w-full focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-[#92989F] h-9 "
-      />
-          <Button type="submit" className="h-9 ml-0.45 rounded-r-md bg-[#00A8E5] text-white hover:bg-[#00A8E5]/80">
+            className="border border-[#000000] rounded-none w-full focus:ring-transparent placeholder:text-[#92989F] h-9 "
+          />
+          <Button type="submit" className="h-9 ml-0.45 rounded-none bg-[#00A8E5] text-white hover:bg-[#00A8E5]/80">
             Follow
           </Button>
         </form>

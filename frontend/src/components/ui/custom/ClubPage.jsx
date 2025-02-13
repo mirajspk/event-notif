@@ -9,8 +9,14 @@ export default function ClubPage() {
     { id: 2, name: "Kathmandu University Architecture Student Society" },
     { id: 3, name: "Kathmandu University Robotics Club" },
     { id: 4, name: "Kathmandu University Civil Engineering Club" },
-    { id: 5, name: "Society of Electrical & Electronic Engineering" },
-    { id: 6, name: "Kathmandu University Society of Music and Culture" },
+    { id: 5, name: "Kathmandu University Society of Music and Culture" },
+    { id: 6, name: "Geomatics Engineering Society" },
+    { id: 7, name: "Architecture Student Club" },
+    { id: 8, name: "Biotechnology Creatives" },
+    { id: 9, name: "Forum for Pharmacy" },
+    { id: 10, name: "Artificial Intelligence Club" },
+    { id: 11, name: "Society of Electrical & Electronic Engineering" },
+    { id: 12, name: "Forum for Environmental Conservation and Mangagement" },
   ];
 
   const [searchTerm, setSearchTerm] = useState('');
