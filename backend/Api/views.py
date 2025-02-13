@@ -208,42 +208,44 @@ class EventRegistrationView(APIView):
 class LoginView(TokenObtainPairView):
     permission_classes = [AllowAny]
 
-    def post(self, request):
-        email = request.data.get("email")
-        password = request.data.get("password")
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
 
-        user = authenticate(request, username=email, password=password)
-        if user is None:
-            return Response({"error": "Invalid credentials"}, status=401)
+        access_token = response.data.get("access")
+        refresh_token = response.data.get("refresh")
 
-        refresh = RefreshToken.for_user(user)
-        response = Response({
-            "user": {
+        if access_token and refresh_token:
+            # Set cookies
+            response.set_cookie(
+                key="access_token",
+                value=access_token,
+                httponly=True, 
+                secure=not settings.DEBUG,  # Secure in production
+                samesite="Lax",
+                path="/",
+            )
+            response.set_cookie(
+                key="refresh_token",
+                value=refresh_token,
+                httponly=True,
+                secure=not settings.DEBUG,
+                samesite="Lax",
+                path="/api/token/refresh/",
+            )
+
+            # Get user details
+            user = User.objects.get(username=request.data.get("username"))
+            response.data.update({
+                "id": user.id,
+                "username": user.username,
                 "email": user.email,
-                "is_staff": user.is_staff,
-            }
-        })
+                "user_type": user.user_type,
+                "club": user.club.id if user.club else None,
+                "club_name": user.club.club_name if user.club else None,
+                "is_club_admin": user.is_admin_user(),
+            })
 
-        # Set JWT tokens in cookies
-        response.set_cookie(
-            key="access_token",
-            value=str(refresh.access_token),
-            httponly=True,
-            secure=not settings.DEBUG,
-            samesite="Lax",
-        )
-        response.set_cookie(
-            key="refresh_token",
-            value=str(refresh),
-            httponly=True,
-            secure=not settings.DEBUG,
-            samesite="Lax",
-        )
-
-        return response
-
-            # Remove tokens from response body for security
-            # uncomment if you want to hide access and refresh token in endpoint 
+            # Uncomment this to hide tokens from the response body (for extra security)
             # del response.data["access"]
             # del response.data["refresh"]
 
