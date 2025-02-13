@@ -29,10 +29,10 @@ function LoginForm() {
       password: "",
     },
   });
-  
+
   async function onSubmit(values) {
     setIsLoading(true);
- try {
+    try {
       const success = await login(values.email, values.password);
       if (success) {
         // If we have a redirect URL in the location state, use it
