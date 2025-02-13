@@ -33,8 +33,8 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center space-x-4">
-          <a href="/signup">
-            <Button>SIGN UP</Button>
+          <a href="/login">
+            <Button>LOG IN</Button>
           </a>
           <Button
             variant="menu"

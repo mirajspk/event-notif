@@ -115,17 +115,11 @@ function LoginForm() {
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="flex flex-col space-y-4">
-          <div className="text-center text-sm">
-            Don't have an account?{" "}
-            <Link to="/signup" className="text-[#00A8E5] hover:underline decoration-[#00A8E5] underline-offset-4">
-              Sign Up
-            </Link>
-          </div>
+        <CardFooter className="flex flex-col space-y-4 my-4">
+          <Link to="/" className="text-primary">Go back to home</Link>
         </CardFooter>
       </Card>
       <div className="mt-5">
-        <Link to="/" className="text-primary">Go back to home</Link>
       </div>
     </div>
   );
