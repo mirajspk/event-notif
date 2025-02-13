@@ -220,16 +220,16 @@ class LoginView(TokenObtainPairView):
                 key="access_token",
                 value=access_token,
                 httponly=True, 
-                secure=not settings.DEBUG,  # Secure in production
-                samesite="Lax",
+                secure=True,  # Secure in production
+                samesite="None",
                 path="/",
             )
             response.set_cookie(
                 key="refresh_token",
                 value=refresh_token,
                 httponly=True,
-                secure=not settings.DEBUG,
-                samesite="Lax",
+                secure=True,
+                samesite="None",
                 path="/api/token/refresh/",
             )
 
@@ -271,7 +271,7 @@ class TokenRefreshView(TokenRefreshView):
                 value=access_token,
                 httponly=True,
                 secure=settings.DEBUG is False,
-                samesite="Lax",
+                samesite="None",
                 path="/",
             )
             del response.data["access"]  # Remove from response body for security

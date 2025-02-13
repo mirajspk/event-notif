@@ -1,67 +1,68 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import Cookies from 'js-cookie'; // Install with `npm install js-cookie`
 
-/**
- * AuthContext provides authentication state and methods to its consumers.
- */
 const AuthContext = createContext(null);
 
-/**
- * AuthProvider component that wraps its children with AuthContext.Provider.
- * It manages authentication state and provides login and logout methods.
- *
- *  {Object} props - The component props.
- *  {React.ReactNode} props.children - The children components.
- */
 export function AuthProvider({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return Cookies.get('isAuthenticated') === 'true'; // Read from cookies
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     checkAuthStatus();
   }, []);
 
-  /**
-   * Checks the authentication status by making an API call.
-   */
   const checkAuthStatus = async () => {
     try {
       const response = await fetch('http://127.0.0.1:8000/api/auth/check', {
         credentials: 'include',
       });
+
       if (!response.ok) {
         throw new Error('Failed to check auth status');
       }
+
       const data = await response.json();
       setIsAuthenticated(data.authenticated);
+      if (data.authenticated) {
+        Cookies.set('isAuthenticated', 'true', {
+          expires: 1,
+          sameSite: 'None',
+          secure: true
+        });
+      } else {
+        Cookies.remove('isAuthenticated');
+      }
     } catch (error) {
       console.error('Auth check failed:', error);
       setIsAuthenticated(false);
+      Cookies.remove('isAuthenticated'); // Clear auth state
     } finally {
       setIsLoading(false);
     }
   };
 
-  /**
-   * Logs in the user by making an API call with the provided username and password.
-   */
   const login = async (username, password) => {
-    console.log('Attempting login with:', username, password);
     try {
       const response = await fetch('http://127.0.0.1:8000/api/login/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
-        credentials: 'include', // Important for sending cookies
+        credentials: 'include',
       });
 
-      console.log('Response received:', response);
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Error data:', errorData);
         throw new Error(errorData.error || 'Login failed');
       }
 
       setIsAuthenticated(true);
+      Cookies.set('isAuthenticated', 'true', {
+        expires: 1,
+        sameSite: 'None',
+        secure: true
+      });
       return true;
     } catch (error) {
       console.error('Login error:', error.message);
@@ -69,9 +70,6 @@ export function AuthProvider({ children }) {
     }
   };
 
-  /**
-   * Logs out the user by making an API call.
-   */
   const logout = async () => {
     try {
       await fetch('http://127.0.0.1:8000/api/auth/logout/', {
@@ -80,6 +78,7 @@ export function AuthProvider({ children }) {
       });
     } finally {
       setIsAuthenticated(false);
+      Cookies.remove('isAuthenticated'); // Clear cookie on logout
     }
   };
 

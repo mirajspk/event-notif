@@ -195,12 +195,16 @@ EMAIL_HOST_USER = 'girishchaulagain5@gmail.com'
 EMAIL_HOST_PASSWORD = 'mcvg atro vdqm otby'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-
 SITE_ID = 1
 
 
-SESSION_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_SAMESITE = 'Lax'
-SESSION_COOKIE_SECURE = False 
+SESSION_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = True #true in production
+
+#added by abhishekh
+SESSION_COOKIE_HTTPONLY = True  # Security: Prevents JS access
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = True
 
 FRONTEND_LOGIN_URL = 'http://localhost:5173/login'
