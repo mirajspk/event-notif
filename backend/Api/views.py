@@ -385,6 +385,8 @@ class AddEventView(APIView): #add events view
 class LogoutView(APIView): #logout view
     def post(self, request):
         response = Response({'detail': 'Successfully logged out'})
-        response.delete_cookie('access_token')
-        response.delete_cookie('refresh_token')
+        response = JsonResponse({"message": "Logged out successfully"})
+        # Expire access and refresh tokens
+        response.set_cookie("access_token", "", expires="Thu, 01 Jan 1970 00:00:00 GMT", path="/", samesite="None", secure=True, httponly=True)
+        response.set_cookie("refresh_token", "", expires="Thu, 01 Jan 1970 00:00:00 GMT", path="/api/token/refresh/", samesite="None", secure=True, httponly=True)
         return response

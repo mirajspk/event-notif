@@ -72,13 +72,20 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      await fetch('http://127.0.0.1:8000/api/auth/logout/', {
-        method: 'POST',
-        credentials: 'include',
+      await fetch("http://127.0.0.1:8000/api/auth/logout/", {
+        method: "POST",
+        credentials: "include", // Ensure cookies are sent
       });
+    } catch (error) {
+      console.error("Logout failed:", error);
     } finally {
+      Cookies.remove("isAuthenticated");
+      Cookies.remove("access_token"); // Clear access token cookie
+      Cookies.remove("refresh_token"); // Clear refresh token cookie
+      localStorage.clear(); // Clear any stored auth data
+      sessionStorage.clear();
       setIsAuthenticated(false);
-      Cookies.remove('isAuthenticated'); // Clear cookie on logout
+      window.location.reload(); // Ensure session is cleared
     }
   };
 
