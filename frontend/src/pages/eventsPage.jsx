@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import axios from "axios"
-import EventList from "@/components/ui/custom/eventcard"
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -10,7 +9,19 @@ import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Link } from "react-router"
+import EventcardAll from "@/components/ui/custom/eventcardAll"
+import EventcardEvent from "@/components/ui/custom/eventcardEvent"
+import EventcardPastEvents from "@/components/ui/custom/eventcardPastEvents"
+import EventcardPastWorkshop from "@/components/ui/custom/eventcardPastWorkshop"
+import EventcardSevenEvent from "@/components/ui/custom/eventcardSevenEvent"
+import EventcardSevenWorkshop from "@/components/ui/custom/eventcardSevenWorkshop"
+import EventcardThirtyEvent from "@/components/ui/custom/eventcardThirtyEvent"
+import EventcardThirtyWorkshop from "@/components/ui/custom/eventcardThirtyWorkshop"
+import EventcardWorkshop from "@/components/ui/custom/eventcardWorkshop"
+import EventcardUpcomingAll from "@/components/ui/custom/eventcardUpcomingAll"
+import EventcardPastAll from "@/components/ui/custom/eventcardPastAll"
+import EventcardSevenAll from "@/components/ui/custom/eventcardSevenAll"
+import EventcardThirtyAll from "@/components/ui/custom/eventcardThirtyAll"
 
 const EventsPage = () => {
   const [events, setEvents] = useState([])
@@ -21,9 +32,8 @@ const EventsPage = () => {
 
   // Simple form state
   const [filters, setFilters] = useState({
-    timeFilter: "7days",
-    eventType: "event",
-    selectedClub: "",
+    timeFilter: "upcoming", // Default to "All events"
+    eventType: "both", // Default to "Both"
   })
 
   useEffect(() => {
@@ -55,8 +65,8 @@ const EventsPage = () => {
       filtered = filtered.filter((event) => event.isWorkshop)
     }
 
+    const now = new Date()
     if (filters.timeFilter === "past") {
-      const now = new Date()
       filtered = filtered.filter((event) => new Date(event.date) < now)
     } else if (filters.timeFilter === "7days") {
       const sevenDaysAgo = new Date()
@@ -73,8 +83,8 @@ const EventsPage = () => {
 
   const handleReset = () => {
     setFilters({
-      timeFilter: "7days",
-      eventType: "event",
+      timeFilter: "upcoming",
+      eventType: "both",
       selectedClub: "",
     })
   }
@@ -87,9 +97,10 @@ const EventsPage = () => {
             <h3 className="mb-4 text-sm font-medium">When</h3>
             <div className="space-y-2">
               {[
-                { value: "past", label: "Past events" },
-                { value: "7days", label: "Next 7 days" },
-                { value: "30days", label: "Next 30 days" },
+                { value: "upcoming", label: "Upcoming" },
+                { value: "past", label: "Past" },
+                { value: "7days", label: "7 days" },
+                { value: "30days", label: "30 days" },
               ].map((option) => (
                 <div
                   key={option.value}
@@ -97,8 +108,9 @@ const EventsPage = () => {
                   onClick={() => setFilters({ ...filters, timeFilter: option.value })}
                 >
                   <div
-                    className={`w-4 h-4 rounded-full border ${filters.timeFilter === option.value ? "border-primary bg-primary" : "border-input"
-                      }`}
+                    className={`w-4 h-4 rounded-full border ${
+                      filters.timeFilter === option.value ? "border-primary bg-primary" : "border-input"
+                    }`}
                   >
                     {filters.timeFilter === option.value && (
                       <div className="w-full h-full rounded-full bg-white scale-50" />
@@ -114,6 +126,7 @@ const EventsPage = () => {
             <h3 className="mb-4 text-sm font-medium">Type</h3>
             <div className="space-y-2">
               {[
+                { value: "both", label: "Both" },
                 { value: "event", label: "Event" },
                 { value: "workshop", label: "Workshop" },
               ].map((option) => (
@@ -123,8 +136,9 @@ const EventsPage = () => {
                   onClick={() => setFilters({ ...filters, eventType: option.value })}
                 >
                   <div
-                    className={`w-4 h-4 rounded-full border ${filters.eventType === option.value ? "border-primary bg-primary" : "border-input"
-                      }`}
+                    className={`w-4 h-4 rounded-full border ${
+                      filters.eventType === option.value ? "border-primary bg-primary" : "border-input"
+                    }`}
                   >
                     {filters.eventType === option.value && (
                       <div className="w-full h-full rounded-full bg-white scale-50" />
@@ -136,39 +150,10 @@ const EventsPage = () => {
             </div>
           </div>
 
-          <Select
-            value={filters.selectedClub}
-            onValueChange={(value) => setFilters({ ...filters, selectedClub: value })}
-          >
-            <SelectTrigger className="rounded-none">
-              <SelectValue placeholder="Select Clubs" />
-            </SelectTrigger>
-            <SelectContent className="bg-white">
-              <SelectItem value="kucc">Computer Club (KUCC)</SelectItem>
-              <SelectItem value="kurc">Robotics Club (KURC)</SelectItem>
-              <SelectItem value="kucec">Civil Engineering Club (KUCEC)</SelectItem>
-              <SelectItem value="kucmc">Computational Mathematics Club (KUCMC)</SelectItem>
-              <SelectItem value="kuarc">Architecture Students' Club (KUARC)</SelectItem>
-              <SelectItem value="ges">Geomatics Engineering Society (GES)</SelectItem>
-              <SelectItem value="kubic">Biotechnology Creatives (KUBiC)</SelectItem>
-              <SelectItem value="seee">Society of Electrical and Electronic Engineering (SEEE)</SelectItem>
-              <SelectItem value="fop">Forum for Pharmacy (FoP)</SelectItem>
-              <SelectItem value="sbis">Society of Business Information Students (SBIS)</SelectItem>
-              <SelectItem value="kuaic">Artificial Intelligence Club (KUAIC)</SelectItem>
-              <SelectItem value="kuigc">Indoors Games Clubs (KUIGC)</SelectItem>
-              <SelectItem value="kusmc">Society of Music and Culture (KUSMC)</SelectItem>
-              <SelectItem value="fecam">Forum for Environmental Conservation and Management (FECAM)</SelectItem>
-            </SelectContent>
-          </Select>
+          
 
           <div className="space-y-2">
-            <Button
-              type="button"
-              className="w-full rounded-none bg-[#00A8E5] text-white hover:bg-[#0077A2]"
-              onClick={() => setIsFilterOpen(false)}
-            >
-              Apply Filters
-            </Button>
+
             <Button
               type="button"
               variant="outline"
@@ -200,7 +185,6 @@ const EventsPage = () => {
       <div className="container mx-auto p-4">
         <Alert variant="destructive">
           <AlertDescription>Error loading events: {error.message}</AlertDescription>
-          <Link to="/" className="text-primary">Go back to home</Link>
         </Alert>
       </div>
     )
@@ -224,8 +208,9 @@ const EventsPage = () => {
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Filter Panel - Mobile */}
           <div
-            className={`lg:hidden fixed inset-0 z-50 bg-white transition-transform duration-200 ease-in-out ${isFilterOpen ? "translate-x-0" : "-translate-x-full"
-              }`}
+            className={`lg:hidden fixed inset-0 z-50 bg-white transition-transform duration-200 ease-in-out ${
+              isFilterOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
           >
             <div className="p-4 h-full overflow-y-auto">
               <div className="flex justify-between items-center mb-4">
@@ -246,7 +231,42 @@ const EventsPage = () => {
 
           {/* Event List */}
           <div className="flex-1">
-            <EventList events={filteredEvents} />
+            {filters.eventType === "event" && filters.timeFilter === "past" && (
+              <EventcardPastEvents />
+            )}
+            {filters.eventType === "workshop" && filters.timeFilter === "past" && (
+              <EventcardPastWorkshop />
+            )}
+            {filters.eventType === "event" && filters.timeFilter === "7days" && (
+              <EventcardSevenEvent />
+            )}
+            {filters.eventType === "workshop" && filters.timeFilter === "7days" && (
+              <EventcardSevenWorkshop />
+            )}
+            {filters.eventType === "event" && filters.timeFilter === "30days" && (
+              <EventcardThirtyEvent />
+            )}
+            {filters.eventType === "workshop" && filters.timeFilter === "30days" && (
+              <EventcardThirtyWorkshop />
+            )}
+            {filters.eventType === "event" && filters.timeFilter === "upcoming" && (
+              <EventcardEvent />
+            )}
+            {filters.eventType === "workshop" && filters.timeFilter === "upcoming" && (
+              <EventcardWorkshop />
+            )}
+            {filters.eventType === "both" && filters.timeFilter === "upcoming" && (
+              <EventcardUpcomingAll />
+            )}
+            {filters.eventType === "both" && filters.timeFilter === "past" && (
+              <EventcardPastAll />
+            )}
+            {filters.eventType === "both" && filters.timeFilter === "7days" && (
+              <EventcardSevenAll />
+            )}
+            {filters.eventType === "both" && filters.timeFilter === "30days" && (
+              <EventcardThirtyAll />
+            )}
           </div>
         </div>
       </main>
