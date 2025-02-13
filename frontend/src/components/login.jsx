@@ -7,13 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
-
-
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Mail, Lock } from "lucide-react";
 import { Icons } from "./ui/icons";
 import { Link } from "react-router";
-
 import { loginSchema } from "@/lib/login-schema";
 
 function LoginForm() {
@@ -25,7 +22,7 @@ function LoginForm() {
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
     },
   });
@@ -33,19 +30,15 @@ function LoginForm() {
   async function onSubmit(values) {
     setIsLoading(true);
     try {
-      const success = await login(values.email, values.password);
+      const success = await login(values.username, values.password);
       if (success) {
-        // If we have a redirect URL in the location state, use it
         const redirectTo = location.state?.from?.pathname || '/';
         if (redirectTo === '/add_event') {
-          // For the event schedule page, do a full page redirect to the backend URL
           window.location.href = 'http://127.0.0.1:8000/add_event/';
         } else {
-          // For other pages, use React Router navigation
           navigate(redirectTo);
         }
       } else {
-        // Handle login failure
         form.setError('root', {
           type: 'manual',
           message: 'Invalid credentials'
@@ -68,14 +61,14 @@ function LoginForm() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
-                name="email"
+                name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="email">Email</FormLabel>
+                    <FormLabel htmlFor="username">Username</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
-                        <Input id="email" autoComplete="email" placeholder="Enter your email" {...field} disabled={isLoading} className="pl-10" />
+                        <Input id="username" autoComplete="username" placeholder="Enter your username" {...field} disabled={isLoading} className="pl-10" />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -137,6 +130,5 @@ function LoginForm() {
     </div>
   );
 }
-
 
 export default LoginForm;

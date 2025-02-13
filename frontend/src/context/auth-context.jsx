@@ -1,16 +1,16 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 
-/**                                                                                      
- * AuthContext provides authentication state and methods to its consumers.               
+/**
+ * AuthContext provides authentication state and methods to its consumers.
  */
 const AuthContext = createContext(null);
 
-/**                                                                                      
- * AuthProvider component that wraps its children with AuthContext.Provider.             
- * It manages authentication state and provides login and logout methods.                
- *                                                                                       
- *  {Object} props - The component props.                                          
- *  {React.ReactNode} props.children - The children components.                    
+/**
+ * AuthProvider component that wraps its children with AuthContext.Provider.
+ * It manages authentication state and provides login and logout methods.
+ *
+ *  {Object} props - The component props.
+ *  {React.ReactNode} props.children - The children components.
  */
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -20,8 +20,8 @@ export function AuthProvider({ children }) {
     checkAuthStatus();
   }, []);
 
-  /**                                                                                    
-   * Checks the authentication status by making an API call.                             
+  /**
+   * Checks the authentication status by making an API call.
    */
   const checkAuthStatus = async () => {
     try {
@@ -41,16 +41,16 @@ export function AuthProvider({ children }) {
     }
   };
 
-  /**                                                                                    
-   * Logs in the user by making an API call with the provided email and password.        
+  /**
+   * Logs in the user by making an API call with the provided username and password.
    */
-  const login = async (email, password) => {
-    console.log('Attempting login with:', email, password);
+  const login = async (username, password) => {
+    console.log('Attempting login with:', username, password);
     try {
       const response = await fetch('http://127.0.0.1:8000/api/login/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, password }),
         credentials: 'include', // Important for sending cookies
       });
 
@@ -69,8 +69,8 @@ export function AuthProvider({ children }) {
     }
   };
 
-  /*                                                                                    
-   * Logs out the user by making an API call.                                            
+  /**
+   * Logs out the user by making an API call.
    */
   const logout = async () => {
     try {
@@ -94,4 +94,4 @@ export function AuthProvider({ children }) {
   );
 }
 
-export const useAuth = () => useContext(AuthContext);                                   
+export const useAuth = () => useContext(AuthContext);
