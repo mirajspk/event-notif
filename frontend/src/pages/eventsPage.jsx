@@ -18,6 +18,10 @@ import EventcardSevenWorkshop from "@/components/ui/custom/eventcardSevenWorksho
 import EventcardThirtyEvent from "@/components/ui/custom/eventcardThirtyEvent"
 import EventcardThirtyWorkshop from "@/components/ui/custom/eventcardThirtyWorkshop"
 import EventcardWorkshop from "@/components/ui/custom/eventcardWorkshop"
+import EventcardUpcomingAll from "@/components/ui/custom/eventcardUpcomingAll"
+import EventcardPastAll from "@/components/ui/custom/eventcardPastAll"
+import EventcardSevenAll from "@/components/ui/custom/eventcardSevenAll"
+import EventcardThirtyAll from "@/components/ui/custom/eventcardThirtyAll"
 
 const EventsPage = () => {
   const [events, setEvents] = useState([])
@@ -252,7 +256,16 @@ const EventsPage = () => {
               <EventcardWorkshop />
             )}
             {filters.eventType === "both" && filters.timeFilter === "upcoming" && (
-              <EventcardAll />
+              <EventcardUpcomingAll />
+            )}
+            {filters.eventType === "both" && filters.timeFilter === "past" && (
+              <EventcardPastAll />
+            )}
+            {filters.eventType === "both" && filters.timeFilter === "7days" && (
+              <EventcardSevenAll />
+            )}
+            {filters.eventType === "both" && filters.timeFilter === "30days" && (
+              <EventcardThirtyAll />
             )}
           </div>
         </div>
