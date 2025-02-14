@@ -342,7 +342,7 @@ class AddEventView(APIView): #add events view
             return auth_result
             
         form = EventForm()
-        return render(request, "add_event.html", {"form": form})  
+        return render(request, "api/add_event.html", {"form": form})  
 
     def post(self, request):
         auth_result = self._check_authentication(request)
