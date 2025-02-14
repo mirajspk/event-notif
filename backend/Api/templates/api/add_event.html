@@ -9,14 +9,22 @@
     <h1 class="text-5xl font-bold mb-8 text-center">Schedule Event</h1>
 
     {% if messages %}
-      <div class="mb-4">
-        {% for message in messages %}
-          <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mb-4">
-            <span class="block">{% if message.tags %}{{ message.tags }}{% endif %}: {{ message}}</span>
-          </div>
-        {% endfor %}
-      </div>
+    {% for message in messages %}
+        <div id="alert-box" class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
     {% endif %}
+
+<script>
+    // Wait for 3 seconds, then hide the alert
+    setTimeout(function() {
+        var alertBox = document.getElementById("alert-box");
+        if (alertBox) {
+            alertBox.style.display = "none";
+        }
+    }, 3000);
+</script>
 
     <form method="post" enctype="multipart/form-data" class="bg-white p-5 rounded-lg shadow-lg">
       {% csrf_token %}
