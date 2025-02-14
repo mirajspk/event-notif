@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react"; 
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Calendar, Clock, MapPin } from 'lucide-react';
 import axios from 'axios'; // Import axios for making HTTP requests
 import { useNavigate } from 'react-router-dom';
 
 // This component renders single event card and defines on How it should look like
-const EventCard = ({ 
-  image, 
-  title, 
-  location, 
-  startTime, 
-  date, 
+const EventCard = ({
+  image,
+  title,
+  location,
+  startTime,
+  date,
   onSeeDetails,
 }) => {
   return (
@@ -56,9 +56,9 @@ const EventCard = ({
 };
 
 // This component stores the list of the Events from the API 
-const eventcardThree= () => {
-  const [events, setEvents] = useState([]); 
-  const [loading, setLoading] = useState(true); 
+const EventcardThree = () => {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate()
   //useEffect 
@@ -79,24 +79,24 @@ const eventcardThree= () => {
         setEvents(sortedEvents); // Update state
 
       } catch (err) {
-        setError(err); 
+        setError(err);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
-    fetchEvents(); 
-  }, []); 
+    fetchEvents();
+  }, []);
 
-  if (loading) return <div>Loading...</div>; 
-  if (error) return <div>Error: {error.message}</div>; 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div className="flex flex-wrap justify-center gap-6"> 
+    <div className="flex flex-wrap justify-center gap-6">
       {events.map(event => (
-        <div key={event.id} className="mb-6"> 
-          <EventCard 
-            image ={event.image}
+        <div key={event.id} className="mb-6">
+          <EventCard
+            image={event.image}
             title={event.name}
             location={event.location}
             startTime={event.startTime}
@@ -109,4 +109,4 @@ const eventcardThree= () => {
   );
 };
 
-export default eventcardThree;
+export default EventcardThree;

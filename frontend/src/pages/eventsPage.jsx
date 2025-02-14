@@ -22,6 +22,8 @@ import EventcardUpcomingAll from "@/components/ui/custom/eventcardUpcomingAll"
 import EventcardPastAll from "@/components/ui/custom/eventcardPastAll"
 import EventcardSevenAll from "@/components/ui/custom/eventcardSevenAll"
 import EventcardThirtyAll from "@/components/ui/custom/eventcardThirtyAll"
+import { Header } from "@/components/ui/custom/Header"
+import Footer from "@/components/footer"
 
 const EventsPage = () => {
   const [events, setEvents] = useState([])
@@ -108,9 +110,8 @@ const EventsPage = () => {
                   onClick={() => setFilters({ ...filters, timeFilter: option.value })}
                 >
                   <div
-                    className={`w-4 h-4 rounded-full border ${
-                      filters.timeFilter === option.value ? "border-primary bg-primary" : "border-input"
-                    }`}
+                    className={`w-4 h-4 rounded-full border ${filters.timeFilter === option.value ? "border-primary bg-primary" : "border-input"
+                      }`}
                   >
                     {filters.timeFilter === option.value && (
                       <div className="w-full h-full rounded-full bg-white scale-50" />
@@ -136,9 +137,8 @@ const EventsPage = () => {
                   onClick={() => setFilters({ ...filters, eventType: option.value })}
                 >
                   <div
-                    className={`w-4 h-4 rounded-full border ${
-                      filters.eventType === option.value ? "border-primary bg-primary" : "border-input"
-                    }`}
+                    className={`w-4 h-4 rounded-full border ${filters.eventType === option.value ? "border-primary bg-primary" : "border-input"
+                      }`}
                   >
                     {filters.eventType === option.value && (
                       <div className="w-full h-full rounded-full bg-white scale-50" />
@@ -150,10 +150,7 @@ const EventsPage = () => {
             </div>
           </div>
 
-          
-
           <div className="space-y-2">
-
             <Button
               type="button"
               variant="outline"
@@ -191,8 +188,9 @@ const EventsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4">
+    <div className="min-h-screen flex flex-col bg-background">
+      <Header />
+      <main className="container mx-auto px-4 flex-grow my-10">
         {/* Mobile Filter Toggle */}
         <div className="lg:hidden flex justify-end my-4">
           <Button
@@ -208,9 +206,8 @@ const EventsPage = () => {
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Filter Panel - Mobile */}
           <div
-            className={`lg:hidden fixed inset-0 z-50 bg-white transition-transform duration-200 ease-in-out ${
-              isFilterOpen ? "translate-x-0" : "-translate-x-full"
-            }`}
+            className={`lg:hidden fixed inset-0 z-50 bg-white transition-transform duration-200 ease-in-out ${isFilterOpen ? "translate-x-0" : "-translate-x-full"
+              }`}
           >
             <div className="p-4 h-full overflow-y-auto">
               <div className="flex justify-between items-center mb-4">
@@ -270,6 +267,7 @@ const EventsPage = () => {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   )
 }

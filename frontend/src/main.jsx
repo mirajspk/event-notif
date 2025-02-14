@@ -43,7 +43,7 @@ const router = createBrowserRouter([
     errorElement: <NotFoundPage />,
   },
   {
-    path: '/events/:Eventid',
+    path: '/events/:id',
     element: <EventDetailPage />,
     errorElement: <NotFoundPage />,
   },
