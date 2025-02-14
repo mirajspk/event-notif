@@ -15,7 +15,7 @@ urlpatterns = [
     path('api/events/', EventList.as_view(), name='event-list'),
 
     # Event Detail Endpoint (GET, PUT, DELETE)
-    path('api/events/<int:pk>/', EventDetail.as_view(), name='event-detail'),
+    path('api/events/<int:id>/', EventDetail.as_view(), name='event-detail'),
 
     # Related Events Endpoint
     path('api/events/host/<str:host>/', RelatedEventsView.as_view(), name="related-events"),
