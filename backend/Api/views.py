@@ -342,7 +342,7 @@ class AddEventView(APIView): #add events view
             return auth_result
             
         form = EventForm()
-        return render(request, "api/add_event.html", {"form": form})  
+        return render(request, "add_event.html", {"form": form})  
 
     def post(self, request):
         auth_result = self._check_authentication(request)
@@ -397,3 +397,23 @@ class LogoutView(APIView): #logout view
 def event_list(request):
     events = Event.objects.all()
     return render(request, 'api/event_list.html', {'events': events})
+
+# Edit Event
+def edit_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if request.method == "POST":
+        form = EventForm(request.POST, request.FILES, instance=event)
+        if form.is_valid():
+            form.save()
+            return redirect('event_list')
+    else:
+        form = EventForm(instance=event)
+    return render(request, 'edit_event.html', {'form': form , "event" :event})
+
+# Delete Event
+def delect_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if request.method == "POST":
+        event.delete()
+        return redirect('event_list')
+    return render(request, 'delect_event.html', {'event': event})
