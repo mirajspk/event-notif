@@ -60,7 +60,7 @@ class Event(models.Model):
     location = models.CharField(max_length=2555, null = True)  # Location of the event/workshop
     date = models.DateField()  # Date of the event/workshop
     host = models.ForeignKey(Clubs, on_delete=models.CASCADE)
-    type = models.CharField(max_length=50)  # Type: Event or Workshop
+    type = models.CharField(max_length=50, choices=TYPE_CHOICES)  # Type: Event or Workshop
     registration_link = models.URLField(max_length=500)  # Link for registration
     startTime= models.CharField(max_length=50, blank=True)  # New Time field
     description = models.TextField(null= True, blank=True)  # New Description field
