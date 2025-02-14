@@ -1,0 +1,28 @@
+{% extends 'api/base.html' %}
+{% block content %}
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-4 text-center">Event List</h1>
+
+    <table class="min-w-full border-collapse border border-gray-300">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="border px-4 py-2">Event Title</th>
+                <th class="border px-4 py-2">Location</th>
+                <th class="border px-4 py-2">Date</th>
+                <th class="border px-4 py-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+            <tr>
+                <td class="border px-4 py-2">{{ event.name }}</td>
+                <td class="border px-4 py-2">{{ event.location }}</td>
+                <td class="border px-4 py-2">{{ event.date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

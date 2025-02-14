@@ -1,8 +1,9 @@
 from django.urls import path
 from .views import (
     RegisterClubAdminView, SubscribeView, LoginView, EventList,
-    EventDetail, RelatedEventsView, EventRegistrationView, AddEventView, AuthCheckView, LogoutView
+    EventDetail, RelatedEventsView, EventRegistrationView, AddEventView, AuthCheckView, LogoutView, 
 )
+from .views import event_list
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
@@ -34,4 +35,6 @@ urlpatterns = [
 
     # Admin Add Event (HTML Form)
     path('add_event/', AddEventView.as_view(), name='add_event'),
+    path('events/', event_list,name='event_list'),
+
 ]

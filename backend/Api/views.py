@@ -1,4 +1,5 @@
-from rest_framework.views import APIView
+from rest_framework.views import APIView 
+from django.views.generic import ListView
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status, permissions
@@ -390,3 +391,9 @@ class LogoutView(APIView): #logout view
         response.set_cookie("access_token", "", expires="Thu, 01 Jan 1970 00:00:00 GMT", path="/", samesite="None", secure=True, httponly=True)
         response.set_cookie("refresh_token", "", expires="Thu, 01 Jan 1970 00:00:00 GMT", path="/api/token/refresh/", samesite="None", secure=True, httponly=True)
         return response
+    
+
+
+def event_list(request):
+    events = Event.objects.all()
+    return render(request, 'api/event_list.html', {'events': events})
