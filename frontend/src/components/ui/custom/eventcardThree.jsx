@@ -101,7 +101,8 @@ const EventcardThree = () => {
             location={event.location}
             startTime={event.startTime}
             date={event.date}
-            onSeeDetails={() => navigate(`/events/${event.id}`)} // Use the navigate function
+            onSeeDetails={() => navigate(`/events/${event.id}`,
+              window.scrollTo(0, 0))} // Use the navigate function
           />
         </div>
       ))}
