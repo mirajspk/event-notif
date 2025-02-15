@@ -9,7 +9,7 @@ import EventsPage from './pages/eventsPage';
 import ClubsPage from './components/ui/custom/ClubPage.jsx';
 import SignUpForm from './components/signup.jsx';
 import LoginForm from './components/login.jsx';
-import { AuthProvider, useAuth } from './context/auth-context';
+import { AuthProvider, useAuth, } from './context/auth-context';
 import Contact from './pages/Contact'
 
 const ProtectedRoute = ({ children }) => {

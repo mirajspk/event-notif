@@ -202,9 +202,9 @@ EMAIL_HOST = 'smtp.gmail.com'
 SITE_ID = 1
 
 
-SESSION_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_SECURE = True #true in production
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = False #true in production
 
 #added by abhishekh
 SESSION_COOKIE_HTTPONLY = True  # Security: Prevents JS access

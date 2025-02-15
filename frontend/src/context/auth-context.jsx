@@ -1,11 +1,12 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie'; // Install with `npm install js-cookie`
+import axios from 'axios';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return Cookies.get('isAuthenticated') === 'true'; // Read from cookies
+    return Cookies.get('isAuthenticated') === 'true';
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -15,21 +16,30 @@ export function AuthProvider({ children }) {
 
   const checkAuthStatus = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/auth/check', {
-        credentials: 'include',
-      });
+      let accessToken = Cookies.get('access_token');
 
-      if (!response.ok) {
-        throw new Error('Failed to check auth status');
+      if (!accessToken) {
+        console.log('No access token found, trying to refresh...');
+        accessToken = await refreshAccessToken();
       }
 
-      const data = await response.json();
-      setIsAuthenticated(data.authenticated);
-      if (data.authenticated) {
+      if (!accessToken) {
+        console.error('Auth check failed: No valid access token');
+        setIsAuthenticated(false);
+        return;
+      }
+
+      const response = await axios.get('http://127.0.0.1:8000/api/auth/check', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        withCredentials: true, // Ensure cookies are sent
+      });
+
+      setIsAuthenticated(response.data.authenticated);
+      if (response.data.authenticated) {
         Cookies.set('isAuthenticated', 'true', {
           expires: 1,
-          sameSite: 'None',
-          secure: true
+          sameSite: 'Lax',
+          secure: false,
         });
       } else {
         Cookies.remove('isAuthenticated');
@@ -37,55 +47,88 @@ export function AuthProvider({ children }) {
     } catch (error) {
       console.error('Auth check failed:', error);
       setIsAuthenticated(false);
-      Cookies.remove('isAuthenticated'); // Clear auth state
+      Cookies.remove('isAuthenticated');
     } finally {
       setIsLoading(false);
     }
   };
 
+  const refreshAccessToken = async () => {
+    try {
+      const response = await axios.post(
+        'http://127.0.0.1:8000/api/token/refresh/',
+        {},
+        { withCredentials: true }
+      );
+
+      const newAccessToken = response.data.access;
+      Cookies.set('access_token', newAccessToken, {
+        expires: 1,
+        sameSite: 'Lax',
+        secure: false,
+      });
+
+      return newAccessToken;
+    } catch (error) {
+      console.error('Error refreshing access token:', error);
+      return null;
+    }
+  };
+
   const login = async (username, password) => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/login/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Login failed');
-      }
+      const response = await axios.post(
+        'http://127.0.0.1:8000/api/login/',
+        { username, password },
+        { withCredentials: true }
+      );
 
       setIsAuthenticated(true);
+      Cookies.set('access_token', response.data.access, {
+        expires: 1,
+        sameSite: 'Lax',
+        secure: false,
+      });
       Cookies.set('isAuthenticated', 'true', {
         expires: 1,
-        sameSite: 'None',
-        secure: true
+        sameSite: 'Lax',
+        secure: false,
       });
+
       return true;
     } catch (error) {
-      console.error('Login error:', error.message);
+      console.error('Login error:', error.response?.data || error.message);
       return false;
     }
   };
 
   const logout = async () => {
     try {
-      await fetch("http://127.0.0.1:8000/api/auth/logout/", {
-        method: "POST",
-        credentials: "include", // Ensure cookies are sent
-      });
-    } catch (error) {
-      console.error("Logout failed:", error);
-    } finally {
-      Cookies.remove("isAuthenticated");
-      Cookies.remove("access_token"); // Clear access token cookie
-      Cookies.remove("refresh_token"); // Clear refresh token cookie
-      localStorage.clear(); // Clear any stored auth data
+      const accessToken = Cookies.get('access_token');
+      if (!accessToken) {
+        console.error('No access token found, logging out anyway');
+      } else {
+        await axios.post(
+          'http://127.0.0.1:8000/api/auth/logout/',
+          {},
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+            withCredentials: true,
+          }
+        );
+      }
+
+      // Clear cookies and storage
+      Cookies.remove('access_token', { path: '/' });
+      Cookies.remove('refresh_token', { path: '/' });
+      Cookies.remove('isAuthenticated', { path: '/' });
+
+      localStorage.clear();
       sessionStorage.clear();
       setIsAuthenticated(false);
-      window.location.reload(); // Ensure session is cleared
+      window.location.reload();
+    } catch (error) {
+      console.error('Logout error:', error.message);
     }
   };
 
