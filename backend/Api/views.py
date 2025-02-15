@@ -216,20 +216,24 @@ class LoginView(TokenObtainPairView):
         refresh_token = response.data.get("refresh")
 
         if access_token and refresh_token:
-            # Set cookies
+            # Ensure access token is overwritten, not duplicated
+            response.delete_cookie("access_token")  # Clear any old access token
             response.set_cookie(
                 key="access_token",
                 value=access_token,
-                httponly=True, 
-                secure=True,  # Secure in production
-                samesite="None",
+                httponly=True,
+                secure=False,
+                samesite="Lax",
                 path="/",
             )
+
+            # Ensure refresh token is overwritten, not duplicated
+            response.delete_cookie("refresh_token")  # Clear any old refresh token
             response.set_cookie(
                 key="refresh_token",
                 value=refresh_token,
                 httponly=True,
-                secure=True,
+                secure=False,
                 samesite="None",
                 path="/api/token/refresh/",
             )
@@ -246,7 +250,7 @@ class LoginView(TokenObtainPairView):
                 "is_club_admin": user.is_admin_user(),
             })
 
-            # Uncomment this to hide tokens from the response body (for extra security)
+            # Hide tokens from the response body for security
             # del response.data["access"]
             # del response.data["refresh"]
 
@@ -383,16 +387,19 @@ class AddEventView(APIView): #add events view
         return None
 
 
-class LogoutView(APIView): #logout view
-    def post(self, request):
-        response = Response({'detail': 'Successfully logged out'})
-        response = JsonResponse({"message": "Logged out successfully"})
-        # Expire access and refresh tokens
-        response.set_cookie("access_token", "", expires="Thu, 01 Jan 1970 00:00:00 GMT", path="/", samesite="None", secure=True, httponly=True)
-        response.set_cookie("refresh_token", "", expires="Thu, 01 Jan 1970 00:00:00 GMT", path="/api/token/refresh/", samesite="None", secure=True, httponly=True)
-        return response
-    
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def post(self, request):
+        try:
+            logger.info("Logout request received")
+            response = Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
+            response.delete_cookie('access_token')
+            response.delete_cookie('refresh_token')
+            return response
+        except Exception as e:
+            logger.error(f"Error during logout: {str(e)}")
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def event_list(request):
     events = Event.objects.all()
@@ -417,3 +424,4 @@ def delect_event(request, event_id):
         event.delete()
         return redirect('event_list')
     return render(request, 'delect_event.html', {'event': event})
+
