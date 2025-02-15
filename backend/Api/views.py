@@ -1,4 +1,5 @@
-from rest_framework.views import APIView
+from rest_framework.views import APIView 
+from django.views.generic import ListView
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status, permissions
@@ -390,3 +391,29 @@ class LogoutView(APIView): #logout view
         response.set_cookie("access_token", "", expires="Thu, 01 Jan 1970 00:00:00 GMT", path="/", samesite="None", secure=True, httponly=True)
         response.set_cookie("refresh_token", "", expires="Thu, 01 Jan 1970 00:00:00 GMT", path="/api/token/refresh/", samesite="None", secure=True, httponly=True)
         return response
+    
+
+
+def event_list(request):
+    events = Event.objects.all()
+    return render(request, 'api/event_list.html', {'events': events})
+
+# Edit Event
+def edit_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if request.method == "POST":
+        form = EventForm(request.POST, request.FILES, instance=event)
+        if form.is_valid():
+            form.save()
+            return redirect('event_list')
+    else:
+        form = EventForm(instance=event)
+    return render(request, 'edit_event.html', {'form': form , "event" :event})
+
+# Delete Event
+def delect_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if request.method == "POST":
+        event.delete()
+        return redirect('event_list')
+    return render(request, 'delect_event.html', {'event': event})

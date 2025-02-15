@@ -1,20 +1,23 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser 
+# Here abstracuser is used to extnd django default user model while keeping its authentication sytem intact
 from django.db import models
+
 
 class User(AbstractUser):
     USER_TYPE_CHOICES = [
         ('ADMIN', 'Admin'),
+        # The first ADMIN is the value that is stored in the database while the second value is the human readable value the value that is stord in the database
         ('PARTICIPANT', 'Participant')
     ]
     
-    username = models.CharField(max_length=100, unique=True)
+    username = models.CharField(max_length=100, unique=True) # unique = ture means no two user can have same username
     email = models.EmailField(unique=False)  
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='PARTICIPANT')
-    club = models.ForeignKey('Clubs', on_delete=models.SET_NULL, null=True, blank=True, related_name='admins')
-
+    club = models.ForeignKey("Clubs", on_delete=models.SET_NULL, null=True, blank=True, related_name='admins')
+    # Check if the user is admin
     def is_admin_user(self):
         return self.user_type == 'ADMIN'
-
+    # Returns the readable representaion of the user
     def __str__(self):
         return f"{self.username} ({self.user_type})"
 
@@ -60,11 +63,11 @@ class Event(models.Model):
     location = models.CharField(max_length=2555, null = True)  # Location of the event/workshop
     date = models.DateField()  # Date of the event/workshop
     host = models.ForeignKey(Clubs, on_delete=models.CASCADE)
-    type = models.CharField(max_length=50)  # Type: Event or Workshop
-    registration_link = models.URLField(max_length=500)  # Link for registration
-    startTime= models.CharField(max_length=50, blank=True)  # New Time field
+    type = models.CharField(max_length=50, choices=TYPE_CHOICES)  # Type: Event or Workshop
+    registration_link = models.URLField(max_length=500, blank= True)  # Link for registration
+    startTime= models.CharField(max_length=50)  # New Time field
     description = models.TextField(null= True, blank=True)  # New Description field
-    image = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image 
+    image = models.ImageField(upload_to="events/", null=True)  # Store image 
     # imageTwo = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image
     created_by = models.CharField(max_length=500, choices=CLUB_CHOICES, null=True, blank=True) 
 
@@ -95,3 +98,5 @@ class Subscriber(models.Model):
     def __str__(self):
         club_names = ", ".join([club.club_name for club in self.clubs.all()])
         return f"{self.email} subscribed to {club_names}" if club_names else f"{self.email} (No clubs subscribed)"
+
+
