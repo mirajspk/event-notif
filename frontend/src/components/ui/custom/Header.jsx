@@ -71,8 +71,12 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center space-x-4">
+
           {isAuthenticated ? (
-            <Button onClick={handleLogout}>LOG OUT</Button>
+            <>
+              <Button className="bg-white text-gray underline-offset-2 border hover:cursor-pointer hover:bg-gray-300">EDIT</Button>
+              <Button onClick={handleLogout}>LOG OUT</Button>
+            </>
           ) : (
             <a href="/login">
               <Button>LOG IN</Button>
