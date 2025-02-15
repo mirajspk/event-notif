@@ -20,26 +20,21 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-class EventSerializer(serializers.ModelSerializer):
-    host = serializers.PrimaryKeyRelatedField(queryset=Clubs.objects.all())  
-    image = serializers.ImageField(use_url=True)  # ✅ Use ImageField for proper URL handling
-
-    class Meta:
-        model = Event
-        # fields = ['name', 'location', 'host', 'type', 'date',
-        #           'description', 'registration_link', 'created_by', 'host_details']
-        fields = '__all__'
-
-    def get_host_details(self, obj):
-        host_name = dict(Event.CLUB_CHOICES).get(obj.host, 'Unknown Host')
-        return {
-            'name': host_name
-        }
-
 class ClubsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Clubs
         fields = '__all__'
+
+
+class EventSerializer(serializers.ModelSerializer):
+    host = ClubsSerializer()
+    image = serializers.ImageField(use_url=True)  
+
+    class Meta:
+        model = Event
+        fields = '__all__'
+
+
 
 
 class EventRegistrationSerializer(serializers.ModelSerializer):
