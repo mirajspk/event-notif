@@ -12,7 +12,7 @@ class EventForm(forms.ModelForm):
         ]
         widgets = {
             "date": forms.DateInput(attrs={"type": "date", "min" : date.today().isoformat() }),
-            "startTime": forms.TextInput(attrs={"placeholder": "e.g., 15:12:00"}),
+            "startTime": forms.TextInput(attrs={"placeholder": "e.g.11:11"}),
             "description": forms.Textarea(attrs={"rows": 4 ,"placeholder" : "Write the description of the event"}),
             "name" :forms.Textarea(attrs={"placeholder": "Enter event title" , "rows" :1}),
             "location" : forms.Textarea(attrs={"placeholder": "Enter Location", "rows":1 }),

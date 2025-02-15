@@ -65,9 +65,9 @@ class Event(models.Model):
     host = models.ForeignKey(Clubs, on_delete=models.CASCADE)
     type = models.CharField(max_length=50, choices=TYPE_CHOICES)  # Type: Event or Workshop
     registration_link = models.URLField(max_length=500, blank= True)  # Link for registration
-    startTime= models.CharField(max_length=50, blank=True)  # New Time field
+    startTime= models.CharField(max_length=50)  # New Time field
     description = models.TextField(null= True, blank=True)  # New Description field
-    image = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image 
+    image = models.ImageField(upload_to="events/", null=True)  # Store image 
     # imageTwo = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image
     created_by = models.CharField(max_length=500, choices=CLUB_CHOICES, null=True, blank=True) 
 
