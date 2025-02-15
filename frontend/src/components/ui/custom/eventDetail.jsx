@@ -16,7 +16,7 @@ const EventDetail = ({
   return (
     <div className="mx-4 md:mx-10 my-4">
       <section className="mt-2 grid gap-8 md:grid-cols-2 md:items-start md:text-left ">
-        <img src={image} alt={title} className=" rounded-lg object-cover w-full h-full flex grow-2" />
+        <img src={image} alt={title} className=" rounded-lg object-cover w-full h-full flex grow-2 w-max-[1920px] h-max-[1005px] aspect-video" />
         <div className="flex flex-col flex-1 flex-grow-1 justify-between h-full gap-4 md:gap-2">
           <h1 className="text-4xl font-medium mb-2">{title}</h1>
           <location className={sectionstyle}>
@@ -31,10 +31,6 @@ const EventDetail = ({
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg>
             <date className={textstyle}>{date}</date>
           </datesection>
-          <rsvp className={sectionstyle}>
-            <p className={textstyle}>Are you coming?</p>
-            <button className="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600">RSVP</button>
-          </rsvp>
           <div className="border-t pt-6 mb-1">
             <h2 className="text-lg font-semibold mb-4">Host:</h2>
             <div className="flex items-center space-x-4 ml-2">
@@ -45,14 +41,6 @@ const EventDetail = ({
               </div>
               <div>
                 <p className="font-medium">Kathmandu University Computer Club</p>
-                <div className="flex mt-2">
-                  <input
-                    type="email"
-                    placeholder="Your email address..."
-                    className="border px-3 py-1 rounded-l-md focus:outline-none focus:ring-1 focus:ring-blue-500 w-full"
-                  />
-                  <button className="bg-blue-500 text-white px-4 py-1 rounded-r-md hover:bg-blue-600">Follow</button>
-                </div>
               </div>
             </div>
           </div>

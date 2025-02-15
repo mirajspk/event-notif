@@ -17,7 +17,9 @@ export default function EventDetailPage() {
           <EventcardThree />
         </div>
         <div className="flex justify-center my-20">
-          <Button>More events</Button>
+          <a href="/events">
+            <Button>More events</Button>
+          </a>
         </div>
 
       </div>
