@@ -2,16 +2,6 @@ from django.contrib.auth.models import AbstractUser
 # Here abstracuser is used to extnd django default user model while keeping its authentication sytem intact
 from django.db import models
 
-# This is the database scheme for the system that manages univerity clubs, their events and user registrations using 
-# the Django ORM(Object Relational Mapping).
-
-"""
-ORM in Django is a technique that allows developers to interact with the database 
-using python objects insted of writing the raw SQL queries.  ORM maps database tables
-to Python classes(models), making database operation more intuitive and readable
-Django ORM automatically translates these models into the database tables
-Django ORM makes database interactions simpler and more Pythonic. Instead of writing complex SQL queries, you can use Python objects to handle database operations. This abstraction improves code readability, security, and maintainability.
-"""
 
 class User(AbstractUser):
     USER_TYPE_CHOICES = [
@@ -74,7 +64,7 @@ class Event(models.Model):
     date = models.DateField()  # Date of the event/workshop
     host = models.ForeignKey(Clubs, on_delete=models.CASCADE)
     type = models.CharField(max_length=50, choices=TYPE_CHOICES)  # Type: Event or Workshop
-    registration_link = models.URLField(max_length=500)  # Link for registration
+    registration_link = models.URLField(max_length=500, blank= True)  # Link for registration
     startTime= models.CharField(max_length=50, blank=True)  # New Time field
     description = models.TextField(null= True, blank=True)  # New Description field
     image = models.ImageField(upload_to="events/",blank=True, null=True)  # Store image 

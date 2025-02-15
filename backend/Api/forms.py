@@ -16,5 +16,6 @@ class EventForm(forms.ModelForm):
             "description": forms.Textarea(attrs={"rows": 4 ,"placeholder" : "Write the description of the event"}),
             "name" :forms.Textarea(attrs={"placeholder": "Enter event title" , "rows" :1}),
             "location" : forms.Textarea(attrs={"placeholder": "Enter Location", "rows":1 }),
-            "registration_link" : forms.Textarea(attrs={"placeholder": "Enter Registration Link", "rows":1 })
+            "registration_link" : forms.Textarea(attrs={"placeholder": "Enter Registration Link", "rows":1 }),
+          
         }
