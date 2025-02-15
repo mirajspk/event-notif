@@ -35,6 +35,7 @@ urlpatterns = [
 
     # Admin Add Event (HTML Form)
     path('add_event/', AddEventView.as_view(), name='add_event'),
+    # Url to list all the events
     path('events/', event_list,name='event_list'),
     path('events/edit/<int:event_id>/', edit_event, name='edit_event'),
     path('events/delect/<int:event_id>/', delect_event, name='delect_event'),

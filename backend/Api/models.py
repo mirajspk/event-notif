@@ -1,20 +1,33 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser 
+# Here abstracuser is used to extnd django default user model while keeping its authentication sytem intact
 from django.db import models
+
+# This is the database scheme for the system that manages univerity clubs, their events and user registrations using 
+# the Django ORM(Object Relational Mapping).
+
+"""
+ORM in Django is a technique that allows developers to interact with the database 
+using python objects insted of writing the raw SQL queries.  ORM maps database tables
+to Python classes(models), making database operation more intuitive and readable
+Django ORM automatically translates these models into the database tables
+Django ORM makes database interactions simpler and more Pythonic. Instead of writing complex SQL queries, you can use Python objects to handle database operations. This abstraction improves code readability, security, and maintainability.
+"""
 
 class User(AbstractUser):
     USER_TYPE_CHOICES = [
         ('ADMIN', 'Admin'),
+        # The first ADMIN is the value that is stored in the database while the second value is the human readable value the value that is stord in the database
         ('PARTICIPANT', 'Participant')
     ]
     
-    username = models.CharField(max_length=100, unique=True)
+    username = models.CharField(max_length=100, unique=True) # unique = ture means no two user can have same username
     email = models.EmailField(unique=False)  
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='PARTICIPANT')
-    club = models.ForeignKey('Clubs', on_delete=models.SET_NULL, null=True, blank=True, related_name='admins')
-
+    club = models.ForeignKey("Clubs", on_delete=models.SET_NULL, null=True, blank=True, related_name='admins')
+    # Check if the user is admin
     def is_admin_user(self):
         return self.user_type == 'ADMIN'
-
+    # Returns the readable representaion of the user
     def __str__(self):
         return f"{self.username} ({self.user_type})"
 
@@ -95,3 +108,5 @@ class Subscriber(models.Model):
     def __str__(self):
         club_names = ", ".join([club.club_name for club in self.clubs.all()])
         return f"{self.email} subscribed to {club_names}" if club_names else f"{self.email} (No clubs subscribed)"
+
+
