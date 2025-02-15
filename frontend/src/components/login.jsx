@@ -102,7 +102,7 @@ function LoginForm() {
                   {form.formState.errors.root.message}
                 </div>
               )}
-              <Button className="w-full bg-[#00A8E5] hover:bg-[#4299cc]" type="submit" disabled={isLoading}>
+              <Button className="w-full bg-[#00A8E5] hover:bg-[#4299cc] text-white" type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />

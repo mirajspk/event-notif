@@ -9,7 +9,6 @@ const navItems = [
   { name: "Events", href: "/events" },
   { name: "Clubs", href: "/clubs" },
   { name: "Contact", href: "/contact" },
-  { name: "About", href: "/about" },
 ];
 
 const Header = () => {
@@ -74,7 +73,7 @@ const Header = () => {
 
           {isAuthenticated ? (
             <>
-              <Button className="bg-white text-gray underline-offset-2 border hover:cursor-pointer hover:bg-gray-300">EDIT</Button>
+              <Button onClick={()=>{window.location.replace("http://127.0.0.1:8000/Api/events")}}className="bg-white text-gray border hover:cursor-pointer hover:bg-gray-300">EDIT</Button>
               <Button onClick={handleLogout}>LOG OUT</Button>
             </>
           ) : (

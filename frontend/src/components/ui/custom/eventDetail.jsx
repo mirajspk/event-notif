@@ -12,8 +12,6 @@ const EventDetail = ({
   description,
   host,
   registration_link,
-  onUpdate,
-  onDelete
 }) => {
   const { isAuthenticated } = useAuth(); // Get the authentication state
   const textstyle = "font-bold text-[rgb(90,90,90)] ";
@@ -24,24 +22,6 @@ const EventDetail = ({
       <section className="mt-2 grid gap-8 md:grid-cols-2 md:items-start md:text-left ">
         <img src={image} alt={title} className=" rounded-lg object-cover w-full h-full flex grow-2" />
         <div className="flex flex-col flex-1 flex-grow-1 justify-between h-full gap-4 md:gap-2">
-          <div className="flex gap-1 w-fit">
-            {isAuthenticated && (
-              <>
-                <button
-                  onClick={onUpdate}
-                  className="bg-green-500 text-white px-4 py-1 hover:bg-green-600"
-                >
-                  Update
-                </button>
-                <button
-                  onClick={onDelete}
-                  className="bg-red-500 text-white px-4 py-1 hover:bg-red-600"
-                >
-                  Delete
-                </button>
-              </>
-            )}
-          </div>
           <div className="flex justify-between items-center">
             <h1 className="text-4xl font-medium mb-2">{title}</h1>
           </div>
@@ -99,8 +79,6 @@ const EventDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { id } = useParams(); 
-  const navigate = useNavigate(); 
-  const { isAuthenticated, token } = useAuth(); 
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -118,31 +96,6 @@ const EventDetails = () => {
     fetchEvent();
   }, [id]);
 
-  const handleUpdate = () => {
-    // Redirect to the update event page or open a modal for updating the event
-    navigate(`/events/${id}/update`);
-  };
-
-  const handleDelete = async () => {
-    if (!isAuthenticated) {
-      console.error("User is not authenticated");
-      return;
-    }
-
-    try {
-      await axios.delete(`http://127.0.0.1:8000/api/events/${id}/`, {
-        headers: {
-          'Authorization': `Token ${token}`
-        }
-      });
-      console.log("Event deleted successfully");
-      navigate('/events'); // Redirect to the /events page
-    } catch (err) {
-      setError(err);
-      console.error("Error deleting event:", err);
-    }
-  };
-
   if (loading) return <div>Loading...</div>; // Loading state
   if (error) return <div>Error: {error.message}</div>; // Error state
 
@@ -156,8 +109,6 @@ const EventDetails = () => {
       date={event.date}
       host={event.host.club_name}
       registration_link={event.registration_link}
-      onDelete={handleDelete}
-      onUpdate={handleUpdate}
     />
   );
 };

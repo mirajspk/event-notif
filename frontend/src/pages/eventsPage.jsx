@@ -35,7 +35,7 @@ const EventsPage = () => {
   // Simple form state
   const [filters, setFilters] = useState({
     timeFilter: "upcoming", // Default to "All events"
-    eventType: "both", // Default to "Both"
+    type: "both", // Default to "Both"
   })
 
   useEffect(() => {
@@ -43,6 +43,7 @@ const EventsPage = () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/api/events")
         setEvents(response.data)
+        console.log(response.data)
         setFilteredEvents(response.data)
       } catch (err) {
         setError(err)
@@ -61,9 +62,9 @@ const EventsPage = () => {
       filtered = filtered.filter((event) => event.club === filters.selectedClub)
     }
 
-    if (filters.eventType === "event") {
+    if (filters.type === "Event") {
       filtered = filtered.filter((event) => event.isEvent)
-    } else if (filters.eventType === "workshop") {
+    } else if (filters.type === "Workshop") {
       filtered = filtered.filter((event) => event.isWorkshop)
     }
 
@@ -86,7 +87,7 @@ const EventsPage = () => {
   const handleReset = () => {
     setFilters({
       timeFilter: "upcoming",
-      eventType: "both",
+      type: "both",
       selectedClub: "",
     })
   }
@@ -128,19 +129,19 @@ const EventsPage = () => {
             <div className="space-y-2">
               {[
                 { value: "both", label: "Both" },
-                { value: "event", label: "Event" },
-                { value: "workshop", label: "Workshop" },
+                { value: "Event", label: "Event" },
+                { value: "Workshop", label: "Workshop" },
               ].map((option) => (
                 <div
                   key={option.value}
                   className="flex items-center space-x-2"
-                  onClick={() => setFilters({ ...filters, eventType: option.value })}
+                  onClick={() => setFilters({ ...filters, type: option.value })}
                 >
                   <div
-                    className={`w-4 h-4 rounded-full border ${filters.eventType === option.value ? "border-primary bg-primary" : "border-input"
+                    className={`w-4 h-4 rounded-full border ${filters.type === option.value ? "border-primary bg-primary" : "border-input"
                       }`}
                   >
-                    {filters.eventType === option.value && (
+                    {filters.type === option.value && (
                       <div className="w-full h-full rounded-full bg-white scale-50" />
                     )}
                   </div>
@@ -228,40 +229,40 @@ const EventsPage = () => {
 
           {/* Event List */}
           <div className="flex-1">
-            {filters.eventType === "event" && filters.timeFilter === "past" && (
+            {filters.type === "event" && filters.timeFilter === "past" && (
               <EventcardPastEvents />
             )}
-            {filters.eventType === "workshop" && filters.timeFilter === "past" && (
+            {filters.type === "workshop" && filters.timeFilter === "past" && (
               <EventcardPastWorkshop />
             )}
-            {filters.eventType === "event" && filters.timeFilter === "7days" && (
+            {filters.type === "event" && filters.timeFilter === "7days" && (
               <EventcardSevenEvent />
             )}
-            {filters.eventType === "workshop" && filters.timeFilter === "7days" && (
+            {filters.type === "workshop" && filters.timeFilter === "7days" && (
               <EventcardSevenWorkshop />
             )}
-            {filters.eventType === "event" && filters.timeFilter === "30days" && (
+            {filters.type === "event" && filters.timeFilter === "30days" && (
               <EventcardThirtyEvent />
             )}
-            {filters.eventType === "workshop" && filters.timeFilter === "30days" && (
+            {filters.type === "workshop" && filters.timeFilter === "30days" && (
               <EventcardThirtyWorkshop />
             )}
-            {filters.eventType === "event" && filters.timeFilter === "upcoming" && (
+            {filters.type === "event" && filters.timeFilter === "upcoming" && (
               <EventcardEvent />
             )}
-            {filters.eventType === "workshop" && filters.timeFilter === "upcoming" && (
+            {filters.type === "workshop" && filters.timeFilter === "upcoming" && (
               <EventcardWorkshop />
             )}
-            {filters.eventType === "both" && filters.timeFilter === "upcoming" && (
+            {filters.type === "Both" && filters.timeFilter === "upcoming" && (
               <EventcardUpcomingAll />
             )}
-            {filters.eventType === "both" && filters.timeFilter === "past" && (
+            {filters.type === "both" && filters.timeFilter === "past" && (
               <EventcardPastAll />
             )}
-            {filters.eventType === "both" && filters.timeFilter === "7days" && (
+            {filters.type === "both" && filters.timeFilter === "7days" && (
               <EventcardSevenAll />
             )}
-            {filters.eventType === "both" && filters.timeFilter === "30days" && (
+            {filters.type === "both" && filters.timeFilter === "30days" && (
               <EventcardThirtyAll />
             )}
           </div>
