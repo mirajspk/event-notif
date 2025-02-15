@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react"
-import { useParams } from 'react-router-dom'
-import axios from "axios"
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from "@/context/auth-context";
+import axios from "axios";
 
 const EventDetail = ({
   image,
@@ -8,65 +9,105 @@ const EventDetail = ({
   location,
   startTime,
   date,
-  description
+  description,
+  host,
+  registration_link,
+  onUpdate,
+  onDelete
 }) => {
+  const { isAuthenticated } = useAuth(); // Get the authentication state
   const textstyle = "font-bold text-[rgb(90,90,90)] ";
   const sectionstyle = "flex sm:flex-row gap-4 align-middle items-center";
 
   return (
     <div className="mx-4 md:mx-10 my-4">
       <section className="mt-2 grid gap-8 md:grid-cols-2 md:items-start md:text-left ">
-        <img src={image} alt={title} className=" rounded-lg object-cover w-full h-full flex grow-2 w-max-[1920px] h-max-[1005px] aspect-video" />
+        <img src={image} alt={title} className=" rounded-lg object-cover w-full h-full flex grow-2" />
         <div className="flex flex-col flex-1 flex-grow-1 justify-between h-full gap-4 md:gap-2">
-          <h1 className="text-4xl font-medium mb-2">{title}</h1>
-          <location className={sectionstyle}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" /></svg>
-            <name className={textstyle}>{location}</name>
-          </location>
-          <timesection className={sectionstyle}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-3"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16.5 12" /></svg>
-            <time className={textstyle}>{startTime}</time>
-          </timesection>
-          <datesection className={sectionstyle}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg>
-            <date className={textstyle}>{date}</date>
-          </datesection>
+          <div className="flex gap-1 w-fit">
+            {isAuthenticated && (
+              <>
+                <button
+                  onClick={onUpdate}
+                  className="bg-green-500 text-white px-4 py-1 hover:bg-green-600"
+                >
+                  Update
+                </button>
+                <button
+                  onClick={onDelete}
+                  className="bg-red-500 text-white px-4 py-1 hover:bg-red-600"
+                >
+                  Delete
+                </button>
+              </>
+            )}
+          </div>
+          <div className="flex justify-between items-center">
+            <h1 className="text-4xl font-medium mb-2">{title}</h1>
+          </div>
+          <div className="flex flex-col gap-4">
+            <div className={sectionstyle}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" /></svg>
+              <div className={textstyle}>{location}</div>
+            </div>
+            <div className={sectionstyle}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-3"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16.5 12" /></svg>
+              <div className={textstyle}>{startTime}</div>
+            </div>
+            <div className={sectionstyle}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg>
+              <div className={textstyle}>{date}</div>
+            </div>
+            {registration_link && (
+              <div className={sectionstyle}>
+                <p className={textstyle}>Are you coming?</p>
+                <button
+                  onClick={() => { window.location.href = registration_link; }}
+                  className="bg-[#00A8E5] text-white px-4 py-1 hover:bg-blue-600"
+                >
+                  Register
+                </button>
+              </div>
+            )}
+          </div>
           <div className="border-t pt-6 mb-1">
             <h2 className="text-lg font-semibold mb-4">Host:</h2>
             <div className="flex items-center space-x-4 ml-2">
               <div className="min-w-[50px] min-h-[50px] max-h-[50px] max-w-[50px] bg-gray-200 rounded-full">
-
                 <img src="" alt="" />
-
               </div>
               <div>
-                <p className="font-medium">Kathmandu University Computer Club</p>
+                <p className="font-medium">{host}</p>
+                <div className="flex mt-2">
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-      <description className="">
+      <div className="">
         <h2 className="text-lg font-semibold my-6 md:my-10">Description</h2>
         <p className="text-justify"> {description} </p>
-      </description>
+      </div>
       <div className="border-b-2 mt-10 border-black"></div>
     </div>
-  )
-}
+  );
+};
 
 const EventDetails = () => {
-
-  const [event, setEvent] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const { id } = useParams(); // Extract the id parameter from the URL
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { id } = useParams(); 
+  const navigate = useNavigate(); 
+  const { isAuthenticated, token } = useAuth(); 
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/api/events/${id}/`);
         setEvent(response.data);
+        console.log(response.data);
       } catch (err) {
         setError(err);
       } finally {
@@ -76,6 +117,31 @@ const EventDetails = () => {
 
     fetchEvent();
   }, [id]);
+
+  const handleUpdate = () => {
+    // Redirect to the update event page or open a modal for updating the event
+    navigate(`/events/${id}/update`);
+  };
+
+  const handleDelete = async () => {
+    if (!isAuthenticated) {
+      console.error("User is not authenticated");
+      return;
+    }
+
+    try {
+      await axios.delete(`http://127.0.0.1:8000/api/events/${id}/`, {
+        headers: {
+          'Authorization': `Token ${token}`
+        }
+      });
+      console.log("Event deleted successfully");
+      navigate('/events'); // Redirect to the /events page
+    } catch (err) {
+      setError(err);
+      console.error("Error deleting event:", err);
+    }
+  };
 
   if (loading) return <div>Loading...</div>; // Loading state
   if (error) return <div>Error: {error.message}</div>; // Error state
@@ -88,8 +154,12 @@ const EventDetails = () => {
       description={event.description}
       location={event.location}
       date={event.date}
+      host={event.host}
+      registration_link={event.registration_link}
+      onDelete={handleDelete}
+      onUpdate={handleUpdate}
     />
-  )
-}
+  );
+};
 
-export default EventDetails
+export default EventDetails;
