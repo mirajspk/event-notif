@@ -154,7 +154,7 @@ const EventDetails = () => {
       description={event.description}
       location={event.location}
       date={event.date}
-      host={event.host}
+      host={event.host.club_name}
       registration_link={event.registration_link}
       onDelete={handleDelete}
       onUpdate={handleUpdate}
