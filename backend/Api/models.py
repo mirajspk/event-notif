@@ -54,8 +54,8 @@ class Event(models.Model):
     ]
 
     TYPE_CHOICES = [
-        ('Event', 'Event'),
-        ('Workshop', 'Workshop'),
+        ('event', 'event'),
+        ('workshop', 'workshop'),
     ]
 
     # Fields for the Event Model

@@ -129,8 +129,8 @@ const EventsPage = () => {
             <div className="space-y-2">
               {[
                 { value: "both", label: "Both" },
-                { value: "Event", label: "Event" },
-                { value: "Workshop", label: "Workshop" },
+                { value: "event", label: "Event" },
+                { value: "workshop", label: "Workshop" },
               ].map((option) => (
                 <div
                   key={option.value}
@@ -253,7 +253,7 @@ const EventsPage = () => {
             {filters.type === "workshop" && filters.timeFilter === "upcoming" && (
               <EventcardWorkshop />
             )}
-            {filters.type === "Both" && filters.timeFilter === "upcoming" && (
+            {filters.type === "both" && filters.timeFilter === "upcoming" && (
               <EventcardUpcomingAll />
             )}
             {filters.type === "both" && filters.timeFilter === "past" && (
