@@ -401,8 +401,30 @@ class LogoutView(APIView):
             logger.error(f"Error during logout: {str(e)}")
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+# def event_list(request):
+#     # events = Event.objects.all()
+#     events = Event.objects.filter(host=request.user.club)
+#     return render(request, 'api/event_list.html', {'events': events})
+#
 def event_list(request):
-    events = Event.objects.all()
+    # Debug: Print the current user and their club
+    print(f"Current user: {request.user.username}")
+    print(f"User type: {request.user.user_type}")
+    print(f"User's club: {request.user.club}")
+
+    # Check if the user is an admin and has a club assigned
+    if request.user.user_type != 'ADMIN' or request.user.club is None:
+        print(f"User {request.user.username} is not an admin or has no club assigned.")
+        return render(request, 'api/event_list.html', {'events': []})  # Return empty list safely
+
+    # Fetch events for the user's club
+    events = Event.objects.filter(host=request.user.club)
+    
+    # Debug: Print the events found
+    print(f"Events found: {events.count()}")
+    for event in events:
+        print(f"Event: {event.name}, Host: {event.host}")
+
     return render(request, 'api/event_list.html', {'events': events})
 
 # Edit Event
