@@ -402,7 +402,6 @@ class LogoutView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # def event_list(request):
-#     # events = Event.objects.all()
 #     events = Event.objects.filter(host=request.user.club)
 #     return render(request, 'api/event_list.html', {'events': events})
 #
@@ -418,8 +417,11 @@ def event_list(request):
         return render(request, 'api/event_list.html', {'events': []})  # Return empty list safely
 
     # Fetch events for the user's club
-    events = Event.objects.filter(host=request.user.club)
-    
+    # events = Event.objects.filter(host=request.user.club)
+
+    #fetching all data
+    events = Event.objects.all()
+
     # Debug: Print the events found
     print(f"Events found: {events.count()}")
     for event in events:
