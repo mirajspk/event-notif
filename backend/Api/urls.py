@@ -1,9 +1,9 @@
 from django.urls import path
 from .views import (
     SubscribeView, LoginView, EventList,
-    EventDetail, AddEventView, AuthCheckView, LogoutView, 
+    EventDetail, AddEventView, AuthCheckView, LogoutView, delete_event, 
 )
-from .views import event_list ,  edit_event , delect_event
+from .views import event_list ,  edit_event , delete_event
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
@@ -30,5 +30,5 @@ urlpatterns = [
     # Url to list all the events
     path('events/', event_list,name='event_list'),
     path('events/edit/<int:event_id>/', edit_event, name='edit_event'),
-    path('events/delect/<int:event_id>/', delect_event, name='delect_event'),
+    path('events/delete/<int:event_id>/', delete_event, name='delete_event'),
 ]

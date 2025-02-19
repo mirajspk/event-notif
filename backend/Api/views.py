@@ -275,10 +275,10 @@ def edit_event(request, event_id):
         form = EventForm(instance=event)
     return render(request, 'edit_event.html', {'form': form , "event" :event})
 
-def delect_event(request, event_id):
+def delete_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     if request.method == "POST":
         event.delete()
         return redirect('event_list')
-    return render(request, 'delect_event.html', {'event': event})
+    return render(request, 'delete_event.html', {'event': event})
 
