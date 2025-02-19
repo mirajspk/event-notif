@@ -1,11 +1,11 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Clubs, Subscriber, Event, EventRegistration
+from .models import Clubs, Subscriber, Event
 
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
-    club_name = serializers.CharField(source='club.club_name', read_only=True)  # Extract club name
+    club_name = serializers.CharField(source='club.club_name', read_only=True)  
     is_club_admin = serializers.BooleanField(source='is_admin_user', read_only=True)
 
     class Meta:
@@ -14,9 +14,9 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        password = validated_data.pop('password')  # Extract password
-        user = User.objects.create(**validated_data)  # Create user
-        user.set_password(password)  # Hash password
+        password = validated_data.pop('password') 
+        user = User.objects.create(**validated_data)  
+        user.set_password(password)  
         user.save()
         return user
 
@@ -32,14 +32,6 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = '__all__'
-
-
-
-
-class EventRegistrationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EventRegistration
         fields = '__all__'
 
 

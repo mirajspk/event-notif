@@ -9,7 +9,7 @@ class CookieTokenAuthentication(BaseAuthentication):
     def authenticate(self, request):
         access_token = request.COOKIES.get("access_token")
         if not access_token:
-            return None  # No token, return None (unauthenticated)
+            return None  
 
         try:
             token = AccessToken(access_token)

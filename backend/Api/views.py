@@ -1,5 +1,4 @@
 from rest_framework.views import APIView 
-from django.views.generic import ListView
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status, permissions
@@ -7,15 +6,14 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.core.mail import send_mail
 from django.conf import settings
 from django.shortcuts import get_object_or_404 , render , redirect
-from .models import Clubs, Subscriber, Event, EventRegistration
-from .serializers import UserSerializer, ClubsSerializer, SubscriberSerializer, EventSerializer, EventRegistrationSerializer
+from .models import Clubs, Subscriber, Event 
+from .serializers import UserSerializer, ClubsSerializer, SubscriberSerializer, EventSerializer 
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.parsers import MultiPartParser, FormParser
 from .forms import EventForm
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
-from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from django.conf import settings
 
@@ -33,8 +31,8 @@ class RegisterClubAdminView(APIView):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            user.user_type = 'ADMIN'  # Mark as club admin
-            user.is_staff = True  # Allow access to Django admin (optional)
+            user.user_type = 'ADMIN' 
+            user.is_staff = True  
             user.save()
             return Response({"message": "Club admin registered successfully!"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -51,7 +49,7 @@ class ClubsView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        clubs = Clubs.objects.all()  # Fix: Use `Clubs` instead of `Club`
+        clubs = Clubs.objects.all()  
         serializer = ClubsSerializer(clubs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -73,14 +71,14 @@ class SubscribeView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class EventList(APIView):  # Changed from ModelViewSet to APIView
+class EventList(APIView):  
     parser_classes = (MultiPartParser, FormParser)
-    permission_classes = [AllowAny]  # Default permission (GET is public)
+    permission_classes = [AllowAny]  
 
     def get_permissions(self):
         if self.request.method == 'POST':
-            return [IsAdminUser()]  # Only admins can POST
-        return [AllowAny()]  # Everyone can GET
+            return [IsAdminUser()]  
+        return [AllowAny()]  
 
     def get(self, request, id=None):
         if id:
@@ -181,29 +179,62 @@ class EventDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class EventRegistrationView(APIView):
-    permission_classes = [AllowAny]
-
-    def post(self, request, event_id):
-        email = request.data.get('email')
-        if not email:
-            return Response({'error': 'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
-
-        event = get_object_or_404(Event, pk=event_id)
-        try:
-            EventRegistration.objects.create(event=event, email=email)
-            return Response({'message': 'Successfully registered'}, status=status.HTTP_201_CREATED)
-        except IntegrityError:
-            return Response({'error': 'You are already registered for this event'}, status=status.HTTP_400_BAD_REQUEST)
-
+class AuthCheckView(APIView): #check authentication
+    permission_classes=[AllowAny]
     def get(self, request):
-        email = request.query_params.get('email')
-        if not email:
-            return Response({'error': 'Email parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.is_authenticated:
+            return Response({
+                'authenticated': True,
+                'user': {
+                    'email': request.user.email,
+                    'is_staff': request.user.is_staff
+                }
+            })
+        
+        access_token = request.COOKIES.get('access_token')
+        if access_token:
+            try:
+                token = AccessToken(access_token)
+                user = User.objects.get(id=token['user_id'])
+                return Response({
+                    'authenticated': True,
+                    'user': {
+                        'email': user.email,
+                        'is_staff': user.is_staff
+                    }
+                })
+            except (InvalidToken, TokenError, User.DoesNotExist):
+                pass
+        
+        return Response({'authenticated': False}, status=401)
 
-        registrations = EventRegistration.objects.filter(email=email)
-        serializer = EventRegistrationSerializer(registrations, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class AddEventView(APIView):
+    def get(self, request):
+        if not request.user.is_authenticated:
+            return redirect(f"{settings.FRONTEND_LOGIN_URL}?next={request.path}")
+
+        if not request.user.is_staff:
+            return redirect(f"{settings.FRONTEND_LOGIN_URL}?next={request.path}")
+
+        form = EventForm()
+        return render(request, "api/add_event.html", {"form": form})
+
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return redirect(f"{settings.FRONTEND_LOGIN_URL}?next={request.path}")
+
+        if not request.user.is_staff:
+            return redirect(f"{settings.FRONTEND_LOGIN_URL}?next={request.path}")
+
+        form = EventForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Event added successfully!")
+            return redirect("add_event")
+        else:
+            messages.error(request, "Please correct the errors below.")
+        return render(request, "api/add_event.html", {"form": form})
 
 
 class LoginView(TokenObtainPairView):
@@ -256,6 +287,7 @@ class LoginView(TokenObtainPairView):
 
         return response
 
+
 class TokenRefreshView(TokenRefreshView):
     permission_classes = [AllowAny]
 
@@ -279,112 +311,9 @@ class TokenRefreshView(TokenRefreshView):
                 samesite="None",
                 path="/",
             )
-            del response.data["access"]  # Remove from response body for security
+            del response.data["access"]  
 
         return response
-
-# login and refresh views for not storing token in cookies 
-# class LoginView(TokenObtainPairView):
-#     permission_classes = [AllowAny]
-#
-#
-# class TokenRefreshView(TokenRefreshView):
-#     permission_classes = [AllowAny]
-
-
-# class AddEventView(APIView):
-#     def get(self, request):
-#         form = EventForm()
-#         return render(request, "api/add_event.html", {"form": form})
-#
-#     def post(self, request):
-#         form = EventForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request, "Event added successfully!")
-#             return redirect("add_event")  # This must be the same as the name in the URL
-#         else:
-#             messages.error(request, "Please correct the errors below.")
-#         return render(request, "api/add_event.html", {"form": form})
-
-
-class AuthCheckView(APIView): #check authentication
-    permission_classes=[AllowAny]
-    def get(self, request):
-        if request.user.is_authenticated:
-            return Response({
-                'authenticated': True,
-                'user': {
-                    'email': request.user.email,
-                    'is_staff': request.user.is_staff
-                }
-            })
-        
-        access_token = request.COOKIES.get('access_token')
-        if access_token:
-            try:
-                token = AccessToken(access_token)
-                user = User.objects.get(id=token['user_id'])
-                return Response({
-                    'authenticated': True,
-                    'user': {
-                        'email': user.email,
-                        'is_staff': user.is_staff
-                    }
-                })
-            except (InvalidToken, TokenError, User.DoesNotExist):
-                pass
-        
-        return Response({'authenticated': False}, status=401)
-
-
-class AddEventView(APIView): #add events view
-
-    def get(self, request):
-        auth_result = self._check_authentication(request)
-        if auth_result:
-            return auth_result
-            
-        form = EventForm()
-        return render(request, "api/add_event.html", {"form": form})  
-
-    def post(self, request):
-        auth_result = self._check_authentication(request)
-        if auth_result:
-            return auth_result
-
-        form = EventForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Event added successfully!")
-            return redirect("add_event")
-        else:
-            messages.error(request, "Please correct the errors below.")
-        return render(request, "api/add_event.html", {"form": form})
-
-    def _check_authentication(self, request):
-        # Check session auth first
-        if not request.user.is_authenticated:
-            # Fall back to JWT cookies
-            access_token = request.COOKIES.get('access_token')
-            if not access_token:
-                return redirect(f"{settings.FRONTEND_LOGIN_URL}?next={request.path}")
-
-            try:
-                token = AccessToken(access_token)
-                user = User.objects.get(id=token['user_id'])
-                if not user.is_active or not user.is_staff:
-                    raise InvalidToken()
-                # Simulate session auth for Django templates
-                request.user = user
-            except (InvalidToken, TokenError, User.DoesNotExist):
-                return redirect(f"{settings.FRONTEND_LOGIN_URL}?next={request.path}")
-        
-        # Final staff check
-        if not request.user.is_staff:
-            return redirect(f"{settings.FRONTEND_LOGIN_URL}?next={request.path}")
-        
-        return None
 
 
 class LogoutView(APIView):
@@ -401,35 +330,31 @@ class LogoutView(APIView):
             logger.error(f"Error during logout: {str(e)}")
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# def event_list(request):
-#     events = Event.objects.filter(host=request.user.club)
-#     return render(request, 'api/event_list.html', {'events': events})
-#
+
 def event_list(request):
-    # Debug: Print the current user and their club
     print(f"Current user: {request.user.username}")
-    print(f"User type: {request.user.user_type}")
-    print(f"User's club: {request.user.club}")
+    print(f"User type: {request.user.user_type if request.user.is_authenticated else 'Anonymous'}")
+    print(f"User's club: {request.user.club if request.user.is_authenticated else 'None'}")
+
+    # Checking if the user is authenticated
+    if not request.user.is_authenticated:
+        print("User is not authenticated.")
+        return render(request, 'api/event_list.html', {'events': []}) 
 
     # Check if the user is an admin and has a club assigned
     if request.user.user_type != 'ADMIN' or request.user.club is None:
         print(f"User {request.user.username} is not an admin or has no club assigned.")
-        return render(request, 'api/event_list.html', {'events': []})  # Return empty list safely
+        return render(request, 'api/event_list.html', {'events': []})  
 
     # Fetch events for the user's club
-    # events = Event.objects.filter(host=request.user.club)
+    events = Event.objects.filter(host=request.user.club)
 
-    #fetching all data
-    events = Event.objects.all()
-
-    # Debug: Print the events found
     print(f"Events found: {events.count()}")
     for event in events:
         print(f"Event: {event.name}, Host: {event.host}")
 
     return render(request, 'api/event_list.html', {'events': events})
 
-# Edit Event
 def edit_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     if request.method == "POST":
@@ -441,7 +366,6 @@ def edit_event(request, event_id):
         form = EventForm(instance=event)
     return render(request, 'edit_event.html', {'form': form , "event" :event})
 
-# Delete Event
 def delect_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     if request.method == "POST":

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Clubs, Subscriber, Event, EventRegistration, User
+from .models import Clubs, Subscriber, Event, User
 
 class CustomUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'user_type', 'club', 'is_staff', 'is_active')
@@ -54,15 +54,7 @@ class EventAdmin(admin.ModelAdmin):
         }),
     )
 
-# Since we don't see the fields in your EventRegistration model,
-# let's create a basic admin interface for it
-class EventRegistrationAdmin(admin.ModelAdmin):
-    list_display = ('event',)
-    list_filter = ('event',)
-    search_fields = ('event__name',)
 
-# Register the models with their custom admin classes
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(Clubs, ClubsAdmin)
 admin.site.register(Event, EventAdmin)
-admin.site.register(EventRegistration, EventRegistrationAdmin)
