@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
-    RegisterClubAdminView, SubscribeView, LoginView, EventList,
-    EventDetail, RelatedEventsView, AddEventView, AuthCheckView, LogoutView, 
+    SubscribeView, LoginView, EventList,
+    EventDetail, AddEventView, AuthCheckView, LogoutView, 
 )
 from .views import event_list ,  edit_event , delect_event
 from rest_framework_simplejwt.views import TokenRefreshView
@@ -18,12 +18,8 @@ urlpatterns = [
     # Event Detail Endpoint (GET, PUT, DELETE)
     path('api/events/<int:id>/', EventDetail.as_view(), name='event-detail'),
 
-    # Related Events Endpoint
-    path('api/events/host/<str:host>/', RelatedEventsView.as_view(), name="related-events"),
-
     # Subscription and User Registration
     path('api/subscribe/', SubscribeView.as_view(), name='subscribe'),
-    path('api/register/', RegisterClubAdminView.as_view(), name='register-club'),
 
     # Authentication Endpoints
     path('api/login/', LoginView.as_view(), name='login'),

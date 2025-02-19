@@ -1,16 +1,13 @@
 from rest_framework.views import APIView 
-from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
-from rest_framework import status, permissions
+from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.core.mail import send_mail
 from django.conf import settings
 from django.shortcuts import get_object_or_404 , render , redirect
 from .models import Clubs, Subscriber, Event 
 from .serializers import UserSerializer, ClubsSerializer, SubscriberSerializer, EventSerializer 
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from rest_framework.parsers import MultiPartParser, FormParser
 from .forms import EventForm
 from django.contrib import messages
 from rest_framework_simplejwt.tokens import AccessToken
@@ -22,20 +19,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 User = get_user_model()
-
-
-class RegisterClubAdminView(APIView):
-    permission_classes = [AllowAny]
-
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            user.user_type = 'ADMIN' 
-            user.is_staff = True  
-            user.save()
-            return Response({"message": "Club admin registered successfully!"}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ClubsView(APIView):
@@ -72,13 +55,7 @@ class SubscribeView(APIView):
 
 
 class EventList(APIView):  
-    parser_classes = (MultiPartParser, FormParser)
     permission_classes = [AllowAny]  
-
-    def get_permissions(self):
-        if self.request.method == 'POST':
-            return [IsAdminUser()]  
-        return [AllowAny()]  
 
     def get(self, request, id=None):
         if id:
@@ -90,57 +67,9 @@ class EventList(APIView):
         serializer = EventSerializer(events, many=True, context={'request': request})
         return Response(serializer.data)
 
-    def post(self, request):
-        serializer = EventSerializer(data=request.data)
-        if serializer.is_valid():
-            host_club = Clubs.objects.get(id=request.data['host'])
-            event = serializer.save(created_by=request.user, host=host_club)
-
-            # Send email to subscribers of the club hosting the event
-            subscribers = Subscriber.objects.filter(clubs=host_club)
-            subject = f'New Event: {event.name}'
-            message = f'''
-                Event: {event.name}
-                Host: {event.host.club_name}
-                Date: {event.date}
-                Description: {event.description}
-                Registration Link: {event.registration_link}
-            '''
-            recipient_list = [sub.email for sub in subscribers]
-
-
-            send_mail(
-                subject,
-                message,
-                settings.EMAIL_HOST_USER,
-                recipient_list,
-                fail_silently=False
-            )
-
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        logger.error(f"Validation failed: {serializer.errors}")
-        return Response({
-            'error': 'Bad Request',
-            'details': serializer.errors
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-
-class RelatedEventsView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request, host):
-        events = Event.objects.filter(host__club_name=host).order_by('date')[:3]
-        serializer = EventSerializer(events, many=True)
-        return Response(serializer.data)
-
 
 class EventDetail(APIView):
-    # Allow anyone to view event details (GET)
-    # Restrict PUT, DELETE to admins only
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [AllowAny()]
-        return [IsAdminUser()]
+    permission_classes = [AllowAny]  
 
     def get_object(self, pk):
         try:
@@ -157,26 +86,6 @@ class EventDetail(APIView):
         events = Event.objects.all()
         serializer = EventSerializer(events, many=True, context={'request': request})
         return Response(serializer.data)
-
-
-    def put(self, request, pk):
-        event = self.get_object(pk)
-        if not event:
-            return Response({'error': 'Event not found'}, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = EventSerializer(event, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk):
-        event = self.get_object(pk)
-        if not event:
-            return Response({'error': 'Event not found'}, status=status.HTTP_404_NOT_FOUND)
-
-        event.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AuthCheckView(APIView): #check authentication

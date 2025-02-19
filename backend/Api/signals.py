@@ -15,11 +15,12 @@ def send_event_notification(sender, instance, created, **kwargs):
         # Prepare email content
         subject = f"New Event: {instance.name}"
         message = f'''
-            Event: {instance.name}
+            {instance.type}: {instance.name}
             Host: {instance.host.club_name}
             Date: {instance.date}
             Description: {instance.description}
             Registration Link: {instance.registration_link}
+            Image: {instance.image}
         '''
         
         # Collect recipient email addresses
