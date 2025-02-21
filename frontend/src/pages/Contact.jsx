@@ -12,8 +12,8 @@ export default function Contact() {
           <div className="mt-10">
             <div className='text-xl text-wrap pl-1 leading-[45px]'>
               <p className='font-semibold'>We’d love to hear from you! Whether you have a question, feedback, or an exciting opportunity to discuss, feel free to reach out.</p>
-              <li>Email: abhisekhjoshi13@gmail.com</li>
-              <li>Phone: +977-9841234567</li>
+              <li>Email: event.notifier.11@gmail.com</li>
+              <li>Phone: +977-9742373259</li>
               <li>Address: Kathmandu, Nepal</li>
               <li>Facebook: <a href="https://www.facebook.com/abhisekh.joshi.9" target="_blank" rel="noreferrer">Abhisekh Joshi</a></li>
               <li>LinkedIn: <a href="https://www.linkedin.com/in/abhisekh-joshi-0b1b3b1b1/" target="_blank" rel="noreferrer">Abhisekh Joshi</a></li>

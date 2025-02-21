@@ -1,32 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Footer from '@/components/footer';
 import { Header } from "@/components/ui/custom/Header";
 import Club from "@/components/ui/custom/Club";
 
 export default function ClubPage() {
-  const clubNames = [
-    { id: 1, name: "Kathmandu University Computer Club" },
-    { id: 2, name: "Kathmandu University Architecture Student Society" },
-    { id: 3, name: "Kathmandu University Robotics Club" },
-    { id: 4, name: "Kathmandu University Civil Engineering Club" },
-    { id: 5, name: "Kathmandu University Society of Music and Culture" },
-    { id: 6, name: "Geomatics Engineering Society" },
-    { id: 7, name: "Architecture Student Club" },
-    { id: 8, name: "Biotechnology Creatives" },
-    { id: 9, name: "Forum for Pharmacy" },
-    { id: 10, name: "Artificial Intelligence Club" },
-    { id: 11, name: "Society of Electrical & Electronic Engineering" },
-    { id: 12, name: "Forum for Environmental Conservation and Mangagement" },
-  ];
-
+  const [clubNames, setClubNames] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
+  useEffect(() => {
+    const fetchClubNames = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/clubs'); // Ensure this matches your Django endpoint
+        setClubNames(response.data);
+      } catch (error) {
+        console.error('Error fetching club names:', error);
+      }
+    };
 
-  const filteredClubs = clubNames.filter((club) =>
-    club.name.toLowerCase().includes(searchTerm.toLowerCase())
+    fetchClubNames();
+  }, []);
+
+  const filteredClubs = clubNames.filter((clubs) =>
+    clubs.club_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -47,9 +43,9 @@ export default function ClubPage() {
 
           {/* Subscription Forms Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {filteredClubs.map((club, index) => (
+            {filteredClubs.map((clubs, index) => (
               <div key={index} className="flex flex-col items-center space-y-4 p-6 bg-white rounded-lg shadow-sm">
-                <Club clubname={club.name} clubId={club.id} />
+                <Club clubname={clubs.club_name} clubId={clubs.id} clubImage={clubs.club_image} />
               </div>
             ))}
           </div>

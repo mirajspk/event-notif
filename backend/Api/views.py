@@ -13,6 +13,7 @@ from django.contrib import messages
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from django.conf import settings
+from rest_framework import generics
 
 import logging
 
@@ -36,6 +37,11 @@ class ClubsView(APIView):
         serializer = ClubsSerializer(clubs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+class ClubList(generics.ListAPIView):
+    queryset = Clubs.objects.all()
+    serializer_class = ClubsSerializer
+    permission_classes = [AllowAny]
 
 class SubscribeView(APIView):
     permission_classes = [AllowAny]

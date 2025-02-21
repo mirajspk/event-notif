@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'api',
     'crispy_forms',
     'crispy_tailwind',
+    'clubs',
 
 ]
 
