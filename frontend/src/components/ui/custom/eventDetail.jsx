@@ -20,7 +20,7 @@ const EventDetail = ({
   return (
     <div className="mx-4 md:mx-10 my-4">
       <section className="mt-2 grid gap-8 md:grid-cols-2 md:items-start md:text-left ">
-        <img src={image} alt={title} className=" rounded-lg object-cover w-full h-full flex grow-2" />
+        <img src={image} alt={title} className=" rounded-lg object-cover w-full h-full flex grow-2 aspect-video" />
         <div className="flex flex-col flex-1 flex-grow-1 justify-between h-full gap-4 md:gap-2">
           <div className="flex justify-between items-center">
             <h1 className="text-4xl font-medium mb-2">{title}</h1>
@@ -78,7 +78,7 @@ const EventDetails = () => {
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { id } = useParams(); 
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchEvent = async () => {
